@@ -1,0 +1,22 @@
+.buttonStyle {
+    display: flex;
+    align-items: center;
+    background-color: #7A3B7A;
+    color: #EBF3FA;
+    padding: 10px 20px 10px 20px;
+    font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+    font-size: 18px;
+    border: 1px solid;
+    border-radius: 4px
+}
+
+.imageStyle {
+    background-color: white;
+    width: 29px;
+    height: 29px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 15px;
+    border-radius: inherit;
+}

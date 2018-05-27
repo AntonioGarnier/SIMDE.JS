@@ -1,0 +1,22 @@
+.fixedBar {
+    position: 'fixed';
+    top: '0px'
+}
+
+.title {
+    color: #7A3B7A
+}
+
+.centerInfo {
+    display: 'flex';
+    align-items: 'center'
+}
+
+.marginLeftInfo {
+    margin-left: '20px'
+}
+
+.noFormatText {
+    text-decoration: none;
+    color: white
+}

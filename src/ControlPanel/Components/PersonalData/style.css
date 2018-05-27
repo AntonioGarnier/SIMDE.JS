@@ -1,0 +1,18 @@
+.infoStyle {
+    position: relative;
+    top: 50px;
+}
+
+.header {
+    background-color: rgb(121, 59, 121);
+}
+
+subHeader {
+    color: white;
+    background-color: #a57ca5;
+}
+
+.listStyle {
+    width: 50%;
+    margin-top: 50px;
+}

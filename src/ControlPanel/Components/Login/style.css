@@ -1,0 +1,18 @@
+.loginStyle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    border-width: 25px;
+    border-style: solid;
+    border-radius: 27px;
+    height: 450px;
+    width: 493px;
+    border-color: #8c7990;
+}
+
+.title {
+    color: #776e6e;
+    text-align: center;
+    width: 50%;
+}
