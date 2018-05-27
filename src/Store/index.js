@@ -7,7 +7,7 @@ import { MACHINE_REGISTER_SIZE, MEMORY_SIZE } from '../Simulator/core/Constants'
 import { saveState, loadState } from '../LocalStorage'
 
 
-export const initialState = loadState() || {
+export const initialState = {
     prefetchUnit: [],
     decoder: [],
     jumpPrediction: [],
@@ -59,12 +59,13 @@ export const initialState = loadState() || {
     batchResults: {},
     user: null,
     toggleSideBar: false,
+    isLoading: true,
 };
 
 
 export const store = createStore(
     enableBatching(SuperescalarReducers),
-    initialState,
+    loadState() || initialState,
     compose(
         applyMiddleware(thunk),
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),

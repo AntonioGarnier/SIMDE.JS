@@ -6,7 +6,7 @@ import * as ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import registerServiceWorker from './registerServiceWorker'
 import { I18nextProvider } from 'react-i18next';
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
 import SIMDETheme from './Styles/SIMDETheme'
@@ -21,9 +21,9 @@ ReactDOM.render(
     <I18nextProvider i18n={i18n}>
         <Provider store={store}>
             <MuiThemeProvider muiTheme={getMuiTheme(SIMDETheme)}>
-                <BrowserRouter>
+                <HashRouter>
                     <Panel />
-                </BrowserRouter>
+                </HashRouter>
             </MuiThemeProvider>
         </Provider>
     </I18nextProvider>, document.getElementById('app')

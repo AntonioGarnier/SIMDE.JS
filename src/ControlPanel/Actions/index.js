@@ -1,12 +1,28 @@
 import { signIn, signOut } from '../Components/FirebaseProvider'
-import { removeState } from '../LocalStorage'
+import { removeState } from '../../LocalStorage'
 import {
     USER_LOGIN,
     USER_LOGOUT,
     OPEN_SIDE_BAR,
     CLOSE_SIDE_BAR,
+    CHECKING_USER,
+    CHECKED_USER,
 } from '../Constants'
 
+
+export function checkingUser() {
+    return {
+        type: CHECKING_USER,
+        payload: true,
+    }
+}
+
+export function checkedUser() {
+    return {
+        type: CHECKED_USER,
+        payload: false,
+    }
+}
 
 export function setUser(user) {
     return {

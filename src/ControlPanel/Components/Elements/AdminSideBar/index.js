@@ -10,15 +10,6 @@ import { closeSideBar } from '../../../Actions'
 import sideBarElements from './SideBarElements'
 //import './style.css'
 
-const selectedStyle = {
-    display: 'block',
-    background: 'rgb(236, 221, 236)',
-    borderWidth: '10px',
-    borderRightStyle: 'solid',
-    borderTopRightRadius: '25px',
-    borderBottomRightRadius: '25px',
-    width: '246px',
-}
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
@@ -45,7 +36,7 @@ const AdminSideBar = (props) => {
                 onLeftIconButtonClick={props.closeSideBar}
                 style={{ height: '64px' }}
             />
-            <Menu selectedMenuItemStyle={selectedStyle}>
+            <Menu>
                 {
                     sideBarElements
                         .map((element) => {
