@@ -11,7 +11,7 @@ import Remove from 'material-ui/svg-icons/content/remove'
 
 
 const mapStateToProps = (state) => {
-    return { user: state.user }
+    return { user: state.controlPanel.user }
 }
 
 const PersonalData = ({ user }) => {

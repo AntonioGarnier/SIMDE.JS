@@ -24,8 +24,8 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
     return {
-        user: state.user,
-        isLoading: state.isLoading
+        user: state.controlPanel.user,
+        isLoading: state.controlPanel.isLoading
     }
 }
 
@@ -49,7 +49,6 @@ class Panel extends Component {
     render() {
         if (this.props.isLoading)
             return <Loading />
-        console.log('********', this.props.user)
         return (
             this.props.user
                 ? <LoggedRoutes />

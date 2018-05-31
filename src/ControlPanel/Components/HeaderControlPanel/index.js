@@ -25,8 +25,8 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
     return {
         user: {
-            displayName: state.user.displayName,
-            picture: state.user.picture,
+            displayName: state.controlPanel.user.displayName,
+            picture: state.controlPanel.user.picture,
         },
     }
 }

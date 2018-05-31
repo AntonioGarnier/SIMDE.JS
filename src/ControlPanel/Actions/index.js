@@ -1,14 +1,33 @@
-import { signIn, signOut } from '../Components/FirebaseProvider'
-import { removeState } from '../../LocalStorage'
 import {
     USER_LOGIN,
+    USER_LOGGING_IN,
     USER_LOGOUT,
     OPEN_SIDE_BAR,
     CLOSE_SIDE_BAR,
     CHECKING_USER,
     CHECKED_USER,
+    FETCHING_ALL_ROOMS,
+    FETCHING_ROOM,
 } from '../Constants'
 
+
+export function fetchingAllRooms(rooms) {
+    return {
+        type: FETCHING_ALL_ROOMS,
+        payload: {
+            rooms,
+        }
+    }
+}
+
+export function fetchingRoom(room) {
+    return {
+        type: FETCHING_ROOM,
+        payload: {
+            room,
+        }
+    }
+}
 
 export function checkingUser() {
     return {
@@ -38,17 +57,14 @@ export function logingOut() {
 }
 
 export function login() {
-    return () => {
-        const user = signIn()
-        console.log(user)
+    return {
+        type: USER_LOGGING_IN,
     }
 }
 
 export function logout() {
-    return (dispatch) => {
-        dispatch(logingOut())
-        removeState()
-        signOut()
+    return {
+        type: USER_LOGOUT,
     }
 }
 

@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch) => {
 
 const mapStateToProps = (state) => {
     return {
-        toggleSideBar: state.toggleSideBar,
+        toggleSideBar: state.controlPanel.toggleSideBar,
     }
 }
 

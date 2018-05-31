@@ -116,17 +116,17 @@ export function SuperescalarReducers(state = initialState, action) {
         case CLEAR_BATCH_RESULTS:
             return (state = Object.assign({}, state, { batchResults: {}, isBatchResultsModalOpen: false }));
         case USER_LOGIN:
-            return { ...state, user: action.payload }
+            return { ...state, controlPanel: {...state.controlPanel, user: action.payload} }
         case USER_LOGOUT:
             return initialState
         case OPEN_SIDE_BAR:
-            return { ...state, toggleSideBar: action.payload }
+            return { ...state, controlPanel: { ...state.controlPanel, toggleSideBar: action.payload }}
         case CLOSE_SIDE_BAR:
-            return { ...state, toggleSideBar: action.payload }
+            return { ...state, controlPanel: { ...state.controlPanel, toggleSideBar: action.payload }}
         case CHECKING_USER:
-            return { ...state, isLoading: true }
+            return { ...state, controlPanel: { ...state.controlPanel, isLoading: true }}
         case CHECKED_USER:
-            return { ...state, isLoading: false }
+            return { ...state, controlPanel: { ...state.controlPanel, isLoading: false }}
         default:
             return state
     }

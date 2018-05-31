@@ -7,7 +7,7 @@ import AdminSideBar from '../Elements/AdminSideBar'
 
 const mapStateToProps = (state) => {
     return {
-        toggleSideBar: state.toggleSideBar,
+        toggleSideBar: state.controlPanel.toggleSideBar,
     }
 }
 

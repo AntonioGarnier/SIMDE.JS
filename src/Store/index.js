@@ -1,11 +1,10 @@
 import { enableBatching } from '../Simulator/interface/reducers/batching';
 import { applyMiddleware, createStore, compose } from 'redux'
-import thunk from 'redux-thunk'
 import { SuperescalarReducers } from '../Simulator/interface/reducers';
 import { generateRangeArray } from '../Simulator/interface/utils/interval';
 import { MACHINE_REGISTER_SIZE, MEMORY_SIZE } from '../Simulator/core/Constants';
 import { saveState, loadState } from '../LocalStorage'
-
+import userLogin from './middleware'
 
 export const initialState = {
     prefetchUnit: [],
@@ -57,21 +56,28 @@ export const initialState = {
     isBatchModalOpen: false,
     isBatchResultsModalOpen: false,
     batchResults: {},
-    user: null,
-    toggleSideBar: false,
-    isLoading: true,
+    controlPanel: {
+        user: null,
+        toggleSideBar: false,
+        isLoading: true,
+    }
 };
 
+const loadFromLocalStorage = () => (
+    loadState()
+        ? { ...initialState, controlPanel: loadState() }
+        : initialState
+)
 
 export const store = createStore(
     enableBatching(SuperescalarReducers),
-    loadState() || initialState,
+    loadFromLocalStorage(),
     compose(
-        applyMiddleware(thunk),
+        applyMiddleware(userLogin),
         window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
     ),
 );
 
 store.subscribe(() => {
-    saveState(store.getState())
+    saveState(store.getState().controlPanel)
 })
