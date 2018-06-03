@@ -1,0 +1,98 @@
+{
+    "users": {
+        "antoniol": {
+            "name": "Antonio Lopez",
+            "rol": "admin",
+            "rooms": {
+                "SalaProblemasG1": true,
+                "SalaProblemasG2": false
+            }
+        },
+        "carlosh": {
+            "name": "Carlos Hernandez",
+            "rol": "student",
+            "rooms": {
+                "SalaProblemasG1": false,
+                "SalaProblemasG2": true
+            }
+        }
+    },
+
+    "history": {
+        "antoniol": "Sala - problema - instancia",
+        "carlosh": {}
+    },
+    "Groups": {
+        "GROUP_ID": {
+            "members": ["Antonio", "Carlos"]
+        }
+    },
+    "task": {
+        "taskID": {
+            "task": "hola",
+            "done": "false"
+        }
+    },
+    "RoomPW": {
+        "ROOM_ID": "pw: Con las reglas, dejar que un usuario modifique una room, si la pw escrita",
+        "ROOM_ID2": "pw2: coincide con esta pw de la sala a la que quiere entrar"
+    },
+    "SingleRooms": {
+        "ROOM_ID": {
+            "name": "Sala de problemas Grupo 1",
+            "members": ["Antonio", "Carlos"],
+            "problems": ["Problema1", "Problema2"]
+        },
+        "ROOM_ID2": {
+            "name": "Sala de problemas Grupo 2",
+            "members": ["Antonio", "Carlos"],
+            "problems": ["Problema2", "Problema3"]
+        }
+    },
+    "GroupRooms": {
+        "ROOM_ID": {
+            "name": "Sala de problemas Grupo 1",
+            "members": ["Group1", "Group2"],
+            "problems": ["Problema1", "Problema2"]
+        },
+        "ROOM_ID2": {
+            "name": "Sala de problemas Grupo 2",
+            "members": ["Group2", "Group3"],
+            "problems": ["Problema2", "Problema3"]
+        }
+    },
+    "problems": {
+        "PROBLEM_ID": {
+            "name": "Problema numero 1",
+            "definition": {
+                "pseudocode": "Pseudocodigo"
+            },
+            "inst": {
+
+            },
+            "rooms": {
+                "SalaProblemasG1": true,
+                "SalaProblemasG2": false
+            }
+        },
+        "PROBLEM_ID2": {
+            "name": "Problema numero 2",
+            "definition": {
+                "pseudocode": "Pseudocodigo"
+            },
+            "rooms": {
+                "SalaProblemasG1": false,
+                "SalaProblemasG2": true
+            }
+        }
+    },
+    "ranking": {
+        "ROOM_ID": "pending"
+    },
+    "admins": ["Antonio"],
+    "def": "MEM: [40] 2 4 3 5 3 19 28",
+    "instancias": "DropMenu para instancias (Alumnos: resolver instancias por ordende eleccion)",
+    "Definicion": "richEditor - Comprobar con firebase",
+    "control": "controlar la configuracion superescalar",
+    "member": "memberlist"
+}

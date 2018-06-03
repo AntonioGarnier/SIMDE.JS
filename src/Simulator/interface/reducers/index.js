@@ -11,6 +11,17 @@ import {
     CLOSE_SIDE_BAR,
     CHECKING_USER,
     CHECKED_USER,
+    CHANGE_PATH,
+    FETCH_ALL_SINGLE_ROOMS,
+    GOT_SINGLE_ROOM,
+    GOT_UPDATE_SINGLE_ROOM,
+    REMOVE_ALL_SINGLE_ROOMS,
+    GOT_REMOVE_SINGLE_ROOM,
+    FETCH_ALL_GROUP_ROOMS,
+    GOT_GROUP_ROOM,
+    GOT_UPDATE_GROUP_ROOM,
+    REMOVE_ALL_GROUP_ROOMS,
+    GOT_REMOVE_GROUP_ROOM,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -127,6 +138,33 @@ export function SuperescalarReducers(state = initialState, action) {
             return { ...state, controlPanel: { ...state.controlPanel, isLoading: true }}
         case CHECKED_USER:
             return { ...state, controlPanel: { ...state.controlPanel, isLoading: false }}
+        case CHANGE_PATH:
+            return { ...state, controlPanel: { ...state.controlPanel, actualPath: action.payload.path}}
+        case FETCH_ALL_SINGLE_ROOMS:
+            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload}}
+        case GOT_UPDATE_SINGLE_ROOM:
+        case GOT_SINGLE_ROOM:
+            const { name, id, members, problems } = action.payload
+            return {...state, controlPanel: { ...state.controlPanel, singleRooms: { ...state.controlPanel.singleRooms, [id]: {name, members, problems}}}}
+        case REMOVE_ALL_SINGLE_ROOMS:
+            return {...state, controlPanel: { ...state.controlPanel, singleRooms: null}}
+        case GOT_REMOVE_SINGLE_ROOM:
+            delete state.controlPanel.singleRooms[action.payload.id]
+            return state
+        case FETCH_ALL_GROUP_ROOMS:
+            return { ...state, controlPanel: { ...state.controlPanel, groupRooms: action.payload}}
+        case GOT_UPDATE_GROUP_ROOM:
+        case GOT_GROUP_ROOM:
+            return {...state, controlPanel: { ...state.controlPanel, groupRooms: { ...state.controlPanel.groupRooms, [action.payload.id]: {
+                name: action.payload.name,
+                members: action.payload.members,
+                problems: action.payload.problems,
+            }}}}
+        case REMOVE_ALL_GROUP_ROOMS:
+            return {...state, controlPanel: { ...state.controlPanel, groupRooms: null}}
+        case GOT_REMOVE_GROUP_ROOM:
+            delete state.controlPanel.groupRooms[action.payload.id]
+            return state
         default:
             return state
     }

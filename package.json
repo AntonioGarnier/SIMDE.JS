@@ -11,6 +11,7 @@
     "i18next-browser-languagedetector": "^2.2.0",
     "i18next-localstorage-cache": "^1.1.1",
     "i18next-xhr-backend": "^1.5.1",
+    "immutable": "^3.8.2",
     "lex": "^1.7.9",
     "material-ui": "^0.20.1",
     "react": "^16.4.0",

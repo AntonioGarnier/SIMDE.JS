@@ -10,8 +10,8 @@ import {
     setUser,
     checkingUser,
     checkedUser,
+    changePath,
 } from './Actions'
-
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -19,6 +19,7 @@ const mapDispatchToProps = (dispatch) => {
         setUser,
         checkingUser,
         checkedUser,
+        changePath,
     }, dispatch)
 }
 
@@ -40,10 +41,18 @@ class Panel extends Component {
                     picture: user.photoURL,
                     creationTime: user.metadata.creationTime,
                     lastSignInTime: user.metadata.lastSignInTime,
+                    uid: user.uid,
                 })
             }
             this.props.checkedUser()
+            this.props.changePath(this.props.location.pathname)
         })
+    }
+
+    componentDidUpdate(prevProps){
+        if (prevProps.location.pathname !== this.props.location.pathname) {
+            this.props.changePath(this.props.location.pathname)
+        }
     }
 
     render() {

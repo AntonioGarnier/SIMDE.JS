@@ -2,13 +2,13 @@ import firebase from 'firebase/app'
 import 'firebase/auth'
 
 const config = {
-    apiKey: 'AIzaSyDnf85_olh01OJMokfBwRmoJB51FmRzgSY',
-    authDomain: 'simde-tfg-ajlg.firebaseapp.com',
-    databaseURL: 'https://simde-tfg-ajlg.firebaseio.com',
-    projectId: 'simde-tfg-ajlg',
-    storageBucket: 'simde-tfg-ajlg.appspot.com',
-    messagingSenderId: '10872132531',
-}
+    apiKey: "AIzaSyCtofD2jIdsAfeonq8iFT0tBhOwaAtUZAg",
+    authDomain: "simde-19bb3.firebaseapp.com",
+    databaseURL: "https://simde-19bb3.firebaseio.com",
+    projectId: "simde-19bb3",
+    storageBucket: "",
+    messagingSenderId: "248938624018"
+  }
 
 if (!firebase.apps.length) {
     firebase.initializeApp(config)

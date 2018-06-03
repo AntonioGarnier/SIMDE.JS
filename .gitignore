@@ -3,6 +3,9 @@
 # dependencies
 /node_modules
 
+# FirebaseConfig
+/src/ControlPanel/Components/FirebaseProvider
+
 # testing
 /coverage
 

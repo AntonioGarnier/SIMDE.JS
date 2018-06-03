@@ -1,10 +1,21 @@
-import { enableBatching } from '../Simulator/interface/reducers/batching';
 import { applyMiddleware, createStore, compose } from 'redux'
+import { createEpicMiddleware, combineEpics } from 'redux-observable'
+import { enableBatching } from '../Simulator/interface/reducers/batching';
 import { SuperescalarReducers } from '../Simulator/interface/reducers';
 import { generateRangeArray } from '../Simulator/interface/utils/interval';
 import { MACHINE_REGISTER_SIZE, MEMORY_SIZE } from '../Simulator/core/Constants';
 import { saveState, loadState } from '../LocalStorage'
-import userLogin from './middleware'
+import { 
+    userLogin,
+    singleRoomMiddleware,
+    groupRoomMiddleware,
+} from './middleware'
+import {
+    fetchingDataEpic,
+    manageSingleRoomEpic,
+    manageGroupRoomEpic,
+} from './epics'
+
 
 export const initialState = {
     prefetchUnit: [],
@@ -58,9 +69,12 @@ export const initialState = {
     batchResults: {},
     controlPanel: {
         user: null,
+        actualPath: null,
         toggleSideBar: false,
         isLoading: true,
-    }
+        singleRooms: null,
+        groupRooms: null,
+    },
 };
 
 const loadFromLocalStorage = () => (
@@ -69,13 +83,34 @@ const loadFromLocalStorage = () => (
         : initialState
 )
 
+const composeEnhancers =
+    typeof window === 'object' &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?   
+        window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+        }) : compose
+
+const rootEpic = combineEpics(
+    fetchingDataEpic,
+    manageSingleRoomEpic,
+    manageGroupRoomEpic,
+)
+
+const epicMiddleware = createEpicMiddleware(rootEpic)
+
+const middleWares = [
+    epicMiddleware,
+    userLogin,
+    singleRoomMiddleware,
+    groupRoomMiddleware,
+]
+
+const enhancer = composeEnhancers(applyMiddleware(...middleWares))
+
 export const store = createStore(
     enableBatching(SuperescalarReducers),
     loadFromLocalStorage(),
-    compose(
-        applyMiddleware(userLogin),
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-    ),
+    enhancer
 );
 
 store.subscribe(() => {

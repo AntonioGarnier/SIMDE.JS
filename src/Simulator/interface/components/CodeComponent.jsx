@@ -21,8 +21,6 @@ class CodeComponent extends React.Component {
         this.props.toggleBreakPoint(SuperescalarIntegration.superescalar.code.instructions);
     }
     render() {
-        console.log('nada aqui estamos', this.props.code)
-        console.log('oh que paso mi niño', this.props.code.map((row, i) => console.log('Row: ', row, 'i: ', i)))
         return (<div className='smd-code panel panel-default'>
                 <div className='panel-heading'>
                     Code

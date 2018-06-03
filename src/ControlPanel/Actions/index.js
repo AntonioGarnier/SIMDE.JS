@@ -2,27 +2,77 @@ import {
     USER_LOGIN,
     USER_LOGGING_IN,
     USER_LOGOUT,
+    CHANGE_PATH,
     OPEN_SIDE_BAR,
     CLOSE_SIDE_BAR,
     CHECKING_USER,
     CHECKED_USER,
-    FETCHING_ALL_ROOMS,
-    FETCHING_ROOM,
+    ADD_SINGLE_ROOM,
+    ADD_GROUP_ROOM,
+    UPDATE_SINGLE_ROOM,
+    UPDATE_GROUP_ROOM,
+    REMOVE_SINGLE_ROOM,
+    REMOVE_GROUP_ROOM,
 } from '../Constants'
 
-
-export function fetchingAllRooms(rooms) {
+export function changePath(path) {
     return {
-        type: FETCHING_ALL_ROOMS,
+        type: CHANGE_PATH,
+        payload: {
+            path,
+        }
+    }
+}
+
+export function addSingleRoom(room) {
+    return {
+        type: ADD_SINGLE_ROOM,
+        payload: {
+            data: room.data,
+            id: room.id,
+        }
+    }
+}
+
+export function addGroupRoom(rooms) {
+    return {
+        type: ADD_GROUP_ROOM,
         payload: {
             rooms,
         }
     }
 }
 
-export function fetchingRoom(room) {
+export function removeSingleRoom(rooms) {
     return {
-        type: FETCHING_ROOM,
+        type: REMOVE_SINGLE_ROOM,
+        payload: {
+            rooms,
+        }
+    }
+}
+
+export function removeGroupRoom(rooms) {
+    return {
+        type: REMOVE_GROUP_ROOM,
+        payload: {
+            rooms,
+        }
+    }
+}
+
+export function updateSingleRoom(room) {
+    return {
+        type: UPDATE_SINGLE_ROOM,
+        payload: {
+            room,
+        }
+    }
+}
+
+export function updateGroupRoom(room) {
+    return {
+        type: UPDATE_GROUP_ROOM,
         payload: {
             room,
         }
