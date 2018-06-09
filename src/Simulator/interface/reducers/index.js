@@ -156,7 +156,7 @@ export function SuperescalarReducers(state = initialState, action) {
         case CHANGE_PATH:
             return { ...state, controlPanel: { ...state.controlPanel, actualPath: action.payload.path}}
         case FETCH_ALL_ROOMS:
-            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload.singleRooms, groupRooms: action.payload.groupRooms}}
+            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload.singleRooms, groupRooms: action.payload.groupRooms, idSingleRooms: Object.keys(action.payload.singleRooms), idGroupRooms: Object.keys(action.payload.groupRooms)}}
         case GOT_UPDATE_ROOM:
         case GOT_ADD_ROOM: // [`${action.payload.type}Rooms`]
             return { ...state, controlPanel: { ...state.controlPanel, [`${action.payload.type}Rooms`]: { ...state.controlPanel[`${action.payload.type}Rooms`], [action.payload.id]: {
@@ -198,13 +198,13 @@ export function SuperescalarReducers(state = initialState, action) {
             delete state.controlPanel.groupRooms[action.payload.id]
             return state*/
         case FETCH_ALL_GROUPS:
-            return { ...state, controlPanel: { ...state.controlPanel, groups: action.payload}}
+            return { ...state, controlPanel: { ...state.controlPanel, groups: action.payload.groups, idGroups: Object.keys(action.payload.groups)}}
         case GOT_UPDATE_GROUP:
         case GOT_GROUP:
             return { ...state, controlPanel: { ...state.controlPanel, groups: { ...state.controlPanel.groups, [action.payload.id]: {
                 name: action.payload.name,
                 members: action.payload.members,
-                problems: action.payload.problems,
+                leader: action.payload.leader,
                 createdAt: action.payload.createdAt,
             }}}}
         case REMOVE_ALL_GROUPS:

@@ -21,54 +21,17 @@ const mapStateToProps = (state) => {
     }
 }
 
-const PersonalData = ({ user, singleRooms, groupRooms, groups }) => {
+const PersonalData = ({ 
+    user,
+    singleRooms,
+    groupRooms,
+    groups,
+}) => {
 
     const userGroups = []
-    const userSingleRooms = []
-    //const userGroupRooms = []
-
     for ( var groupId in groups )
         if (groups[groupId].members.hasOwnProperty(user.uid))
             userGroups.push(groupId)
-    for ( var singleRoomId in singleRooms )
-        if (singleRooms[singleRoomId].members.hasOwnProperty(user.uid))
-            userSingleRooms.push(singleRoomId)
-
-    /*Groups = [id1, id3]
-    groupRooms = 
-    {
-        "idRoom1": {
-            members: {
-                id1: asdasd,
-                id2: asdadasd,
-                id3: asasdasd,
-            }
-        },
-        "idRoom2": {
-            members: {
-                id1: asdasd,
-                id2: asdadasd,
-                id3: asasdasd,
-            }
-        }
-    }
-
-    userGroups.forEach((element) => {
-        
-        if (groupRooms[groupRoomId].members.hasOwnProperty(element))
-        
-    })
-
-    for ( var groupRoomId in groupRooms )
-        userGroups.forEach((element) => {
-            if (groupRooms[groupRoomId].members.hasOwnProperty(element))
-
-        })
-        if (groupRooms[groupRoomId].members.hasOwnProperty(user.uid))
-            userGroupRooms.push({ [groupRoomId]: groupRooms[groupRoomId] })
-    console.log('userGroups: ', userGroups)
-    console.log('userSingleRooms: ', userSingleRooms)
-    console.log('userGroupRooms: ', userGroupRooms)*/
 
     return (
         <div className="infoStyle" >
@@ -99,8 +62,6 @@ const PersonalData = ({ user, singleRooms, groupRooms, groups }) => {
                         <Divider />
                             {
                                 Object.keys(singleRooms).map((id) => {
-                                    //console.log('id: ', id)
-                                    // console.log('Singleroom: ', singleRooms[id].members.hasOwnProperty(user.uid))
                                     if (singleRooms[id].members.hasOwnProperty(user.uid))
                                         return (
                                             <NavLink
@@ -125,14 +86,14 @@ const PersonalData = ({ user, singleRooms, groupRooms, groups }) => {
                         <Divider />
                             { // group room tiene un grupo cuyo miembro sea user ID?  metelo
                                 Object.keys(groupRooms).map((id) => {
-                                    console.log('groupRooms[id].members: ', groupRooms[id].members)
-                                    console.log('userGroups: ', userGroups)
-                                    // console.log('Include: ', Object.keys(groupRooms[id].members).includes())
-                                    // userGroups.includes(groupRooms[id].members)
+                                    //console.log('groupRooms[id].members: ', groupRooms[id].members)
+                                    //console.log('userGroups: ', userGroups)
+                                    //console.log('Include: ', Object.keys(groupRooms[id].members).includes())
+                                    //userGroups.includes(groupRooms[id].members)
                                     let domGroup = null
                                     userGroups.forEach((element) => {
                                         //console.log('element: ', Object.keys(groupRooms[id].members).includes(Object.keys(element)[0]))
-                                        if (Object.keys(groupRooms[id].members).includes(Object.keys(element)[0]))
+                                        if (Object.keys(groupRooms[id].members).includes(element))
                                             domGroup = (
                                                 <NavLink
                                                     to={`/room-list/${id}`}

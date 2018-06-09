@@ -60,7 +60,9 @@ export const groupsEpic = action$ =>
                     if (Object.keys(groups).length > 1)
                         return {
                             type: FETCH_ALL_GROUPS,
-                            payload: groups,
+                            payload: {
+                                groups,
+                            }
                         }
                     const group = Object.values(groups).shift()
                     return {
@@ -69,7 +71,7 @@ export const groupsEpic = action$ =>
                             name: group.name,
                             id: Object.keys(groups).shift(),
                             members: group.members,
-                            problems: group.problems,
+                            leader: group.leader,
                             createdAt: group.createdAt,
                         },
                     }
@@ -98,7 +100,7 @@ export const groupsEpic = action$ =>
                                     name: group.name,
                                     id: Object.keys(groups).shift(),
                                     members: group.members,
-                                    problems: group.problems,
+                                    leader: group.leader,
                                     createdAt: group.createdAt,
                                 },
                             }

@@ -41,7 +41,7 @@ class Panel extends Component {
                 const  adminRef = firestore.collection('admins').doc(user.uid)
                 adminRef.get().then((doc) => {
                     let rol = 'student'
-                    console.log('DOC: ', user)
+                    // console.log('DOC: ', user)
                     if (doc.exists)
                         rol = 'admin'
                     this.props.setUser({

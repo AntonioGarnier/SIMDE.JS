@@ -31,7 +31,7 @@ export const subscribeRoom = () => (querySnapshot) => {
         rooms[room.doc.id] = room.doc.data()
         updateType = room.type
     })
-    console.log('Changes: ', querySnapshot.docChanges())
+    // console.log('Changes: ', querySnapshot.docChanges())
     switch (updateType) {
         case 'added':
             roomAdd$.next(rooms)
@@ -59,8 +59,8 @@ export const roomEpic = action$ =>
                 // tap(v => console.log('add: ', v)),
                 map((rooms) => {
                     if (Object.keys(rooms).length > 1) {
-                        console.log('+++', rooms)
-                        console.log('***', Object.keys(rooms))
+                        // console.log('+++', rooms)
+                        // console.log('***', Object.keys(rooms))
                         let singleRooms = {}
                         let groupRooms = {}
                         Object.keys(rooms).forEach((element) => {

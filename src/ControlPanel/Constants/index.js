@@ -17,22 +17,22 @@ export const REMOVE_ALL_USER_SINGLE_ROOMS = 'REMOVE_ALL_USER_SINGLE_ROOMS'
 export const GOT_REMOVE_USER_SINGLE_ROOM = 'GOT_REMOVE_USER_SINGLE_ROOM'
 export const GOT_UPDATE_USER_SINGLE_ROOM = 'GOT_UPDATE_USER_SINGLE_ROOM'
 
-//Actions for ROOMS
-export const FETCHING_ROOMS = 'FETCHING_ROOMS'
-export const FETCH_ALL_ROOMS = 'FETCH_ALL_ROOMS'
-export const REMOVE_ALL_ROOMS = 'REMOVE_ALL_ROOMS'
-
-// Actions for students
+// Actions for ROOMS
+    // Middleware
     export const JOIN_ROOM = 'JOIN_ROOM'
     export const LEAVE_ROOM = 'LEAVE_ROOM'
-    // Actions for admin
     export const ADD_ROOM = 'ADD_ROOM'
     export const REMOVE_ROOM = 'REMOVE_ROOM'
     export const UPDATE_NAME_ROOM = 'UPDATE_NAME_ROOM'
     export const UPDATE_PROBLEMS_ROOM = 'UPDATE_PROBLEMS_ROOM'
+    // Epic
+    export const FETCHING_ROOMS = 'FETCHING_ROOMS'
+    export const FETCH_ALL_ROOMS = 'FETCH_ALL_ROOMS'
+    export const REMOVE_ALL_ROOMS = 'REMOVE_ALL_ROOMS'
     export const GOT_ADD_ROOM = 'GOT_ADD_ROOM'
     export const GOT_REMOVE_ROOM = 'GOT_REMOVE_ROOM'
     export const GOT_UPDATE_ROOM = 'GOT_UPDATE_ROOM'
+
     
 
 // Action when FETCHING_SINGLE_ROOMS
@@ -61,15 +61,20 @@ export const GOT_REMOVE_GROUP_ROOM = 'GOT_REMOVE_GROUP_ROOM'
 export const GOT_UPDATE_GROUP_ROOM = 'GOT_UPDATE_GROUP_ROOM'
 
 // Action Groups
-export const ADD_GROUP = 'ADD_GROUP'
-export const REMOVE_GROUP = 'REMOVE_GROUP'
-export const UPDATE_GROUP = 'UPDATE_GROUP'
-export const FETCHING_GROUPS = 'FETCHING_GROUPS'
-export const FETCH_ALL_GROUPS = 'FETCH_ALL_GROUPS'
-export const GOT_GROUP = 'GOT_GROUP'
-export const REMOVE_ALL_GROUPS = 'REMOVE_ALL_GROUPS'
-export const GOT_REMOVE_GROUP = 'GOT_REMOVE_GROUP'
-export const GOT_UPDATE_GROUP = 'GOT_UPDATE_GROUP'
+    // MiddleWare
+    export const ADD_GROUP = 'ADD_GROUP'
+    export const REMOVE_GROUP = 'REMOVE_GROUP'
+    export const UPDATE_NAME_GROUP = 'UPDATE_NAME_GROUP'
+    export const UPDATE_LEADER_GROUP = 'UPDATE_LEADER_GROUP'
+    export const JOIN_GROUP = 'JOIN_GROUP'
+    export const LEAVE_GROUP = 'LEAVE_GROUP'
+    // Epic
+    export const FETCHING_GROUPS = 'FETCHING_GROUPS'
+    export const FETCH_ALL_GROUPS = 'FETCH_ALL_GROUPS'
+    export const GOT_GROUP = 'GOT_GROUP'
+    export const REMOVE_ALL_GROUPS = 'REMOVE_ALL_GROUPS'
+    export const GOT_REMOVE_GROUP = 'GOT_REMOVE_GROUP'
+    export const GOT_UPDATE_GROUP = 'GOT_UPDATE_GROUP'
 
 // Action Instances
 export const FETCHING_INSTANCES = 'FETCHING_INSTANCES'
