@@ -8,7 +8,9 @@ import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
 import {
     USER_LOGIN,
     FETCHING_SINGLE_ROOMS,
+    FETCHING_ROOMS,
     FETCHING_GROUP_ROOMS,
+    FETCHING_GROUPS,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -21,10 +23,13 @@ const fetchingDataEpic = action$ =>
         flatMap(() => (
             of(
                 {
-                    type: FETCHING_SINGLE_ROOMS,
+                    type: FETCHING_ROOMS,
                 },
-                {
+                /*{
                     type: FETCHING_GROUP_ROOMS,
+                },*/
+                {
+                    type: FETCHING_GROUPS,
                 },
             )
         ))

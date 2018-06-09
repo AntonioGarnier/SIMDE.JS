@@ -4,7 +4,7 @@ import { Subject } from 'rxjs'
 import {
     map,
     flatMap,
-    tap,
+    // tap,
     merge,
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
@@ -25,19 +25,15 @@ const groupRoomAdd$ = new Subject()
 const groupRoomUpdate$ = new Subject()
 const groupRoomRemove$ = new Subject()
 
-
-firestore.collection('groupRooms')
-    .onSnapshot((querySnapshot) => {
+export const subscribeGroupRoom = () => (querySnapshot) => {
         let updateType
         let rooms = {}
         querySnapshot.docChanges().forEach((room) => {
             rooms[room.doc.id] = room.doc.data()
             updateType = room.type
         })
-        //console.log('TYPE: ', updateType)
         switch (updateType) {
             case 'added':
-                //console.log('+++++++++++++++')
                 groupRoomAdd$.next(rooms)
                 break
             case 'modified':
@@ -49,15 +45,19 @@ firestore.collection('groupRooms')
             default:
                 break
         }
-    })
+    }
 
-const manageGroupRoomEpic = action$ =>
+
+export const listenGroupRoom = firestore.collection('groupRooms')
+    .orderBy('createdAt')
+
+export const manageGroupRoomEpic = action$ =>
     action$.pipe(
         ofType(FETCHING_GROUP_ROOMS),
-        tap(v => console.log('Antes de flat: ', v)),        
+        // tap(v => console.log('Antes de flat: ', v)),        
         flatMap(() => (
             groupRoomAdd$.pipe(
-                tap(v => console.log('add: ', v)),
+                // tap(v => console.log('add: ', v)),
                 map((rooms) => {
                     if (Object.keys(rooms).length > 1)
                         return {
@@ -72,11 +72,12 @@ const manageGroupRoomEpic = action$ =>
                             id: Object.keys(rooms).shift(),
                             members: room.members,
                             problems: room.problems,
+                            createdAt: room.createdAt,
                         },
                     }
                 }),
                 merge(groupRoomRemove$.pipe(
-                    tap(v => console.log('remove: ', v)),
+                    // tap(v => console.log('remove: ', v)),
                     map((rooms) => {
                         if (Object.keys(rooms).length > 1)
                             return {
@@ -90,7 +91,7 @@ const manageGroupRoomEpic = action$ =>
                         }
                     }),
                     merge(groupRoomUpdate$.pipe(
-                        tap(v => console.log('update: ', v)),
+                        // tap(v => console.log('update: ', v)),
                         map((rooms) => {
                             const room = Object.values(rooms).shift()
                             return {
@@ -100,6 +101,7 @@ const manageGroupRoomEpic = action$ =>
                                     id: Object.keys(rooms).shift(),
                                     members: room.members,
                                     problems: room.problems,
+                                    createdAt: room.createdAt,
                                 },
                             }
                         }),
@@ -107,19 +109,18 @@ const manageGroupRoomEpic = action$ =>
                 ))
             )
         )),
-        tap(v => console.log('despues de flat: ', v))       
+        // tap(v => console.log('despues de flat: ', v))       
         
     )
 
-export default manageGroupRoomEpic
         /*
         {
 type: 'ADD_GROUP_ROOM',
 payload: {
-  name: 'Sala Grupo 1',
+  name: 'Sala para los del caja',
   members: {
    'Grupo3': true,
-   'Grupo1': false,
+   'piz87UphFDYXHzidJkRx': true,
 },
   problems: {
     'Problema 33': true,

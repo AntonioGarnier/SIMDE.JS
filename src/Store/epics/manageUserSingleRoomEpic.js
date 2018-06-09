@@ -9,12 +9,12 @@ import {
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
 import {
-    FETCHING_SINGLE_ROOMS,
-    FETCH_ALL_SINGLE_ROOMS,
-    GOT_SINGLE_ROOM,
-    REMOVE_ALL_SINGLE_ROOMS,
-    GOT_REMOVE_SINGLE_ROOM,
-    GOT_UPDATE_SINGLE_ROOM,
+    FETCHING_USER_SINGLE_ROOMS,
+    FETCH_ALL_USER_SINGLE_ROOMS,
+    GOT_USER_SINGLE_ROOM,
+    REMOVE_ALL_USER_SINGLE_ROOMS,
+    GOT_REMOVE_USER_SINGLE_ROOM,
+    GOT_UPDATE_USER_SINGLE_ROOM,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -24,14 +24,13 @@ const singleRoomAdd$ = new Subject()
 const singleRoomUpdate$ = new Subject()
 const singleRoomRemove$ = new Subject()
 
-export const subscribeSingleRoom = () => (querySnapshot) => {
+export const subscribeUserSingleRoom = () => (querySnapshot) => {
     let updateType
     let rooms = {}
     querySnapshot.docChanges().forEach((room) => {
         rooms[room.doc.id] = room.doc.data()
         updateType = room.type
     })
-    console.log('Changes: ', querySnapshot.docChanges())
     switch (updateType) {
         case 'added':
             singleRoomAdd$.next(rooms)
@@ -47,12 +46,12 @@ export const subscribeSingleRoom = () => (querySnapshot) => {
     }
 }
 
-export const listenSingleRoom = firestore.collection('singleRooms')
-    .orderBy('createdAt')
+export const listenUserSingleRoom = firestore.collection('singleRooms')
+    
 
-export const manageSingleRoomEpic = action$ =>
+export const manageUserSingleRoomEpic = action$ =>
     action$.pipe(
-        ofType(FETCHING_SINGLE_ROOMS),
+        ofType(FETCHING_USER_SINGLE_ROOMS),
         // tap(v => console.log('Antes de flat: ', v)),        
         flatMap(() => (
             singleRoomAdd$.pipe(
@@ -60,12 +59,12 @@ export const manageSingleRoomEpic = action$ =>
                 map((rooms) => {
                     if (Object.keys(rooms).length > 1)
                         return {
-                            type: FETCH_ALL_SINGLE_ROOMS,
+                            type: FETCH_ALL_USER_SINGLE_ROOMS,
                             payload: rooms,
                         }
                     const room = Object.values(rooms).shift()
                     return {
-                        type: GOT_SINGLE_ROOM,
+                        type: GOT_USER_SINGLE_ROOM,
                         payload: {
                             name: room.name,
                             id: Object.keys(rooms).shift(),
@@ -80,10 +79,10 @@ export const manageSingleRoomEpic = action$ =>
                     map((rooms) => {
                         if (Object.keys(rooms).length > 1)
                             return {
-                                type: REMOVE_ALL_SINGLE_ROOMS,
+                                type: REMOVE_ALL_USER_SINGLE_ROOMS,
                             }
                         return {
-                            type: GOT_REMOVE_SINGLE_ROOM,
+                            type: GOT_REMOVE_USER_SINGLE_ROOM,
                             payload: {
                                 id: Object.keys(rooms).shift(),
                             },
@@ -94,7 +93,7 @@ export const manageSingleRoomEpic = action$ =>
                         map((rooms) => {
                             const room = Object.values(rooms).shift()
                             return {
-                                type: GOT_UPDATE_SINGLE_ROOM,
+                                type: GOT_UPDATE_USER_SINGLE_ROOM,
                                 payload: {
                                     name: room.name,
                                     id: Object.keys(rooms).shift(),

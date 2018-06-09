@@ -22,6 +22,21 @@ import {
     GOT_UPDATE_GROUP_ROOM,
     REMOVE_ALL_GROUP_ROOMS,
     GOT_REMOVE_GROUP_ROOM,
+    FETCH_ALL_ROOMS,
+    GOT_ADD_ROOM,
+    REMOVE_ALL_ROOMS,
+    GOT_REMOVE_ROOM,
+    GOT_UPDATE_ROOM,
+    FETCH_ALL_GROUPS,
+    GOT_GROUP,
+    REMOVE_ALL_GROUPS,
+    GOT_REMOVE_GROUP,
+    GOT_UPDATE_GROUP,
+    FETCH_ALL_INSTANCES,
+    GOT_INSTANCE,
+    REMOVE_ALL_INSTANCES,
+    GOT_REMOVE_INSTANCE,
+    GOT_UPDATE_INSTANCE,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -127,7 +142,7 @@ export function SuperescalarReducers(state = initialState, action) {
         case CLEAR_BATCH_RESULTS:
             return (state = Object.assign({}, state, { batchResults: {}, isBatchResultsModalOpen: false }));
         case USER_LOGIN:
-            return { ...state, controlPanel: {...state.controlPanel, user: action.payload} }
+            return { ...state, controlPanel: { ...state.controlPanel, user: action.payload} }
         case USER_LOGOUT:
             return initialState
         case OPEN_SIDE_BAR:
@@ -140,12 +155,28 @@ export function SuperescalarReducers(state = initialState, action) {
             return { ...state, controlPanel: { ...state.controlPanel, isLoading: false }}
         case CHANGE_PATH:
             return { ...state, controlPanel: { ...state.controlPanel, actualPath: action.payload.path}}
-        case FETCH_ALL_SINGLE_ROOMS:
+        case FETCH_ALL_ROOMS:
+            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload.singleRooms, groupRooms: action.payload.groupRooms}}
+        case GOT_UPDATE_ROOM:
+        case GOT_ADD_ROOM: // [`${action.payload.type}Rooms`]
+            return { ...state, controlPanel: { ...state.controlPanel, [`${action.payload.type}Rooms`]: { ...state.controlPanel[`${action.payload.type}Rooms`], [action.payload.id]: {
+                name: action.payload.name,
+                members: action.payload.members,
+                type: action.payload.type,
+                problems: action.payload.problems,
+                createdAt: action.payload.createdAt,
+            }}}}
+        case REMOVE_ALL_ROOMS:
+            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: null, groupRooms: null}}
+        case GOT_REMOVE_ROOM:
+            delete state.controlPanel[`${action.payload.type}Rooms`][action.payload.id]
+            return state
+            /*case FETCH_ALL_SINGLE_ROOMS:
             return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload}}
         case GOT_UPDATE_SINGLE_ROOM:
         case GOT_SINGLE_ROOM:
-            const { name, id, members, problems } = action.payload
-            return {...state, controlPanel: { ...state.controlPanel, singleRooms: { ...state.controlPanel.singleRooms, [id]: {name, members, problems}}}}
+            const { name, id, members, problems, createdAt } = action.payload
+            return {...state, controlPanel: { ...state.controlPanel, singleRooms: { ...state.controlPanel.singleRooms, [id]: {name, members, problems, createdAt}}}}
         case REMOVE_ALL_SINGLE_ROOMS:
             return {...state, controlPanel: { ...state.controlPanel, singleRooms: null}}
         case GOT_REMOVE_SINGLE_ROOM:
@@ -159,11 +190,42 @@ export function SuperescalarReducers(state = initialState, action) {
                 name: action.payload.name,
                 members: action.payload.members,
                 problems: action.payload.problems,
+                createdAt: action.payload.createdAt,
             }}}}
         case REMOVE_ALL_GROUP_ROOMS:
             return {...state, controlPanel: { ...state.controlPanel, groupRooms: null}}
         case GOT_REMOVE_GROUP_ROOM:
             delete state.controlPanel.groupRooms[action.payload.id]
+            return state*/
+        case FETCH_ALL_GROUPS:
+            return { ...state, controlPanel: { ...state.controlPanel, groups: action.payload}}
+        case GOT_UPDATE_GROUP:
+        case GOT_GROUP:
+            return { ...state, controlPanel: { ...state.controlPanel, groups: { ...state.controlPanel.groups, [action.payload.id]: {
+                name: action.payload.name,
+                members: action.payload.members,
+                problems: action.payload.problems,
+                createdAt: action.payload.createdAt,
+            }}}}
+        case REMOVE_ALL_GROUPS:
+            return { ...state, controlPanel: { ...state.controlPanel, groups: null}}
+        case GOT_REMOVE_GROUP:
+            delete state.controlPanel.groups[action.payload.id]
+            return state
+        case FETCH_ALL_INSTANCES:
+            return { ...state, controlPanel: { ...state.controlPanel, instances: action.payload}}
+        case GOT_UPDATE_INSTANCE:
+        case GOT_INSTANCE:
+            return { ...state, controlPanel: { ...state.controlPanel, instances: { ...state.controlPanel.instances, [action.payload.id]: {
+                name: action.payload.name,
+                initialMem: action.payload.initialMem,
+                finalMem: action.payload.finalMem,
+                createdAt: action.payload.createdAt,
+            }}}}
+        case REMOVE_ALL_INSTANCES:
+            return { ...state, controlPanel: { ...state.controlPanel, instances: null}}
+        case GOT_REMOVE_INSTANCE:
+            delete state.controlPanel.instances[action.payload.id]
             return state
         default:
             return state

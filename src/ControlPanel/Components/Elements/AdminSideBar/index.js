@@ -7,7 +7,7 @@ import Drawer from 'material-ui/Drawer'
 import AppBar from 'material-ui/AppBar'
 import { Menu, MenuItem } from 'material-ui/Menu'
 import { closeSideBar } from '../../../Actions'
-import sideBarElements from './SideBarElements'
+import { sideBarElements, sideBarElementsAdmin } from './SideBarElements'
 //import './style.css'
 
 
@@ -20,10 +20,16 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
     return {
         toggleSideBar: state.controlPanel.toggleSideBar,
+        userRol: state.controlPanel.user.rol,
     }
 }
 
 const AdminSideBar = (props) => {
+
+    let sideBar = sideBarElements
+    if (props.userRol === 'admin')
+        sideBar = sideBarElementsAdmin
+
     return (
         <Drawer
             open={props.toggleSideBar}
@@ -37,8 +43,8 @@ const AdminSideBar = (props) => {
                 style={{ height: '64px' }}
             />
             <Menu>
-                {
-                    sideBarElements
+                { 
+                    sideBar
                         .map((element) => {
                             return (
                                 <NavLink
@@ -63,6 +69,7 @@ const AdminSideBar = (props) => {
 
 AdminSideBar.propTypes = {
     toggleSideBar: PropTypes.bool.isRequired,
+    userRol: PropTypes.string.isRequired,
     closeSideBar: PropTypes.func.isRequired,
 }
 

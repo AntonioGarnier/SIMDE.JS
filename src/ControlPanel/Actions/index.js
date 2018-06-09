@@ -15,6 +15,7 @@ import {
     REMOVE_GROUP_ROOM,
 } from '../Constants'
 
+
 export function changePath(path) {
     return {
         type: CHANGE_PATH,
@@ -97,12 +98,6 @@ export function setUser(user) {
     return {
         type: USER_LOGIN,
         payload: user,
-    }
-}
-
-export function logingOut() {
-    return {
-        type: USER_LOGOUT,
     }
 }
 

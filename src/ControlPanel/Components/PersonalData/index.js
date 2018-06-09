@@ -4,17 +4,72 @@ import PropTypes from 'prop-types'
 import Divider from 'material-ui/Divider'
 import Paper from 'material-ui/Paper'
 import Subheader from 'material-ui/Subheader'
+import Person from 'material-ui/svg-icons/social/person'
+import Group from 'material-ui/svg-icons/social/group'
 import { List, ListItem } from 'material-ui/List'
+import { NavLink } from 'react-router-dom'
 import { CardHeader } from 'material-ui/Card'
-import Remove from 'material-ui/svg-icons/content/remove'
 //import './style.css'
 
 
 const mapStateToProps = (state) => {
-    return { user: state.controlPanel.user }
+    return {
+        user: state.controlPanel.user,
+        singleRooms: state.controlPanel.singleRooms,
+        groupRooms: state.controlPanel.groupRooms,
+        groups: state.controlPanel.groups,
+    }
 }
 
-const PersonalData = ({ user }) => {
+const PersonalData = ({ user, singleRooms, groupRooms, groups }) => {
+
+    const userGroups = []
+    const userSingleRooms = []
+    //const userGroupRooms = []
+
+    for ( var groupId in groups )
+        if (groups[groupId].members.hasOwnProperty(user.uid))
+            userGroups.push(groupId)
+    for ( var singleRoomId in singleRooms )
+        if (singleRooms[singleRoomId].members.hasOwnProperty(user.uid))
+            userSingleRooms.push(singleRoomId)
+
+    /*Groups = [id1, id3]
+    groupRooms = 
+    {
+        "idRoom1": {
+            members: {
+                id1: asdasd,
+                id2: asdadasd,
+                id3: asasdasd,
+            }
+        },
+        "idRoom2": {
+            members: {
+                id1: asdasd,
+                id2: asdadasd,
+                id3: asasdasd,
+            }
+        }
+    }
+
+    userGroups.forEach((element) => {
+        
+        if (groupRooms[groupRoomId].members.hasOwnProperty(element))
+        
+    })
+
+    for ( var groupRoomId in groupRooms )
+        userGroups.forEach((element) => {
+            if (groupRooms[groupRoomId].members.hasOwnProperty(element))
+
+        })
+        if (groupRooms[groupRoomId].members.hasOwnProperty(user.uid))
+            userGroupRooms.push({ [groupRoomId]: groupRooms[groupRoomId] })
+    console.log('userGroups: ', userGroups)
+    console.log('userSingleRooms: ', userSingleRooms)
+    console.log('userGroupRooms: ', userGroupRooms)*/
+
     return (
         <div className="infoStyle" >
             <Paper zDepth={5} style={{ display: 'flex' }} >
@@ -40,20 +95,87 @@ const PersonalData = ({ user }) => {
             <div style={{ display: 'flex' }} >
                 <Paper className="listStyle" >
                     <List>
-                        <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Rooms</Subheader>
+                        <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Single Rooms</Subheader>
                         <Divider />
-                        <ListItem primaryText="Room 1" leftIcon={<Remove />} />
-                        <ListItem primaryText="Room 2" leftIcon={<Remove />} />
-                        <ListItem primaryText="Room 3" leftIcon={<Remove />} />
+                            {
+                                Object.keys(singleRooms).map((id) => {
+                                    //console.log('id: ', id)
+                                    // console.log('Singleroom: ', singleRooms[id].members.hasOwnProperty(user.uid))
+                                    if (singleRooms[id].members.hasOwnProperty(user.uid))
+                                        return (
+                                            <NavLink
+                                                to={`/room-list/${id}`}
+                                                style={{ textDecoration: 'none' }}
+                                                key={id}
+                                            >
+                                                <ListItem
+                                                    leftIcon={<Person />}
+                                                >
+                                                    {singleRooms[id].name}
+                                                </ListItem>
+                                            </NavLink>)
+                                    return null
+                                })
+                            }
+                    </List>
+                </Paper>
+                <Paper className="listStyle" >
+                    <List>
+                        <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Group Rooms</Subheader>
+                        <Divider />
+                            { // group room tiene un grupo cuyo miembro sea user ID?  metelo
+                                Object.keys(groupRooms).map((id) => {
+                                    console.log('groupRooms[id].members: ', groupRooms[id].members)
+                                    console.log('userGroups: ', userGroups)
+                                    // console.log('Include: ', Object.keys(groupRooms[id].members).includes())
+                                    // userGroups.includes(groupRooms[id].members)
+                                    let domGroup = null
+                                    userGroups.forEach((element) => {
+                                        //console.log('element: ', Object.keys(groupRooms[id].members).includes(Object.keys(element)[0]))
+                                        if (Object.keys(groupRooms[id].members).includes(Object.keys(element)[0]))
+                                            domGroup = (
+                                                <NavLink
+                                                    to={`/room-list/${id}`}
+                                                    style={{ textDecoration: 'none' }}
+                                                    key={id}
+                                                >
+                                                    <ListItem
+                                                        leftIcon={<Group />}
+                                                    >
+                                                        {groupRooms[id].name}
+                                                    </ListItem>
+                                                </NavLink>)
+                                    })
+                                    return domGroup
+                                })
+                            }
                     </List>
                 </Paper>
                 <Paper className="listStyle" >
                     <List>
                         <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Groups</Subheader>
                         <Divider />
-                        <ListItem primaryText="Group de Mañana" leftIcon={<Remove />} />
-                        <ListItem primaryText="Group de Tarde" leftIcon={<Remove />} />
-                        <ListItem primaryText="Group 2" leftIcon={<Remove />} />
+                            {
+                                Object.keys(groups).map((id) => {
+                                    //console.log('id: ', id)
+                                    //console.log('Groups: ', groups[id].members.hasOwnProperty(user.uid))
+                                    if (groups[id].members.hasOwnProperty(user.uid))
+                                        return (
+                                            <NavLink
+                                                to={`/group-list/${id}`}
+                                                style={{ textDecoration: 'none' }}
+                                                key={id}
+                                            >
+                                                <ListItem
+                                                    leftIcon={<Group />}
+                                                >
+                                                    {groups[id].name}
+                                                </ListItem>
+                                            </NavLink>)
+                                    return null
+                                    
+                                })
+                            }
                     </List>
                 </Paper>
             </div>

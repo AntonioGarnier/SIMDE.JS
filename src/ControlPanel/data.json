@@ -24,13 +24,9 @@
     },
     "Groups": {
         "GROUP_ID": {
+            "name": "Grupo Mañana",
+            "leader": "Id_leader",
             "members": ["Antonio", "Carlos"]
-        }
-    },
-    "task": {
-        "taskID": {
-            "task": "hola",
-            "done": "false"
         }
     },
     "RoomPW": {
@@ -41,7 +37,12 @@
         "ROOM_ID": {
             "name": "Sala de problemas Grupo 1",
             "members": ["Antonio", "Carlos"],
-            "problems": ["Problema1", "Problema2"]
+            "type": "single || group",
+            "problems": {
+                "ID_PROBLEMA": true,
+                "ID_PROBLEMA2": false
+            },
+            "createdAt": "date"
         },
         "ROOM_ID2": {
             "name": "Sala de problemas Grupo 2",
@@ -61,6 +62,16 @@
             "problems": ["Problema2", "Problema3"]
         }
     },
+    "inst": {
+        "INST_ID": {
+            "initMem": "MEM: [40] 2 4 3 5 3 19 28",
+            "finalMem": "memoria final"
+        },
+        "INST_ID2": {
+            "initMem": "memoria inicial",
+            "finalMem": "memoria final"
+        }
+    },
     "problems": {
         "PROBLEM_ID": {
             "name": "Problema numero 1",
@@ -68,11 +79,8 @@
                 "pseudocode": "Pseudocodigo"
             },
             "inst": {
-
-            },
-            "rooms": {
-                "SalaProblemasG1": true,
-                "SalaProblemasG2": false
+                "INST_ID": true,
+                "INST_ID2": false
             }
         },
         "PROBLEM_ID2": {

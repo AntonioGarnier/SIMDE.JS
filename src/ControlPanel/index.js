@@ -1,10 +1,11 @@
+import 'firebase/firestore'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose, bindActionCreators } from 'redux'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import firebase from './Components/FirebaseProvider/firebase'
-import { AnonymousRoutes, LoggedRoutes } from './Routes'
+import { AnonymousRoutes, LoggedRoutes, AdminRoutes } from './Routes'
 import Loading from './Components/Loading'
 import {
     setUser,
@@ -13,6 +14,8 @@ import {
     changePath,
 } from './Actions'
 
+const firestore = firebase.firestore()
+firestore.settings({ timestampsInSnapshots: true })
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
@@ -35,17 +38,29 @@ class Panel extends Component {
         this.props.checkingUser()
         firebase.auth().onAuthStateChanged((user) => {
             if (user) {
-                this.props.setUser({
-                    displayName: user.providerData[0].displayName,
-                    email: user.email,
-                    picture: user.photoURL,
-                    creationTime: user.metadata.creationTime,
-                    lastSignInTime: user.metadata.lastSignInTime,
-                    uid: user.uid,
-                })
+                const  adminRef = firestore.collection('admins').doc(user.uid)
+                adminRef.get().then((doc) => {
+                    let rol = 'student'
+                    console.log('DOC: ', user)
+                    if (doc.exists)
+                        rol = 'admin'
+                    this.props.setUser({
+                        displayName: user.providerData[0].displayName,
+                        email: user.email,
+                        picture: user.photoURL,
+                        creationTime: user.metadata.creationTime,
+                        lastSignInTime: user.metadata.lastSignInTime,
+                        uid: user.uid,
+                        rol,
+                    })
+                    this.props.checkedUser()
+                    this.props.changePath(this.props.location.pathname)
+                }).catch(((error) => console.log('Error when checking user rol: ', error)))
+            } else {
+                this.props.checkedUser()
+                this.props.changePath(this.props.location.pathname)
             }
-            this.props.checkedUser()
-            this.props.changePath(this.props.location.pathname)
+            
         })
     }
 
@@ -60,7 +75,7 @@ class Panel extends Component {
             return <Loading />
         return (
             this.props.user
-                ? <LoggedRoutes />
+                ? this.props.user.rol === 'admin' ? <AdminRoutes /> : <LoggedRoutes />
                 : <AnonymousRoutes />
         )
     }

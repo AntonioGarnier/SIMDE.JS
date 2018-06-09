@@ -3,9 +3,10 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import ControlPanel from '../Components/ControlPanel'
 import PersonalData from '../Components/PersonalData'
 import Welcome from '../Components/Welcome'
+import CreateProblem from '../Components/CreateProblem'
 // import App from '../../Simulator/interface/App'
 
-export default function LoggedRoutes() {
+export default function AdminRoutes() {
     return (
         <ControlPanel>
             <Switch>
@@ -16,6 +17,10 @@ export default function LoggedRoutes() {
                 <Route sensitive path="/room-list/:room" render={() => <h1>ONE ROOM</h1>} />
                 <Route sensitive exact path="/group-list" render={() => <h1>GROUP LIST</h1>} />
                 <Route sensitive path="/group-list/:group" render={() => <h1>ONE GROUP</h1>} />
+                <Route sensitive path="/problem-list" render={() => <h1>PROBLEM LIST</h1>} />
+                <Route sensitive path="/problem-settings" component={CreateProblem} />
+                <Route sensitive path="/room-settings" render={() => <h1>CREATE ROOM</h1>} />
+                <Route sensitive path="/group-settings" render={() => <h1>CREATE GROUP</h1>} />
                 <Route sensitive path="/about" render={() => <h1>ABOUT</h1>} />
                 <Route render={() => <Redirect to="/" />} />
             </Switch>

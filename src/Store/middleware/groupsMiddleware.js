@@ -1,52 +1,50 @@
 import 'firebase/firestore'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
 import {
-    ADD_SINGLE_ROOM,
-    REMOVE_SINGLE_ROOM,
-    UPDATE_SINGLE_ROOM,
+    ADD_GROUP,
+    REMOVE_GROUP,
+    UPDATE_GROUP,
 } from '../../ControlPanel/Constants'
 
 
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
 
-const singleRoomMiddleware = store => next => (action) => {
+const groupsMiddleware = store => next => (action) => {
     switch (action.type) {
-        case ADD_SINGLE_ROOM:
-        case UPDATE_SINGLE_ROOM:
-            let newRoomPwRef
-            let newRoomRef
-            if (action.type === ADD_SINGLE_ROOM) {
+        case ADD_GROUP:
+        case UPDATE_GROUP:
+            let newGroupsPwRef
+            let newGroupsRef
+            if (action.type === ADD_GROUP) {
                 const createdAt = firebase.firestore.FieldValue.serverTimestamp()
-                newRoomRef = firestore.collection('singleRooms').doc()
-                newRoomPwRef = firestore.collection('roomsPw').doc(newRoomRef.id)
-                newRoomRef.set({
+                newGroupsRef = firestore.collection('groups').doc()
+                newGroupsPwRef = firestore.collection('groupsPw').doc(newGroupsRef.id)
+                newGroupsRef.set({
                     name: action.payload.name,
                     members: action.payload.members,
-                    problems: action.payload.problems,
                     createdAt,
                 })
             } else {
-                newRoomRef = firestore.collection('singleRooms').doc(action.payload.id)
-                newRoomPwRef = firestore.collection('roomsPw').doc(action.payload.id)
-                newRoomRef.update({
+                newGroupsRef = firestore.collection('groups').doc(action.payload.id)
+                newGroupsPwRef = firestore.collection('groupsPw').doc(action.payload.id)
+                newGroupsRef.update({
                     name: action.payload.name,
                     members: action.payload.members,
-                    problems: action.payload.problems,
                 })
             }
-            newRoomPwRef.set({
+            newGroupsPwRef.set({
                 password: action.payload.password,
             })
             return next(action)
-        case REMOVE_SINGLE_ROOM:
+        case REMOVE_GROUP:
             firestore
-                .collection('singleRooms')
+                .collection('groups')
                 .doc(action.payload.id)
                 .delete()
                 .catch()
             firestore
-                .collection('roomsPw')
+                .collection('groupsPw')
                 .doc(action.payload.id)
                 .delete()
                 .catch()
@@ -56,4 +54,4 @@ const singleRoomMiddleware = store => next => (action) => {
     }
 }
 
-export default singleRoomMiddleware
+export default groupsMiddleware

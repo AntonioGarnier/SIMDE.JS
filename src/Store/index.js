@@ -7,13 +7,19 @@ import { MACHINE_REGISTER_SIZE, MEMORY_SIZE } from '../Simulator/core/Constants'
 import { saveState, loadState } from '../LocalStorage'
 import { 
     userLogin,
-    singleRoomMiddleware,
-    groupRoomMiddleware,
+    //singleRoomMiddleware,
+    //groupRoomMiddleware,
+    groupsMiddleware,
+    instancesMiddleware,
+    roomMiddleware,
 } from './middleware'
 import {
     fetchingDataEpic,
-    manageSingleRoomEpic,
-    manageGroupRoomEpic,
+    //manageSingleRoomEpic,
+    //manageGroupRoomEpic,
+    groupsEpic,
+    instancesEpic,
+    roomEpic,
 } from './epics'
 
 
@@ -69,11 +75,23 @@ export const initialState = {
     batchResults: {},
     controlPanel: {
         user: null,
+        userList: null,
+        userSingleRooms: null,
+        userGroupRooms: null,
+        userGroups: null,
         actualPath: null,
         toggleSideBar: false,
         isLoading: true,
+        popUp: {
+            open: false,
+            message: null,
+        },
+        rooms: null,
         singleRooms: null,
         groupRooms: null,
+        groups: null,
+        instances: null,
+        problems: null,
     },
 };
 
@@ -92,8 +110,11 @@ const composeEnhancers =
 
 const rootEpic = combineEpics(
     fetchingDataEpic,
-    manageSingleRoomEpic,
-    manageGroupRoomEpic,
+    //manageSingleRoomEpic,
+    //manageGroupRoomEpic,
+    groupsEpic,
+    instancesEpic,
+    roomEpic,
 )
 
 const epicMiddleware = createEpicMiddleware(rootEpic)
@@ -101,8 +122,11 @@ const epicMiddleware = createEpicMiddleware(rootEpic)
 const middleWares = [
     epicMiddleware,
     userLogin,
-    singleRoomMiddleware,
-    groupRoomMiddleware,
+    //singleRoomMiddleware,
+    //groupRoomMiddleware,
+    groupsMiddleware,
+    instancesMiddleware,
+    roomMiddleware,
 ]
 
 const enhancer = composeEnhancers(applyMiddleware(...middleWares))

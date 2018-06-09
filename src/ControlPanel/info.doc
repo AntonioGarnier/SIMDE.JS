@@ -1,0 +1,32 @@
+Al iniciar la aplicacion los listeners se activan, pero no se suscriben aun.
+Deberia hacer un fetch inicial con un GET y cuando ya te logueas que se suscriben los
+listeners, ahi ya escuchas por updates removes or adds.
+Pero el fetch inicial deberia ser un get, porque lo otro lo va  ignorar.
+
+Probar con el ManageSingleRoomEpic: añadir uno mas que haga un get al iniciar la aplicacion 
+
+
+1 - Interfaz sidebar: Opciones generales y luego opciones para administradores. (hecho)
+2 - Definir fetch para cada ruta.
+3 - Get inicial al entrar en la Interfaz (Arreglado, solo uso el listener, lo activo con USER_LOGIN)
+4 - Reducir middleware con llamadas a una funcion generica ***FALTA***
+
+Limitar las consultas a las salas y grupos a un maximo de 10, si ya perteneces a uno y se pasa de 
+ese rango, la tendras en Personal Data ****IMPORTANTE****POR AHORA NO
+
+ROUTAS PARA /ROOM-LIST/ID mostrar ahi la salas
+Solo permitir acceder a las IDs de salas a las que pertenezcan,
+hacer una comprobacion de la ID de la salas: La sala tiene miembros -> members de esa sala 
+has property con el UID del usuario que entro?.
+
+Nota:nav link enviar props
+
+
+
+LISTA DE SALAS: GET TODAS.
+LISTA DE GRUPOS: GET TODAS.
+
+
+// teacher
+LISTA DE PROBLEMAS: GET TODAS.
+

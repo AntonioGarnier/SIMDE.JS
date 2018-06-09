@@ -5,30 +5,63 @@ import FormatListBulleted from 'material-ui/svg-icons/editor/format-list-bullete
 import PlayListAdd from 'material-ui/svg-icons/av/playlist-add'
 
 
-const sideBarElements = [
+export const sideBarElements = [
     {
         name: 'Personal Data',
-        to: '/personalData',
+        to: '/personal-data',
         leftIcon: <Person />,
     },
     {
-        name: 'Problem List',
-        to: '/problemList',
+        name: 'Room List',
+        to: '/room-list',
         leftIcon: <FormatListBulleted />,
+    },
+    {
+        name: 'Group List',
+        to: '/group-list',
+        leftIcon: <FormatListBulleted />,
+    },
+    {
+        name: 'About',
+        to: '/about',
+        leftIcon: <Info />,
+    },
+]
+
+export const sideBarElementsAdmin = [
+    {
+        name: 'Personal Data',
+        to: '/personal-data',
+        leftIcon: <Person />,
     },
     {
         name: 'Room List',
-        to: '/roomList',
+        to: '/room-list',
         leftIcon: <FormatListBulleted />,
     },
     {
-        name: 'Create Problem',
-        to: '/createProblem',
+        name: 'Group List',
+        to: '/group-list',
+        leftIcon: <FormatListBulleted />,
+    },
+    {
+        name: 'Problem List',
+        to: '/problem-list',
+        leftIcon: <FormatListBulleted />,
+    },
+    {
+        name: 'Problem Settings',
+        to: '/problem-settings',
         leftIcon: <PlayListAdd />,
     },
     {
-        name: 'Create Room',
-        to: '/createRoom',
+        name: 'Room Settings',
+        to: '/room-settings',
+        leftIcon: <PlayListAdd />,
+    },
+    {
+        name: 'Group Settings',
+        to: '/group-settings',
         leftIcon: <PlayListAdd />,
     },
     {
@@ -38,4 +71,3 @@ const sideBarElements = [
     },
 ]
 
-export default sideBarElements

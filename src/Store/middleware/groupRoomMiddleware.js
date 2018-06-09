@@ -16,22 +16,25 @@ const groupRoomMiddleware = store => next => (action) => {
         case UPDATE_GROUP_ROOM:
             let newRoomPwRef
             let newRoomRef
-            console.log('first step: ', action.payload)
             if (action.type === ADD_GROUP_ROOM) {
+                const createdAt = firebase.firestore.FieldValue.serverTimestamp()
                 newRoomRef = firestore.collection('groupRooms').doc()
                 newRoomPwRef = firestore.collection('roomsPw').doc(newRoomRef.id)
-                console.log('intermedio ADD step')
+                newRoomRef.set({
+                    name: action.payload.name,
+                    members: action.payload.members,
+                    problems: action.payload.problems,
+                    createdAt,
+                })
             } else {
-                console.log('intermedio UPDATE step')
                 newRoomRef = firestore.collection('groupRooms').doc(action.payload.id)
                 newRoomPwRef = firestore.collection('roomsPw').doc(action.payload.id)
+                newRoomRef.update({
+                    name: action.payload.name,
+                    members: action.payload.members,
+                    problems: action.payload.problems,
+                })
             }
-            console.log('second step')
-            newRoomRef.set({
-                name: action.payload.name,
-                members: action.payload.members,
-                problems: action.payload.problems,
-            })
             newRoomPwRef.set({
                 password: action.payload.password,
             })
