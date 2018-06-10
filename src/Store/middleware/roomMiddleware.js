@@ -25,6 +25,7 @@ const singleRoomMiddleware = store => next => (action) => {
                 name: action.payload.name,
                 members: action.payload.members,
                 problems: action.payload.problems,
+                visibility: action.payload.visibility,
                 type: action.payload.type,
                 createdAt,
             }).catch((errorMessage) => store.dispatch({

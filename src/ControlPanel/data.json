@@ -75,9 +75,8 @@
     "problems": {
         "PROBLEM_ID": {
             "name": "Problema numero 1",
-            "definition": {
-                "pseudocode": "Pseudocodigo"
-            },
+            "description": "asdasd",
+            "pseudocode": "Pseudocodigo",
             "inst": {
                 "INST_ID": true,
                 "INST_ID2": false

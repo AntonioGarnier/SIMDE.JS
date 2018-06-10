@@ -7,7 +7,7 @@ import {
     CLOSE_SIDE_BAR,
     CHECKING_USER,
     CHECKED_USER,
-    ADD_SINGLE_ROOM,
+    ADD_ROOM,
     ADD_GROUP_ROOM,
     UPDATE_SINGLE_ROOM,
     UPDATE_GROUP_ROOM,
@@ -25,17 +25,21 @@ export function changePath(path) {
     }
 }
 
-export function addSingleRoom(room) {
+export function addRoom(room) {
     return {
-        type: ADD_SINGLE_ROOM,
+        type: ADD_ROOM,
         payload: {
-            data: room.data,
-            id: room.id,
+            name: room.name,
+            members: {},
+            problems: room.problems,
+            visibility: room.visibility,
+            type: room.type,
+            password: room.password,
         }
     }
 }
 
-export function addGroupRoom(rooms) {
+/*export function addGroupRoom(rooms) {
     return {
         type: ADD_GROUP_ROOM,
         payload: {
@@ -78,7 +82,7 @@ export function updateGroupRoom(room) {
             room,
         }
     }
-}
+}*/
 
 export function checkingUser() {
     return {

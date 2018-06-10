@@ -90,7 +90,26 @@ export const initialState = {
         groupRooms: {},
         groups: {},
         instances: {},
-        problems: {},
+        problems: {
+            xhsosdjauID: {
+                name: "problema1",
+                description: "problema de testeo guapo",
+                pseudoCode: "pseudo shit here please",
+                instances: {
+                    inst1: true,
+                    inst2: true,
+                },
+            },
+            xksiehtmsiID: {
+                name: "problema2",
+                description: "problema de testeo guapo2",
+                pseudoCode: "pseudo shit here please2",
+                instances: {
+                    inst4: true,
+                    inst5: true,
+                },
+            },
+        },
     },
 };
 

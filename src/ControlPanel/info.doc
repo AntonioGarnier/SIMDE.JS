@@ -30,3 +30,12 @@ LISTA DE GRUPOS: GET TODAS.
 // teacher
 LISTA DE PROBLEMAS: GET TODAS.
 
+TAREA***: 
+ - Borrar las cosas innecesarias de los epics (Los sobrantes tras la refactorizacion)
+ - Continuar con las reglas de seguridad de la base de datos
+ - Implementar lo visual para facilitar la creacion de salas y grupos. **HECHO**
+
+- Si eres alumno solo ves las salas, si eres profesor ademas de las salas, ves dos botones
+- Modular mas los components. Crear un componente que liste las single rooms y otro que liste las 
+group rooms, otro que liste los problemas, otro que liste los grupos.
+Mañana empezar por crear esos listados por separados. Y tratar de mejorar el create room(que es donde me quede)

@@ -163,6 +163,7 @@ export function SuperescalarReducers(state = initialState, action) {
                 name: action.payload.name,
                 members: action.payload.members,
                 type: action.payload.type,
+                visibility: action.payload.visibility,
                 problems: action.payload.problems,
                 createdAt: action.payload.createdAt,
             }}}}
