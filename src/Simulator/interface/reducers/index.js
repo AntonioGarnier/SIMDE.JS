@@ -173,14 +173,9 @@ export function SuperescalarReducers(state = initialState, action) {
         case REMOVE_ALL_ROOMS:
             return { ...state, controlPanel: { ...state.controlPanel, singleRooms: {}, groupRooms: {}}}
         case GOT_REMOVE_ROOM:
-            console.log('ID: ', action.payload.id)
-            console.log('Type: ', action.payload.type)
-            console.log('state: ', state.controlPanel[`${action.payload.type}Rooms`][action.payload.id])
             let items = {}
             Object.keys(state.controlPanel[`${action.payload.type}Rooms`]).forEach((element) => {
-                console.log('element: ', element, ' DISTINTO ENTRA Elemento a borrar: ', action.payload.id)
                 if (element !== action.payload.id) {
-                    console.log('DENTRO IF: ', element, ' DISTINTO ENTRA Elemento a borrar: ', action.payload.id)
                     items[element] = state.controlPanel[`${action.payload.type}Rooms`][element]
                 }
             })

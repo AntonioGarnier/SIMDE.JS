@@ -9,8 +9,7 @@ import Group from 'material-ui/svg-icons/social/group'
 import { List, ListItem } from 'material-ui/List'
 import { NavLink } from 'react-router-dom'
 import { CardHeader } from 'material-ui/Card'
-import { RoomSingleList, RoomGroupList } from '../Lists'
-//import './style.css'
+import CustomList from '../CustomList'
 
 
 const mapStateToProps = (state) => {
@@ -29,20 +28,24 @@ const PersonalData = ({
     groups,
 }) => {
 
-    const userGroups = []
-    for ( var groupId in groups )
-        if (groups[groupId].members.hasOwnProperty(user.uid))
-            userGroups.push(groupId)
-
-    let RoomSingleList = {}
+    const userGroups = {}
+    Object.keys(groups).map((id) => {
+        if (groups[id].members.hasOwnProperty(user.uid))
+            userGroups[id] = groups[id].name
+    })
+    console.log('userGroups: ', userGroups)
+    let userSingleRooms = {}
     Object.keys(singleRooms).map((id) => {
         if (singleRooms[id].members.hasOwnProperty(user.uid))
-            RoomSingleList[id] = singleRooms[id]
+            userSingleRooms[id] = singleRooms[id].name
+    })
 
-    let RoomGroupList = {}
-    Object.keys(singleRooms).map((id) => {
-        if (singleRooms[id].members.hasOwnProperty(user.uid))
-            RoomSingleList[id] = singleRooms[id]
+    let userGroupRooms = {}
+    Object.keys(groupRooms).map((groupRoomId) => {
+        Object.keys(userGroups).map((userGroupId) => {
+            if (groupRooms[groupRoomId].members.hasOwnProperty(userGroupId))
+                userGroupRooms[groupRoomId] = groupRooms[groupRoomId].name
+        })
     })
 
 
@@ -69,40 +72,25 @@ const PersonalData = ({
             </Paper>
             <Divider />
             <div style={{ display: 'flex' }} >
-                <RoomSingleList 
-                    rooms={RoomSingleList}
+                {console.log('userGroupRooms: ', userGroupRooms)}
+                <CustomList
+                    title="Single Rooms"
+                    path="/room-list/"
+                    iconType="single"
+                    itemList={userSingleRooms}
                 />
-                <RoomGroupList 
-
-                
+                <CustomList
+                    title="Group Rooms"
+                    path="/room-list/"
+                    iconType="group"
+                    itemList={userGroupRooms}
                 />
-                <Paper className="listStyle" >
-                    <List>
-                        <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Groups</Subheader>
-                        <Divider />
-                            {
-                                Object.keys(groups).map((id) => {
-                                    //console.log('id: ', id)
-                                    //console.log('Groups: ', groups[id].members.hasOwnProperty(user.uid))
-                                    if (groups[id].members.hasOwnProperty(user.uid))
-                                        return (
-                                            <NavLink
-                                                to={`/group-list/${id}`}
-                                                style={{ textDecoration: 'none' }}
-                                                key={id}
-                                            >
-                                                <ListItem
-                                                    leftIcon={<Group />}
-                                                >
-                                                    {groups[id].name}
-                                                </ListItem>
-                                            </NavLink>)
-                                    return null
-                                    
-                                })
-                            }
-                    </List>
-                </Paper>
+                <CustomList 
+                    title="Groups"
+                    path="/group-list/"
+                    iconType="group"
+                    itemList={userGroups}
+                />
             </div>
         </div>
     )
