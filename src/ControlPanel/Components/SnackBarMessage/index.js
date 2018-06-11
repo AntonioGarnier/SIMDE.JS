@@ -1,0 +1,51 @@
+import React from 'react'
+import Snackbar from 'material-ui/Snackbar'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import {
+    closeSnackBar,
+} from '../../Actions'
+
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({
+        closeSnackBar,
+    }, dispatch)
+}
+
+const mapStateToProps = (state) => {
+    return {
+        snackBarData: state.controlPanel.snackBarData, 
+    }
+}
+
+
+
+const SnackBarMessage = (props) => {
+
+    this.getSnackStyle = () => {
+        switch (props.snackBarData.type) {
+            case 'success':
+                return { backgroundColor: '#69be8b' }
+            case 'warning':
+                return { backgroundColor: '#ee8137' }
+            case 'error':
+                return { backgroundColor: '#bf360d' }
+            default: 
+                return {}    
+        }
+    }
+
+    return (
+        <div>
+            <Snackbar
+                bodyStyle={this.getSnackStyle()}
+                open={props.snackBarData.open}
+                message={props.snackBarData.message ? props.snackBarData.message : ''}
+                autoHideDuration={4000}
+                onRequestClose={props.closeSnackBar}
+            />
+        </div>
+    )
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SnackBarMessage)

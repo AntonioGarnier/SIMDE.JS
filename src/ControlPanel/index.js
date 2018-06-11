@@ -83,6 +83,9 @@ class Panel extends Component {
 
 Panel.propTypes = {
     setUser: PropTypes.func.isRequired,
+    checkingUser: PropTypes.func.isRequired,
+    checkedUser: PropTypes.func.isRequired,
+    changePath: PropTypes.func.isRequired,
     user: PropTypes.any,
 }
 

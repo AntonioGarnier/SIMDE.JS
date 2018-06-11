@@ -2,83 +2,63 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
+import {Tabs, Tab} from 'material-ui/Tabs'
+import SwipeableViews from 'react-swipeable-views'
+import RaisedButton from 'material-ui/RaisedButton';
+import CreateRoom from './CreateRoom'
+import GenericList from '../GenericList'
+import SelectProblems from '../SelectProblems'
 import {
-  Step,
-  Stepper,
-  StepLabel,
-} from 'material-ui/Stepper'
-import Divider from 'material-ui/Divider'
-import Subheader from 'material-ui/Subheader'
-import { List, ListItem } from 'material-ui/List'
-import Paper from 'material-ui/Paper'
-import RaisedButton from 'material-ui/RaisedButton'
-import FlatButton from 'material-ui/FlatButton'
-import ExpandTransition from 'material-ui/internal/ExpandTransition'
-import TextField from 'material-ui/TextField'
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
-import Toggle from 'material-ui/Toggle'
-import Check from 'material-ui/svg-icons/navigation/check'
-import ArrowFordward from 'material-ui/svg-icons/navigation/arrow-forward'
-import Add from 'material-ui/svg-icons/content/add'
-import {
-    addRoom,
-} from '../../Actions/'
+    updateNameRoom,
+    updateProblemsRoom,
+    removeRoom,
+    openSnackBar,
+} from '../../Actions'
+import TextField from 'material-ui/TextField/TextField';
+
+const styles = {
+    headline: {
+        fontSize: 24,
+        paddingTop: 16,
+        marginBottom: 12,
+        fontWeight: 400,
+    },
+    slide: {
+        padding: 10,
+    },
+}
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
-        addRoom,
+        updateNameRoom,
+        updateProblemsRoom,
+        removeRoom,
+        openSnackBar,
     }, dispatch)
 }
 
 const mapStateToProps = (state) => {
     return {
-        user: state.controlPanel.user,
         problems: state.controlPanel.problems,
         singleRooms: state.controlPanel.singleRooms,
         groupRooms: state.controlPanel.groupRooms,
-        groups: state.controlPanel.groups,
     }
 }
-const MAX_STEPS = 3
-
-class CreateRoom extends React.Component {
+class SettingsRoom extends React.Component {
 
     state = {
-        loading: false,
-        finished: false,
-        stepIndex: 0,
-        roomName: '',
-        roomPassword: '',
-        roomType: 'single',
-        roomVisibility: true,
+        slideIndex: 0,
         selectedProblems: [],
+        selectedRoomToUpdateProblem: '',
+        selectedRoomToUpdateName: '',
+        selectedRoomToRemove: '',
+        selectedName: '',
     }
 
-    dummyAsync = (cb) => {
-        this.setState({loading: true}, () => {
-        this.asyncTimer = setTimeout(cb, 500)
+    handleChange = (value) => {
+        this.setState({
+            slideIndex: value,
         })
-    }
-
-    handleNext = () => {
-        const {stepIndex} = this.state
-        if (!this.state.loading) {
-        this.dummyAsync(() => this.setState({
-            loading: false,
-            stepIndex: stepIndex + 1,
-            finished: stepIndex >= MAX_STEPS,
-        }))
-        }
-    }
-
-    handlePrev = () => {
-        const {stepIndex} = this.state
-        if (!this.state.loading) {
-        this.dummyAsync(() => this.setState({
-            loading: false,
-            stepIndex: stepIndex - 1,
-        }))
-        }
     }
 
     handleOnClickSelectedProblem = (problemId) => {
@@ -95,272 +75,224 @@ class CreateRoom extends React.Component {
         })
     }
 
-    handleOnChangeRoomName = (event, value) => {
+    handleOnClickBackToList = () => {
         this.setState({
-            roomName: value,
+            selectedRoomToUpdateProblem: '',
+            selectedRoomToUpdateName: '',
         })
     }
 
-    handleOnChangePassword = (event, value) => {
+    handleOnClickBackToListFromRemove = () => {
         this.setState({
-            roomPassword: value,
+            selectedRoomToRemove: '',
+        })
+    }
+    
+    handleOnChangeName = (event, value) => {
+        this.setState({
+            selectedName: value,
         })
     }
 
-    handleOnChangeRoomType = (event, value) => {
-        this.setState({
-            roomType: value,
-        })
-    }
-
-    handleOnToggleVisibility = (event, value) => {
-        this.setState({
-            roomVisibility: value,
-        })
-    }
-
-    handleCreateRoom = () => {
+    handleOnClickUpdateProblems = () => {
         let problems = {}
         this.state.selectedProblems.forEach((problem) => (
             problems[problem] = true
         ))
-        if (this.state.roomName.length < 3 ||  this.state.roomPassword.length < 3)
-            console.log('ERROR: Could not create the room. Check the room name or password')
+        this.props.updateProblemsRoom(this.state.selectedRoomToUpdateProblem, problems)
+        this.props.openSnackBar('SUCCESS: Room update problems', 'success')
+        this.setState({
+            selectedProblems: [],
+        })
+    }
+
+    handleOnClickUpdateName = () => {
+        if (this.state.selectedName !== '') {
+            this.props.updateNameRoom(this.state.selectedRoomToUpdateName, this.state.selectedName)
+            this.props.openSnackBar('SUCCESS: Room update name!', 'success')
+        }
         else
-            this.props.addRoom({
-                name: this.state.roomName,
-                members: {},
-                problems: problems,
-                visibility: this.state.roomVisibility,
-                type: this.state.roomType,
-                password: this.state.roomPassword,
-            })
+            this.props.openSnackBar('WARNING: Check empty name!', 'warning')
+
     }
 
-    getStepContent(stepIndex) {
-        switch (stepIndex) {
-        case 0:
-            return (
-            <div>
-                <h3>
-                    Add a room name.
-                </h3>
-                <TextField 
-                    style={{marginTop: 0}}
-                    floatingLabelText="Room Name"
-                    onChange={this.handleOnChangeRoomName}
-                />
-            </div>
-            )
-        case 1:
-            return (
-            <div>
-                <h3>
-                    Select which problems will be in the room.
-                </h3>
-                <div style={{ display: 'flex' }} >
-                    <Paper className="listStyle" >
-                        <List>
-                            <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Problems</Subheader>
-                            <Divider />
-                                {
-                                    Object.keys(this.props.problems).map((id) => (
-                                            <ListItem
-                                                key={id}
-                                                disabled={this.state.selectedProblems.includes(id)}
-                                                leftIcon={this.state.selectedProblems.includes(id) ? <Check/> : <Add/>}
-                                                onClick={() => this.handleOnClickProblem(id)}
-                                            >
-                                                {this.props.problems[id].name}
-                                            </ListItem>
-                                    ))
-                                }
-                        </List>
-                    </Paper>
-                    <div>
-                        <ArrowFordward style={{marginTop: '63px'}} />
-                    </div>
-                    <Paper className="listStyle" >
-                        <List>
-                            <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Selected Problems</Subheader>
-                            <Divider />
-                                {
-                                    this.state.selectedProblems.length > 0
-                                    ? this.state.selectedProblems.map(id => (
-                                        <ListItem
-                                            key={id}
-                                            leftIcon={<Check/>}
-                                            onClick={() => this.handleOnClickSelectedProblem(id)}
-                                        >
-                                            {this.props.problems[id].name}
-                                        </ListItem>
-                                    ))
-                                    : null
-                                }
-                        </List>
-                    </Paper>
-                </div>
-            </div>
-            )
-        case 2:
-            return (
-                <div  >
-                    <h3>
-                        Set up the room properties
-                    </h3>
-                    <div style={{ maxWidth: '250px' }} >
-                        <h4>Type:</h4>
-                        <RadioButtonGroup
-                            style={{ marginLeft: '50px' }}
-                            labelPosition="left"
-                            name="shipSpeed"
-                            defaultSelected="single"
-                            onChange={this.handleOnChangeRoomType}
-                        >
-                            <RadioButton
-                                value="single"
-                                label="Single Room"
-                            />
-                            <RadioButton
-                                value="group"
-                                label="Group Room"
-                            />
-                        </RadioButtonGroup>
-                        <Divider style={{marginTop: '15px', marginBottom: '15px'}} />
-                        <Toggle
-                            defaultToggled
-                            label="Visibility"
-                            onToggle={this.handleOnToggleVisibility}
-                        />
-                        <TextField 
-                            style={{marginTop: 0}}
-                            floatingLabelText="Password"
-                            onChange={this.handleOnChangePassword}
-                        />
-                    </div>
-                </div>
-            )
-        case 3:
-            return (
-                <div>
-                    <h2>
-                        Check the room information and click finish if it is all right.
-                    </h2>
-                    <h3 style={{ fontWeight: 'bold' }} >
-                        Room name:
-                    </h3>
-                        <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomName}</p>
-                    <h3 style={{ fontWeight: 'bold' }} >
-                        Room problems:
-                    </h3> 
-                        {
-                            this.state.selectedProblems.length > 0
-                            ? this.state.selectedProblems.map(id => (
-                                <li
-                                    key={id}
-                                    style={{ marginLeft: '15px', marginTop: '10px' }}
-                                >
-                                    {this.props.problems[id].name}
-                                </li>
-                            ))
-                            : 'No se asignaron problemas'             
-                        }
-                    
-                    <h3 style={{ fontWeight: 'bold' }} >
-                        Room type: 
-                    </h3>
-                        <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomType}</p>
-                    <h3 style={{ fontWeight: 'bold' }} >
-                        Room visibility: 
-                    </h3>
-                        <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomVisibility ? 'True' : 'False'}</p>
-                    <h3 style={{ fontWeight: 'bold' }} >
-                        Room password: 
-                    </h3>
-                        <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomPassword}</p>
-                </div>
-            )
-        default:
-            return 'No more steps!'
-        }
+    handleClickRoomToRemove = () => {
+        this.handleOnClickBackToList()
+        this.props.removeRoom(this.state.selectedRoomToRemove)
+        this.props.openSnackBar('SUCCESS: Room remove!', 'success')
     }
 
-    renderContent() {
-        const {finished, stepIndex} = this.state
-        const contentStyle = {margin: '0 16px', overflow: 'hidden'}
+    handleClickToUpdateRoom = (id) => {
+        console.log('id: ', id)
+        this.setState({
+            selectedRoomToUpdateProblem: id,
+            selectedRoomToUpdateName: id,
+        })
+    }
 
-        if (finished) {
-            return (
-                <div style={contentStyle}>
-                    <p>
-                        <a
-                            href="#"
-                            onClick={(event) => {
-                                event.preventDefault()
-                                this.setState({stepIndex: 0, finished: false})
-                            }}
-                        >
-                            Click here
-                        </a> to reset the example.
-                    </p>
-                </div>
-            )
-        }
-
-        return (
-            <div style={contentStyle}>
-                <div style={{marginTop: 24, marginBottom: 12}}>
-                    <FlatButton
-                        label="Back"
-                        disabled={stepIndex === 0}
-                        onClick={this.handlePrev}
-                        style={{marginRight: 12}}
-                    />
-                    <RaisedButton
-                        label={stepIndex === MAX_STEPS ? 'Finish' : 'Next'}
-                        primary={true}
-                        onClick={stepIndex === MAX_STEPS ? this.handleCreateRoom : this.handleNext}
-                    />
-                </div>
-                <div>{this.getStepContent(stepIndex)}</div>
-            </div>
-        )
+    handleClickToRemoveRoom = (id) => {
+        console.log('id: ', id)
+        this.setState({
+            selectedRoomToRemove: id,
+        })
     }
 
     render() {
-        const {loading, stepIndex} = this.state
         return (
-            <div style={{width: '100%', margin: 'auto'}}>
-                <Stepper activeStep={stepIndex}>
-                    <Step>
-                        <StepLabel>Name</StepLabel>
-                    </Step>
-                    <Step>
-                        <StepLabel>Problems</StepLabel>
-                    </Step>
-                    <Step>
-                        <StepLabel>Properties</StepLabel>
-                    </Step>
-                    <Step>
-                        <StepLabel>Overview</StepLabel>
-                    </Step>
-                </Stepper>
-                <ExpandTransition loading={loading} open={true}>
-                    {this.renderContent()}
-                </ExpandTransition>
+        <div>
+            {console.log('SRoom: ', this.props.singleRooms)}
+            {console.log('GRoom: ', this.props.groupRooms)}
+            <Tabs
+                inkBarStyle={{background: 'green', height: '5px' }}
+                onChange={this.handleChange}
+                value={this.state.slideIndex}
+            >
+                <Tab label="Create room" value={0} />
+                <Tab label="Update Name & Problems" value={1} />
+                <Tab label="Remove room" value={2} />
+            </Tabs>
+            <SwipeableViews
+                index={this.state.slideIndex}
+                onChangeIndex={this.handleChange}
+            >
+            <div>
+                <CreateRoom />
             </div>
+            <div style={styles.slide}>
+                {
+                    this.state.selectedRoomToUpdateName === ''
+                    ? (
+                        <div>
+                            <GenericList
+                                generic={this.props.singleRooms}
+                                handleOnClick={this.handleClickToUpdateRoom}
+                            />
+                            <GenericList
+                                generic={this.props.groupRooms}
+                                handleOnClick={this.handleClickToUpdateRoom}
+                            />
+                        </div>
+                    )
+                    : (
+                        <div>
+                            <div>
+                                <RaisedButton 
+                                    style={{ marginRight: '15px' }}
+                                    label="Back"
+                                    onClick={this.handleOnClickBackToList}
+                                />
+                                <RaisedButton
+                                    primary
+                                    label="Update Name"
+                                    onClick={this.handleOnClickUpdateName}
+                                />
+                            <h3>Changing name of room: </h3>
+                            {
+                                this.props.singleRooms[this.state.selectedRoomToUpdateName]
+                                ? this.props.singleRooms[this.state.selectedRoomToUpdateName].name 
+                                : this.props.groupRooms[this.state.selectedRoomToUpdateName].name
+                            }
+                            </div>
+                            <TextField
+                                floatingLabelText="New room name"
+                                onChange={this.handleOnChangeName}
+                            />
+                            <div>
+                                <RaisedButton
+                                    style={{ marginRight: '15px' }}
+                                    label="Back"
+                                    onClick={this.handleOnClickBackToList}
+                                />
+                                <RaisedButton 
+                                    primary
+                                    label="Update Problems"
+                                    onClick={this.handleOnClickUpdateProblems}
+                                />
+                            </div>
+                            <h3>Updating problems of room: </h3>
+                            {
+                                this.props.singleRooms[this.state.selectedRoomToUpdateProblem]
+                                ? this.props.singleRooms[this.state.selectedRoomToUpdateProblem].name 
+                                : this.props.groupRooms[this.state.selectedRoomToUpdateProblem].name
+                            }
+                            <SelectProblems
+                                problems={this.props.problems}
+                                selectedProblems={this.state.selectedProblems}
+                                handleOnClickSelectedProblem={this.handleOnClickSelectedProblem}
+                                handleOnClickProblem={this.handleOnClickProblem}
+                            />
+                        </div>
+                    )
+                }
+            </div>
+            <div style={styles.slide}>
+                <div>
+                {
+                    this.state.selectedRoomToRemove === ''
+                    ? (
+                        <div>
+                            <GenericList
+                                generic={this.props.singleRooms}
+                                handleOnClick={this.handleClickToRemoveRoom}
+                            />
+                            <GenericList
+                                generic={this.props.groupRooms}
+                                handleOnClick={this.handleClickToRemoveRoom}
+                            />
+                        </div>
+                    )
+                    : (
+                        <div>
+                            <div>
+                                <RaisedButton
+                                    style={{ marginRight: '15px' }}
+                                    label="Back"
+                                    onClick={this.handleOnClickBackToListFromRemove}
+                                />
+                                <RaisedButton 
+                                    primary
+                                    label="Remove room"
+                                    onClick={this.handleClickRoomToRemove}
+                                />
+                            </div>
+                            <h3>Remove room: </h3>
+                            {
+                                this.props.singleRooms[this.state.selectedRoomToRemove]
+                                ? this.props.singleRooms[this.state.selectedRoomToRemove].name 
+                                : this.props.groupRooms[this.state.selectedRoomToRemove].name
+                            }
+                        </div>
+                    )
+                }
+                    
+                </div>
+            </div>
+            </SwipeableViews>
+        </div>
         )
     }
 }
 
-CreateRoom.propTypes = {
+SettingsRoom.propTypes = {
+    updateNameRoom: PropTypes.func.isRequired,
+    updateProblemsRoom: PropTypes.func.isRequired,
+    removeRoom: PropTypes.func.isRequired,
+    openSnackBar: PropTypes.func.isRequired,
     problems: PropTypes.objectOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
-            description: PropTypes.string.isRequired,
         }).isRequired,
     ).isRequired,
-    addRoom: PropTypes.func.isRequired,
+    singleRooms: PropTypes.objectOf(
+        PropTypes.shape({
+            name: PropTypes.string.isRequired,
+        }).isRequired,
+    ).isRequired,
+    groupRooms: PropTypes.objectOf(
+        PropTypes.shape({
+            name: PropTypes.string.isRequired,
+        }).isRequired,
+    ).isRequired,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateRoom)
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsRoom)

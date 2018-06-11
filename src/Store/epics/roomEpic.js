@@ -102,7 +102,7 @@ export const roomEpic = action$ =>
                         return {
                             type: GOT_REMOVE_ROOM,
                             payload: {
-                                id: room.id,
+                                id: Object.keys(rooms).shift(),
                                 type: room.type,
                             },
                         }

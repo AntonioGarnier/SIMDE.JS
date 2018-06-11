@@ -9,6 +9,7 @@ import Group from 'material-ui/svg-icons/social/group'
 import { List, ListItem } from 'material-ui/List'
 import { NavLink } from 'react-router-dom'
 import { CardHeader } from 'material-ui/Card'
+import { RoomSingleList, RoomGroupList } from '../Lists'
 //import './style.css'
 
 
@@ -33,6 +34,18 @@ const PersonalData = ({
         if (groups[groupId].members.hasOwnProperty(user.uid))
             userGroups.push(groupId)
 
+    let RoomSingleList = {}
+    Object.keys(singleRooms).map((id) => {
+        if (singleRooms[id].members.hasOwnProperty(user.uid))
+            RoomSingleList[id] = singleRooms[id]
+
+    let RoomGroupList = {}
+    Object.keys(singleRooms).map((id) => {
+        if (singleRooms[id].members.hasOwnProperty(user.uid))
+            RoomSingleList[id] = singleRooms[id]
+    })
+
+
     return (
         <div className="infoStyle" >
             <Paper zDepth={5} style={{ display: 'flex' }} >
@@ -56,62 +69,13 @@ const PersonalData = ({
             </Paper>
             <Divider />
             <div style={{ display: 'flex' }} >
-                <Paper className="listStyle" >
-                    <List>
-                        <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Single Rooms</Subheader>
-                        <Divider />
-                            {
-                                Object.keys(singleRooms).map((id) => {
-                                    if (singleRooms[id].members.hasOwnProperty(user.uid))
-                                        return (
-                                            <NavLink
-                                                to={`/room-list/${id}`}
-                                                style={{ textDecoration: 'none' }}
-                                                key={id}
-                                            >
-                                                <ListItem
-                                                    leftIcon={<Person />}
-                                                >
-                                                    {singleRooms[id].name}
-                                                </ListItem>
-                                            </NavLink>)
-                                    return null
-                                })
-                            }
-                    </List>
-                </Paper>
-                <Paper className="listStyle" >
-                    <List>
-                        <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Group Rooms</Subheader>
-                        <Divider />
-                            { // group room tiene un grupo cuyo miembro sea user ID?  metelo
-                                Object.keys(groupRooms).map((id) => {
-                                    //console.log('groupRooms[id].members: ', groupRooms[id].members)
-                                    //console.log('userGroups: ', userGroups)
-                                    //console.log('Include: ', Object.keys(groupRooms[id].members).includes())
-                                    //userGroups.includes(groupRooms[id].members)
-                                    let domGroup = null
-                                    userGroups.forEach((element) => {
-                                        //console.log('element: ', Object.keys(groupRooms[id].members).includes(Object.keys(element)[0]))
-                                        if (Object.keys(groupRooms[id].members).includes(element))
-                                            domGroup = (
-                                                <NavLink
-                                                    to={`/room-list/${id}`}
-                                                    style={{ textDecoration: 'none' }}
-                                                    key={id}
-                                                >
-                                                    <ListItem
-                                                        leftIcon={<Group />}
-                                                    >
-                                                        {groupRooms[id].name}
-                                                    </ListItem>
-                                                </NavLink>)
-                                    })
-                                    return domGroup
-                                })
-                            }
-                    </List>
-                </Paper>
+                <RoomSingleList 
+                    rooms={RoomSingleList}
+                />
+                <RoomGroupList 
+
+                
+                />
                 <Paper className="listStyle" >
                     <List>
                         <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Groups</Subheader>

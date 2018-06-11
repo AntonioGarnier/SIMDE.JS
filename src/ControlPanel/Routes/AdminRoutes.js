@@ -6,6 +6,7 @@ import Welcome from '../Components/Welcome'
 import CreateProblem from '../Components/CreateProblem'
 import CreateRoom from '../Components/SettingsRoom/CreateRoom'
 import SettingsRoom from '../Components/SettingsRoom'
+import SnackBarMessage from '../Components/SnackBarMessage';
 // import App from '../../Simulator/interface/App'
 
 export default function AdminRoutes() {
@@ -25,14 +26,13 @@ export default function AdminRoutes() {
                 <Route sensitive path="/problem-settings" component={CreateProblem} />
                 /* Room settings routes */
                 <Route sensitive exact path="/room-settings" component={SettingsRoom} />
-                <Route sensitive path="/room-settings/create-room" component={CreateRoom} />
-                <Route sensitive path="/room-settings/modify-room" render={() => <h1>modify Room</h1>} />
                 /* Group settings routes */
                 <Route sensitive path="/group-settings" render={() => <h1>CREATE GROUP</h1>} />
                 /* About routes */
                 <Route sensitive path="/about" render={() => <h1>ABOUT</h1>} />
                 <Route render={() => <Redirect to="/" />} />
             </Switch>
+            <SnackBarMessage/>
         </ControlPanel>
     )
 }

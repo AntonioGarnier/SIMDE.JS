@@ -8,6 +8,11 @@ import {
     CHECKING_USER,
     CHECKED_USER,
     ADD_ROOM,
+    REMOVE_ROOM,
+    UPDATE_NAME_ROOM,
+    UPDATE_PROBLEMS_ROOM,
+    CLOSE_SNACK_BAR,
+    OPEN_SNACK_BAR,
     ADD_GROUP_ROOM,
     UPDATE_SINGLE_ROOM,
     UPDATE_GROUP_ROOM,
@@ -15,6 +20,50 @@ import {
     REMOVE_GROUP_ROOM,
 } from '../Constants'
 
+export function closeSnackBar() {
+    return {
+        type: CLOSE_SNACK_BAR,
+    }
+}
+
+export function openSnackBar(message, type) {
+    return {
+        type: OPEN_SNACK_BAR,
+        payload: {
+            message,
+            type,
+        }
+    }
+}
+
+export function updateProblemsRoom(id, problems) {
+    return {
+        type: UPDATE_PROBLEMS_ROOM,
+        payload: {
+            id,
+            problems,
+        }
+    }
+}
+
+export function updateNameRoom(id, name) {
+    return {
+        type: UPDATE_NAME_ROOM,
+        payload: {
+            id,
+            name,
+        }
+    }
+}
+
+export function removeRoom(id) {
+    return {
+        type: REMOVE_ROOM,
+        payload: {
+            id,
+        }
+    }
+}
 
 export function changePath(path) {
     return {

@@ -1,6 +1,10 @@
 // Action Init
 export const INITIALIZE_APP = 'INITIALIZE_APP'
 
+// Action SnackBar
+export const CLOSE_SNACK_BAR = 'CLOSE_SNACK_BAR'
+export const OPEN_SNACK_BAR = 'OPEN_SNACK_BAR'
+
 // Action errors
 export const ERROR_POPUP_OPEN = 'ERROR_POPUP_OPEN'
 

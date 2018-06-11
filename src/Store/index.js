@@ -86,6 +86,11 @@ export const initialState = {
             open: false,
             message: '',
         },
+        snackBarData: {
+            open: false,
+            message: '',
+            type: '',
+        },
         singleRooms: {},
         groupRooms: {},
         groups: {},

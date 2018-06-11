@@ -37,12 +37,15 @@ import {
     REMOVE_ALL_INSTANCES,
     GOT_REMOVE_INSTANCE,
     GOT_UPDATE_INSTANCE,
+    OPEN_SNACK_BAR,
+    CLOSE_SNACK_BAR,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
 
 export const MAX_HISTORY_SIZE = 10;
 export function SuperescalarReducers(state = initialState, action) {
+    let newState
     switch (action.type) {
         case NEXT_PREFETCH_CYCLE:
             return (state = Object.assign({}, state, { prefetchUnit: action.value }));
@@ -130,7 +133,7 @@ export function SuperescalarReducers(state = initialState, action) {
                     }
                 ].slice(-MAX_HISTORY_SIZE) }));
         case COLOR_CELL:
-            let newState = Object.assign({}, state);
+            newState = Object.assign({}, state);
             newState.history = colorHistoryInstruction(newState.history, action.value[0], action.value[1]);
             return newState;
         case TAKE_HISTORY:
@@ -168,10 +171,20 @@ export function SuperescalarReducers(state = initialState, action) {
                 createdAt: action.payload.createdAt,
             }}}}
         case REMOVE_ALL_ROOMS:
-            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: null, groupRooms: null}}
+            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: {}, groupRooms: {}}}
         case GOT_REMOVE_ROOM:
-            delete state.controlPanel[`${action.payload.type}Rooms`][action.payload.id]
-            return state
+            console.log('ID: ', action.payload.id)
+            console.log('Type: ', action.payload.type)
+            console.log('state: ', state.controlPanel[`${action.payload.type}Rooms`][action.payload.id])
+            let items = {}
+            Object.keys(state.controlPanel[`${action.payload.type}Rooms`]).forEach((element) => {
+                console.log('element: ', element, ' DISTINTO ENTRA Elemento a borrar: ', action.payload.id)
+                if (element !== action.payload.id) {
+                    console.log('DENTRO IF: ', element, ' DISTINTO ENTRA Elemento a borrar: ', action.payload.id)
+                    items[element] = state.controlPanel[`${action.payload.type}Rooms`][element]
+                }
+            })
+            return { ...state, controlPanel: { ...state.controlPanel, [`${action.payload.type}Rooms`]: items}}
             /*case FETCH_ALL_SINGLE_ROOMS:
             return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload}}
         case GOT_UPDATE_SINGLE_ROOM:
@@ -209,7 +222,7 @@ export function SuperescalarReducers(state = initialState, action) {
                 createdAt: action.payload.createdAt,
             }}}}
         case REMOVE_ALL_GROUPS:
-            return { ...state, controlPanel: { ...state.controlPanel, groups: null}}
+            return { ...state, controlPanel: { ...state.controlPanel, groups: {}}}
         case GOT_REMOVE_GROUP:
             delete state.controlPanel.groups[action.payload.id]
             return state
@@ -224,10 +237,18 @@ export function SuperescalarReducers(state = initialState, action) {
                 createdAt: action.payload.createdAt,
             }}}}
         case REMOVE_ALL_INSTANCES:
-            return { ...state, controlPanel: { ...state.controlPanel, instances: null}}
+            return { ...state, controlPanel: { ...state.controlPanel, instances: {}}}
         case GOT_REMOVE_INSTANCE:
             delete state.controlPanel.instances[action.payload.id]
             return state
+        case OPEN_SNACK_BAR:
+            return { ...state, controlPanel: { 
+                ...state.controlPanel, snackBarData: {
+                     ...state.controlPanel.snackBarData, open: true, message: action.payload.message, type: action.payload.type}}}
+        case CLOSE_SNACK_BAR:
+            return { ...state, controlPanel: { 
+                ...state.controlPanel, snackBarData: {
+                     ...state.controlPanel.snackBarData, open: false}}}
         default:
             return state
     }
