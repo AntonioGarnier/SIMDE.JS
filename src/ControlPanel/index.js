@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import firebase from './Components/FirebaseProvider/firebase'
 import { AnonymousRoutes, LoggedRoutes, AdminRoutes } from './Routes'
 import Loading from './Components/Loading'
+import SnackBarMessage from './Components/SnackBarMessage'
 import {
     setUser,
     checkingUser,
@@ -41,7 +42,6 @@ class Panel extends Component {
                 const  adminRef = firestore.collection('admins').doc(user.uid)
                 adminRef.get().then((doc) => {
                     let rol = 'student'
-                    // console.log('DOC: ', user)
                     if (doc.exists)
                         rol = 'admin'
                     this.props.setUser({
@@ -74,9 +74,14 @@ class Panel extends Component {
         if (this.props.isLoading)
             return <Loading />
         return (
-            this.props.user
-                ? this.props.user.rol === 'admin' ? <AdminRoutes /> : <LoggedRoutes />
-                : <AnonymousRoutes />
+            <div style={{ height: '100%' }} >
+                {
+                    this.props.user
+                        ? this.props.user.rol === 'admin' ? <AdminRoutes /> : <LoggedRoutes />
+                        : <AnonymousRoutes />
+                }
+                <SnackBarMessage/>
+            </div>
         )
     }
 }

@@ -29,7 +29,8 @@
     "redux-observable": "^0.18.0",
     "redux-thunk": "^2.2.0",
     "rxjs": "^6.2.0",
-    "rxjs-compat": "^6.2.0"
+    "rxjs-compat": "^6.2.0",
+    "throttle-debounce": "^2.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

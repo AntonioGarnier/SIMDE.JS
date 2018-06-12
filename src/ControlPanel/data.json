@@ -64,12 +64,22 @@
     },
     "inst": {
         "INST_ID": {
-            "initMem": "MEM: [40] 2 4 3 5 3 19 28",
-            "finalMem": "memoria final"
+            "name": "inst1",
+            "initGPR": "[20] 6 6 7 6 5 6 3 2 1",
+            "initFPR": "[30] 8 1 2 5 5 4 3 2 1",
+            "initMEM": "[40] 8 8 7 6 5 4 3 2 1",
+            "finalGPR": "[20] 6 6 7 6 5 6 3 2 1",
+            "finalFPR": "[30] 8 1 2 5 5 4 3 2 1",
+            "finalMEM": "[40] 8 8 7 6 5 4 3 2 1"
         },
         "INST_ID2": {
-            "initMem": "memoria inicial",
-            "finalMem": "memoria final"
+            "name": "inst2",
+            "initGPR": "[20] 6 6 7 6 5 6 3 2 1",
+            "initFPR": "[30] 8 1 2 5 5 4 3 2 1",
+            "initMEM": "[40] 8 8 7 6 5 4 3 2 1",
+            "finalGPR": "[20] 6 6 7 6 5 6 3 2 1",
+            "finalFPR": "[30] 8 1 2 5 5 4 3 2 1",
+            "finalMEM": "[40] 8 8 7 6 5 4 3 2 1"
         }
     },
     "problems": {

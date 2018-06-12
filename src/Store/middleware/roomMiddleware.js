@@ -13,7 +13,7 @@ import {
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
 
-const singleRoomMiddleware = store => next => (action) => {
+const roomMiddleware = store => next => (action) => {
     switch (action.type) {
         case ADD_ROOM:
             let newRoomPwRef
@@ -122,7 +122,7 @@ const singleRoomMiddleware = store => next => (action) => {
     }
 }
 
-export default singleRoomMiddleware
+export default roomMiddleware
 /*
 {
     type: 'JOIN_ROOM',

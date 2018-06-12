@@ -1,5 +1,4 @@
 import React from 'react'
-import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
 import Divider from 'material-ui/Divider'

@@ -12,23 +12,13 @@ import {
     CHECKING_USER,
     CHECKED_USER,
     CHANGE_PATH,
-    FETCH_ALL_SINGLE_ROOMS,
-    GOT_SINGLE_ROOM,
-    GOT_UPDATE_SINGLE_ROOM,
-    REMOVE_ALL_SINGLE_ROOMS,
-    GOT_REMOVE_SINGLE_ROOM,
-    FETCH_ALL_GROUP_ROOMS,
-    GOT_GROUP_ROOM,
-    GOT_UPDATE_GROUP_ROOM,
-    REMOVE_ALL_GROUP_ROOMS,
-    GOT_REMOVE_GROUP_ROOM,
     FETCH_ALL_ROOMS,
     GOT_ADD_ROOM,
     REMOVE_ALL_ROOMS,
     GOT_REMOVE_ROOM,
     GOT_UPDATE_ROOM,
     FETCH_ALL_GROUPS,
-    GOT_GROUP,
+    GOT_ADD_GROUP,
     REMOVE_ALL_GROUPS,
     GOT_REMOVE_GROUP,
     GOT_UPDATE_GROUP,
@@ -194,7 +184,7 @@ export function SuperescalarReducers(state = initialState, action) {
         case FETCH_ALL_GROUP_ROOMS:
             return { ...state, controlPanel: { ...state.controlPanel, groupRooms: action.payload}}
         case GOT_UPDATE_GROUP_ROOM:
-        case GOT_GROUP_ROOM:
+        case GOT_ADD_GROUP_ROOM:
             return {...state, controlPanel: { ...state.controlPanel, groupRooms: { ...state.controlPanel.groupRooms, [action.payload.id]: {
                 name: action.payload.name,
                 members: action.payload.members,
@@ -209,7 +199,7 @@ export function SuperescalarReducers(state = initialState, action) {
         case FETCH_ALL_GROUPS:
             return { ...state, controlPanel: { ...state.controlPanel, groups: action.payload.groups, idGroups: Object.keys(action.payload.groups)}}
         case GOT_UPDATE_GROUP:
-        case GOT_GROUP:
+        case GOT_ADD_GROUP:
             return { ...state, controlPanel: { ...state.controlPanel, groups: { ...state.controlPanel.groups, [action.payload.id]: {
                 name: action.payload.name,
                 members: action.payload.members,

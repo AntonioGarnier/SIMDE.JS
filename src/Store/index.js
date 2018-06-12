@@ -7,19 +7,17 @@ import { MACHINE_REGISTER_SIZE, MEMORY_SIZE } from '../Simulator/core/Constants'
 import { saveState, loadState } from '../LocalStorage'
 import { 
     userLogin,
-    //singleRoomMiddleware,
-    //groupRoomMiddleware,
     groupsMiddleware,
     instancesMiddleware,
     roomMiddleware,
+    problemsMiddleware,
 } from './middleware'
 import {
     fetchingDataEpic,
-    //manageSingleRoomEpic,
-    //manageGroupRoomEpic,
     groupsEpic,
     instancesEpic,
     roomEpic,
+    problemsEpic,
 } from './epics'
 
 
@@ -74,7 +72,7 @@ export const initialState = {
     isBatchResultsModalOpen: false,
     batchResults: {},
     controlPanel: {
-        user: {},
+        user: null,
         userList: {},
         idSingleRooms: [],
         idGroupRooms: [],
@@ -94,27 +92,19 @@ export const initialState = {
         singleRooms: {},
         groupRooms: {},
         groups: {},
-        instances: {},
-        problems: {
-            xhsosdjauID: {
-                name: "problema1",
-                description: "problema de testeo guapo",
-                pseudoCode: "pseudo shit here please",
-                instances: {
-                    inst1: true,
-                    inst2: true,
-                },
+        instances: {
+            INST_ID: {
+                name: "Instancia 1",
+                initMem: "MEM: [40] 2 4 3 5 3 19 28",
+                finalMem: "memoria final"
             },
-            xksiehtmsiID: {
-                name: "problema2",
-                description: "problema de testeo guapo2",
-                pseudoCode: "pseudo shit here please2",
-                instances: {
-                    inst4: true,
-                    inst5: true,
-                },
-            },
+            INST_ID2: {
+                name: "Instancia 2",
+                initMem: "memoria inicial",
+                finalMem: "memoria final"
+            }
         },
+        problems: {},
     },
 };
 
@@ -133,11 +123,10 @@ const composeEnhancers =
 
 const rootEpic = combineEpics(
     fetchingDataEpic,
-    //manageSingleRoomEpic,
-    //manageGroupRoomEpic,
     groupsEpic,
     instancesEpic,
     roomEpic,
+    problemsEpic,
 )
 
 const epicMiddleware = createEpicMiddleware(rootEpic)
@@ -145,11 +134,10 @@ const epicMiddleware = createEpicMiddleware(rootEpic)
 const middleWares = [
     epicMiddleware,
     userLogin,
-    //singleRoomMiddleware,
-    //groupRoomMiddleware,
     groupsMiddleware,
     instancesMiddleware,
     roomMiddleware,
+    problemsMiddleware,
 ]
 
 const enhancer = composeEnhancers(applyMiddleware(...middleWares))

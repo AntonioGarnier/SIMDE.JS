@@ -13,11 +13,10 @@ import {
     UPDATE_PROBLEMS_ROOM,
     CLOSE_SNACK_BAR,
     OPEN_SNACK_BAR,
-    ADD_GROUP_ROOM,
-    UPDATE_SINGLE_ROOM,
-    UPDATE_GROUP_ROOM,
-    REMOVE_SINGLE_ROOM,
-    REMOVE_GROUP_ROOM,
+    ADD_PROBLEM,
+    UPDATE_INSTANCES_PROBLEM,
+    UPDATE_NAME_PROBLEM,
+    REMOVE_PROBLEM,
 } from '../Constants'
 
 export function closeSnackBar() {
@@ -32,6 +31,46 @@ export function openSnackBar(message, type) {
         payload: {
             message,
             type,
+        }
+    }
+}
+
+export function updateInstancesProblem(id, instances) {
+    return {
+        type: UPDATE_INSTANCES_PROBLEM,
+        payload: {
+            id,
+            instances,
+        }
+    }
+}
+
+export function updateNameProblem(id, name) {
+    return {
+        type: UPDATE_NAME_PROBLEM,
+        payload: {
+            id,
+            name,
+        }
+    }
+}
+
+export function removeProblem(id) {
+    return {
+        type: REMOVE_PROBLEM,
+        payload: {
+            id,
+        }
+    }
+}
+
+export function addProblem(problem) {
+    return {
+        type: ADD_PROBLEM,
+        payload: {
+            name: problem.name,
+            instances: problem.instances,
+            definition: problem.definition,
         }
     }
 }
@@ -65,15 +104,6 @@ export function removeRoom(id) {
     }
 }
 
-export function changePath(path) {
-    return {
-        type: CHANGE_PATH,
-        payload: {
-            path,
-        }
-    }
-}
-
 export function addRoom(room) {
     return {
         type: ADD_ROOM,
@@ -88,6 +118,14 @@ export function addRoom(room) {
     }
 }
 
+export function changePath(path) {
+    return {
+        type: CHANGE_PATH,
+        payload: {
+            path,
+        }
+    }
+}
 /*export function addGroupRoom(rooms) {
     return {
         type: ADD_GROUP_ROOM,

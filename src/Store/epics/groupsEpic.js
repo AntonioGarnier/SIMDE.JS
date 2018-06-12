@@ -11,7 +11,7 @@ import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
 import {
     FETCHING_GROUPS,
     FETCH_ALL_GROUPS,
-    GOT_GROUP,
+    GOT_ADD_GROUP,
     REMOVE_ALL_GROUPS,
     GOT_REMOVE_GROUP,
     GOT_UPDATE_GROUP,
@@ -66,7 +66,7 @@ export const groupsEpic = action$ =>
                         }
                     const group = Object.values(groups).shift()
                     return {
-                        type: GOT_GROUP,
+                        type: GOT_ADD_GROUP,
                         payload: {
                             name: group.name,
                             id: Object.keys(groups).shift(),

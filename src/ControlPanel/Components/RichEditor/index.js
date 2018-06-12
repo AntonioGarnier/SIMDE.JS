@@ -9,11 +9,11 @@ class RichEditor extends Component {
     static propTypes = {
         readOnly: PropTypes.bool,
         hideToolbar: PropTypes.bool,
+        handleChange: PropTypes.func,
         content: PropTypes.string,
     }
 
     state = {
-        text: initialValue,
         showToolbar: {
             formula: true,
             syntax: true,
@@ -34,17 +34,13 @@ class RichEditor extends Component {
         },
     }
 
-    handleChange = (value) => {
-        this.setState({ text: value })
-    }
-
     render() {
         return (
             <ReactQuill
-                style={{ width: '100%', height: '350px' }}
-                defaultValue={this.props.content}
-                value={this.state.text}
-                onChange={this.handleChange}
+                style={{ width: '100%'}}
+                defaultValue={initialValue}
+                value={this.props.content}
+                onChange={this.props.handleChange}
                 modules={this.props.hideToolbar ? this.state.noShowToolbar : this.state.showToolbar}
                 readOnly={this.props.readOnly}
             />
@@ -56,6 +52,7 @@ RichEditor.defaultProps = {
     readOnly: false,
     hideToolbar: false,
     content: '',
+    handleChange: () => {},
 }
 
 export default RichEditor

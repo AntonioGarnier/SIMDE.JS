@@ -7,11 +7,11 @@ import SwipeableViews from 'react-swipeable-views'
 import RaisedButton from 'material-ui/RaisedButton';
 import CreateProblem from './CreateProblem'
 import GenericList from '../GenericList'
-import SelectProblems from '../SelectProblems'
+import SelectInstances from '../SelectInstances'
 import {
-    updateNameRoom,
-    updateProblemsRoom,
-    removeRoom,
+    updateNameProblem,
+    updateInstancesProblem,
+    removeProblem,
     openSnackBar,
 } from '../../Actions'
 import TextField from 'material-ui/TextField/TextField';
@@ -30,9 +30,9 @@ const styles = {
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
-        updateNameRoom,
-        updateProblemsRoom,
-        removeRoom,
+        updateNameProblem,
+        updateInstancesProblem,
+        removeProblem,
         openSnackBar,
     }, dispatch)
 }
@@ -40,18 +40,17 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
     return {
         problems: state.controlPanel.problems,
-        singleRooms: state.controlPanel.singleRooms,
-        groupRooms: state.controlPanel.groupRooms,
+        instances: state.controlPanel.instances,
     }
 }
 class SettingsProblem extends React.Component {
 
     state = {
         slideIndex: 0,
-        selectedProblems: [],
-        selectedRoomToUpdateProblem: '',
-        selectedRoomToUpdateName: '',
-        selectedRoomToRemove: '',
+        selectedInstances: [],
+        selectedProblemToUpdateInstance: '',
+        selectedProblemToUpdateName: '',
+        selectedProblemToRemove: '',
         selectedName: '',
     }
 
@@ -61,30 +60,30 @@ class SettingsProblem extends React.Component {
         })
     }
 
-    handleOnClickSelectedProblem = (problemId) => {
+    handleOnClickSelectedInstance = (instanceId) => {
         this.setState({
-            selectedProblems: this.state.selectedProblems.filter(id => (
-                problemId !== id
+            selectedInstances: this.state.selectedInstances.filter(id => (
+                instanceId !== id
             ))
         })
     }
 
-    handleOnClickProblem = (problemId) => {
+    handleOnClickInstance = (instanceId) => {
         this.setState({
-            selectedProblems: this.state.selectedProblems.concat([problemId])
+            selectedInstances: this.state.selectedInstances.concat([instanceId])
         })
     }
 
     handleOnClickBackToList = () => {
         this.setState({
-            selectedRoomToUpdateProblem: '',
-            selectedRoomToUpdateName: '',
+            selectedProblemToUpdateInstance: '',
+            selectedProblemToUpdateName: '',
         })
     }
 
     handleOnClickBackToListFromRemove = () => {
         this.setState({
-            selectedRoomToRemove: '',
+            selectedProblemToRemove: '',
         })
     }
     
@@ -94,46 +93,43 @@ class SettingsProblem extends React.Component {
         })
     }
 
-    handleOnClickUpdateProblems = () => {
-        let problems = {}
-        this.state.selectedProblems.forEach((problem) => (
-            problems[problem] = true
+    handleOnClickUpdateInstances = () => {
+        let instances = {}
+        this.state.selectedInstances.forEach((instance) => (
+            instances[instance] = true
         ))
-        this.props.updateProblemsRoom(this.state.selectedRoomToUpdateProblem, problems)
-        this.props.openSnackBar('SUCCESS: Room update problems', 'success')
+        this.props.updateInstancesRoom(this.state.selectedProblemToUpdateInstance, instances)
+        this.props.openSnackBar('SUCCESS: Problem instances updated!', 'success')
         this.setState({
-            selectedProblems: [],
+            selectedInstances: [],
         })
     }
-
+    //ACtion: updateNameProblem, removeProblem
     handleOnClickUpdateName = () => {
         if (this.state.selectedName !== '') {
-            this.props.updateNameRoom(this.state.selectedRoomToUpdateName, this.state.selectedName)
-            this.props.openSnackBar('SUCCESS: Room update name!', 'success')
+            this.props.updateNameProblem(this.state.selectedProblemToUpdateName, this.state.selectedName)
+            this.props.openSnackBar('SUCCESS: Problem name updated!', 'success')
         }
         else
             this.props.openSnackBar('WARNING: Check empty name!', 'warning')
-
     }
 
-    handleClickRoomToRemove = () => {
+    handleClickProblemToRemove = () => {
         this.handleOnClickBackToList()
-        this.props.removeRoom(this.state.selectedRoomToRemove)
-        this.props.openSnackBar('SUCCESS: Room remove!', 'success')
+        this.props.removeProblem(this.state.selectedProblemToRemove)
+        this.props.openSnackBar('SUCCESS: Problem removed!', 'success')
     }
 
-    handleClickToUpdateRoom = (id) => {
-        console.log('id: ', id)
+    handleClickToUpdateProblem = (id) => {
         this.setState({
-            selectedRoomToUpdateProblem: id,
-            selectedRoomToUpdateName: id,
+            selectedProblemToUpdateInstance: id,
+            selectedProblemToUpdateName: id,
         })
     }
 
-    handleClickToRemoveRoom = (id) => {
-        console.log('id: ', id)
+    handleClickToRemoveProblem = (id) => {
         this.setState({
-            selectedRoomToRemove: id,
+            selectedProblemToRemove: id,
         })
     }
 
@@ -158,18 +154,12 @@ class SettingsProblem extends React.Component {
             </div>
             <div style={styles.slide}>
                 {
-                    this.state.selectedRoomToUpdateName === ''
+                    this.state.selectedProblemToUpdateName === ''
                     ? (
-                        <div>
-                            <GenericList
-                                generic={this.props.singleRooms}
-                                handleOnClick={this.handleClickToUpdateRoom}
-                            />
-                            <GenericList
-                                generic={this.props.groupRooms}
-                                handleOnClick={this.handleClickToUpdateRoom}
-                            />
-                        </div>
+                        <GenericList
+                            generic={this.props.problems}
+                            handleOnClick={this.handleClickToUpdateProblem}
+                        />
                     )
                     : (
                         <div>
@@ -184,15 +174,11 @@ class SettingsProblem extends React.Component {
                                     label="Update Name"
                                     onClick={this.handleOnClickUpdateName}
                                 />
-                            <h3>Changing name of room: </h3>
-                            {
-                                this.props.singleRooms[this.state.selectedRoomToUpdateName]
-                                ? this.props.singleRooms[this.state.selectedRoomToUpdateName].name 
-                                : this.props.groupRooms[this.state.selectedRoomToUpdateName].name
-                            }
+                            <h3>Changing name of problem: </h3>
+                            { this.props.problems[this.state.selectedProblemToUpdateName].name }
                             </div>
                             <TextField
-                                floatingLabelText="New room name"
+                                floatingLabelText="New problem name"
                                 onChange={this.handleOnChangeName}
                             />
                             <div>
@@ -203,21 +189,17 @@ class SettingsProblem extends React.Component {
                                 />
                                 <RaisedButton 
                                     primary
-                                    label="Update Problems"
-                                    onClick={this.handleOnClickUpdateProblems}
+                                    label="Update Instances"
+                                    onClick={this.handleOnClickUpdateInstances}
                                 />
                             </div>
-                            <h3>Updating problems of room: </h3>
-                            {
-                                this.props.singleRooms[this.state.selectedRoomToUpdateProblem]
-                                ? this.props.singleRooms[this.state.selectedRoomToUpdateProblem].name 
-                                : this.props.groupRooms[this.state.selectedRoomToUpdateProblem].name
-                            }
-                            <SelectProblems
-                                problems={this.props.problems}
-                                selectedProblems={this.state.selectedProblems}
-                                handleOnClickSelectedProblem={this.handleOnClickSelectedProblem}
-                                handleOnClickProblem={this.handleOnClickProblem}
+                            <h3>Updating instances of room: </h3>
+                            { this.props.problems[this.state.selectedProblemToUpdateInstance].name }
+                            <SelectInstances
+                                instances={this.props.instances}
+                                selectedInstances={this.state.selectedInstances}
+                                handleOnClickSelectedInstance={this.handleOnClickSelectedInstance}
+                                handleOnClickInstance={this.handleOnClickInstance}
                             />
                         </div>
                     )
@@ -226,18 +208,12 @@ class SettingsProblem extends React.Component {
             <div style={styles.slide}>
                 <div>
                 {
-                    this.state.selectedRoomToRemove === ''
+                    this.state.selectedProblemToRemove === ''
                     ? (
-                        <div>
-                            <GenericList
-                                generic={this.props.singleRooms}
-                                handleOnClick={this.handleClickToRemoveRoom}
-                            />
-                            <GenericList
-                                generic={this.props.groupRooms}
-                                handleOnClick={this.handleClickToRemoveRoom}
-                            />
-                        </div>
+                        <GenericList
+                            generic={this.props.problems}
+                            handleOnClick={this.handleClickToRemoveProblem}
+                        />
                     )
                     : (
                         <div>
@@ -249,20 +225,15 @@ class SettingsProblem extends React.Component {
                                 />
                                 <RaisedButton 
                                     primary
-                                    label="Remove room"
-                                    onClick={this.handleClickRoomToRemove}
+                                    label="Remove problem"
+                                    onClick={this.handleClickProblemToRemove}
                                 />
                             </div>
-                            <h3>Remove room: </h3>
-                            {
-                                this.props.singleRooms[this.state.selectedRoomToRemove]
-                                ? this.props.singleRooms[this.state.selectedRoomToRemove].name 
-                                : this.props.groupRooms[this.state.selectedRoomToRemove].name
-                            }
+                            <h3>Remove problem: </h3>
+                            { this.props.problems[this.state.selectedProblemToRemove].name }
                         </div>
                     )
                 }
-                    
                 </div>
             </div>
             </SwipeableViews>
@@ -272,21 +243,16 @@ class SettingsProblem extends React.Component {
 }
 
 SettingsProblem.propTypes = {
-    updateNameRoom: PropTypes.func.isRequired,
-    updateProblemsRoom: PropTypes.func.isRequired,
-    removeRoom: PropTypes.func.isRequired,
+    updateNameProblem: PropTypes.func.isRequired,
+    updateInstancesProblem: PropTypes.func.isRequired,
+    removeProblem: PropTypes.func.isRequired,
     openSnackBar: PropTypes.func.isRequired,
     problems: PropTypes.objectOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
         }).isRequired,
     ).isRequired,
-    singleRooms: PropTypes.objectOf(
-        PropTypes.shape({
-            name: PropTypes.string.isRequired,
-        }).isRequired,
-    ).isRequired,
-    groupRooms: PropTypes.objectOf(
+    instances: PropTypes.objectOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
         }).isRequired,

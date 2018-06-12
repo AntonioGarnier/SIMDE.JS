@@ -6,15 +6,29 @@ import {
     USER_LOGGING_IN,
     USER_LOGOUT,
     USER_LOGIN,
+    OPEN_SNACK_BAR,
 } from '../../ControlPanel/Constants'
-import { subscribeRoom, listenRoom } from '../epics'
-import { subscribeSingleRoom, listenSingleRoom } from '../epics'
-import { subscribeGroupRoom, listenGroupRoom } from '../epics'
-import { subscribeGroups, listenGroups } from '../epics'
-import { subscribeInstances, listenInstances } from '../epics'
+import { 
+    subscribeRoom,
+    listenRoom,
+    subscribeGroups,
+    listenGroups,
+    subscribeInstances,
+    listenInstances,
+    subscribeProblem,
+    listenProblem,
+ } from '../epics'
 
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
+
+const unsubscribe = {
+    type: OPEN_SNACK_BAR,
+    payload: {
+        message: 'SUCCESS: Logged out. Stop listening from database',
+        type: 'success',
+    }
+}
 
 const userLogin = store => next => (action) => {
     switch (action.type) {
@@ -34,13 +48,17 @@ const userLogin = store => next => (action) => {
             userRef.set({
                 name: action.payload.displayName,
                 rol: action.payload.rol,
+                picture: action.payload.picture,
                 connected: true,
             })
-            listenRoom.onSnapshot(subscribeRoom())
-            //listenSingleRoom.onSnapshot(subscribeSingleRoom())
-            //listenGroupRoom.onSnapshot(subscribeGroupRoom())
-            listenGroups.onSnapshot(subscribeGroups())
-            listenInstances.onSnapshot(subscribeInstances())
+            listenRoom
+                .onSnapshot(subscribeRoom(),() => {store.dispatch(unsubscribe)})
+            listenGroups
+                .onSnapshot(subscribeGroups(),() => {store.dispatch(unsubscribe)})
+            listenInstances
+                .onSnapshot(subscribeInstances(),() => {store.dispatch(unsubscribe)})
+            listenProblem
+                .onSnapshot(subscribeProblem(),() => {store.dispatch(unsubscribe)})
             return next(action)
         default:
             return next(action)

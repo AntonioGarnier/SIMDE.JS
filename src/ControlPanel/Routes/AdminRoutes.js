@@ -7,7 +7,6 @@ import SettingsRoom from '../Components/SettingsRoom'
 import SettingsProblem from '../Components/SettingsProblem'
 import RoomList from '../Components/RoomList'
 import GroupList from '../Components/GroupList'
-import SnackBarMessage from '../Components/SnackBarMessage';
 
 export default function AdminRoutes() {
     return (
@@ -27,7 +26,6 @@ export default function AdminRoutes() {
                 <Route sensitive path="/about" render={() => <h1>ABOUT</h1>} />
                 <Route render={() => <Redirect to="/" />} />
             </Switch>
-            <SnackBarMessage/>
         </ControlPanel>
     )
 }

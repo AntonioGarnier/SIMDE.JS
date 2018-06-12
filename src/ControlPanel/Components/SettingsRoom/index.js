@@ -100,7 +100,7 @@ class SettingsRoom extends React.Component {
             problems[problem] = true
         ))
         this.props.updateProblemsRoom(this.state.selectedRoomToUpdateProblem, problems)
-        this.props.openSnackBar('SUCCESS: Room update problems', 'success')
+        this.props.openSnackBar('SUCCESS: Room problems updated', 'success')
         this.setState({
             selectedProblems: [],
         })
@@ -109,7 +109,7 @@ class SettingsRoom extends React.Component {
     handleOnClickUpdateName = () => {
         if (this.state.selectedName !== '') {
             this.props.updateNameRoom(this.state.selectedRoomToUpdateName, this.state.selectedName)
-            this.props.openSnackBar('SUCCESS: Room update name!', 'success')
+            this.props.openSnackBar('SUCCESS: Room name updated!', 'success')
         }
         else
             this.props.openSnackBar('WARNING: Check empty name!', 'warning')
@@ -119,11 +119,10 @@ class SettingsRoom extends React.Component {
     handleClickRoomToRemove = () => {
         this.handleOnClickBackToList()
         this.props.removeRoom(this.state.selectedRoomToRemove)
-        this.props.openSnackBar('SUCCESS: Room remove!', 'success')
+        this.props.openSnackBar('SUCCESS: Room removed!', 'success')
     }
 
     handleClickToUpdateRoom = (id) => {
-        console.log('id: ', id)
         this.setState({
             selectedRoomToUpdateProblem: id,
             selectedRoomToUpdateName: id,
@@ -131,7 +130,6 @@ class SettingsRoom extends React.Component {
     }
 
     handleClickToRemoveRoom = (id) => {
-        console.log('id: ', id)
         this.setState({
             selectedRoomToRemove: id,
         })
@@ -140,8 +138,6 @@ class SettingsRoom extends React.Component {
     render() {
         return (
         <div>
-            {console.log('SRoom: ', this.props.singleRooms)}
-            {console.log('GRoom: ', this.props.groupRooms)}
             <Tabs
                 inkBarStyle={{background: 'green', height: '5px' }}
                 onChange={this.handleChange}

@@ -10,7 +10,6 @@ import ArrowFordward from 'material-ui/svg-icons/navigation/arrow-forward'
 import Add from 'material-ui/svg-icons/content/add'
 
 
-
 const mapStateToProps = (state) => {
     return {
         problems: state.controlPanel.problems,

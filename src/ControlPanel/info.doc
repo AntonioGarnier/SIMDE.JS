@@ -39,3 +39,6 @@ TAREA***:
 - Modular mas los components. Crear un componente que liste las single rooms y otro que liste las 
 group rooms, otro que liste los problemas, otro que liste los grupos.
 Mañana empezar por crear esos listados por separados. Y tratar de mejorar el create room(que es donde me quede)
+
+
+Borrado en cascada: Obtener referencia a la coleccion y filtrar con where buscando si es sala grupo

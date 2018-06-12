@@ -1,19 +1,4 @@
 export { default as fetchingDataEpic } from './fetchingDataEpic'
-/*export {
-    manageSingleRoomEpic,
-    listenSingleRoom,
-    subscribeSingleRoom,
-} from './manageSingleRoomEpic'
-export {
-    manageUserSingleRoomEpic,
-    listenUserSingleRoom,
-    subscribeUserSingleRoom,
-} from './manageUserSingleRoomEpic'
-export {
-    manageGroupRoomEpic,
-    listenGroupRoom,
-    subscribeGroupRoom,
-} from './manageGroupRoomEpic'*/
 export {
     groupsEpic,
     listenGroups,
@@ -29,3 +14,8 @@ export {
     listenRoom,
     subscribeRoom,
 } from './roomEpic'
+export {
+    problemsEpic,
+    listenProblem,
+    subscribeProblem,
+} from './problemsEpic'

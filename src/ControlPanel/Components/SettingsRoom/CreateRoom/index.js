@@ -1,8 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { debounce } from 'throttle-debounce'
 import {
   Step,
   Stepper,
@@ -11,7 +11,6 @@ import {
 import Divider from 'material-ui/Divider'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
-import ExpandTransition from 'material-ui/internal/ExpandTransition'
 import TextField from 'material-ui/TextField'
 import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
 import Toggle from 'material-ui/Toggle'
@@ -79,23 +78,32 @@ class CreateRoom extends React.Component {
         })
     }
 
-    handleOnChangeRoomName = (event, value) => {
-        this.setState({
-            roomName: value,
-        })
-    }
-
-    handleOnChangePassword = (event, value) => {
-        this.setState({
-            roomPassword: value,
-        })
-    }
-
-    handleOnChangeRoomType = (event, value) => {
-        this.setState({
-            roomType: value,
-        })
-    }
+    handleOnChangeRoomName = debounce (
+        300,
+        async (event, value) => {
+            this.setState({
+                roomName: value,
+            })
+        }
+    )
+    
+    handleOnChangePassword = debounce (
+        300,
+        async (event, value) => {
+            this.setState({
+                roomPassword: value,
+            })
+        }
+    )
+    
+    handleOnChangeRoomType = debounce (
+        300,
+        async (event, value) => {
+            this.setState({
+                roomType: value,
+            })
+        }
+    )
 
     handleOnToggleVisibility = (event, value) => {
         this.setState({
@@ -130,7 +138,7 @@ class CreateRoom extends React.Component {
                 type: this.state.roomType,
                 password: this.state.roomPassword,
             })
-            this.props.openSnackBar('SUCCESS: Room add!', 'success')
+            this.props.openSnackBar('SUCCESS: Room created!', 'success')
             this.restartState()
         }
     }
@@ -209,11 +217,11 @@ class CreateRoom extends React.Component {
                         Check the room information and click finish if it is all right.
                     </h2>
                     <h3 style={{ fontWeight: 'bold' }} >
-                        Room name:
+                        Name:
                     </h3>
                         <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomName}</p>
                     <h3 style={{ fontWeight: 'bold' }} >
-                        Room problems:
+                        Problems:
                     </h3> 
                         {
                             this.state.selectedProblems.length > 0
@@ -229,15 +237,15 @@ class CreateRoom extends React.Component {
                         }
                     
                     <h3 style={{ fontWeight: 'bold' }} >
-                        Room type: 
+                        Type: 
                     </h3>
                         <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomType}</p>
                     <h3 style={{ fontWeight: 'bold' }} >
-                        Room visibility: 
+                        Visibility: 
                     </h3>
                         <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomVisibility ? 'True' : 'False'}</p>
                     <h3 style={{ fontWeight: 'bold' }} >
-                        Room password: 
+                        Password: 
                     </h3>
                         <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomPassword}</p>
                 </div>
@@ -272,7 +280,7 @@ class CreateRoom extends React.Component {
     }
 
     render() {
-        const {loading, stepIndex} = this.state
+        const { stepIndex } = this.state
         return (
             <div style={{width: '100%', margin: 'auto'}}>
                 <Stepper activeStep={stepIndex}>

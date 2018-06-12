@@ -10,7 +10,6 @@ import ArrowFordward from 'material-ui/svg-icons/navigation/arrow-forward'
 import Add from 'material-ui/svg-icons/content/add'
 
 
-
 const mapStateToProps = (state) => {
     return {
         instances: state.controlPanel.instances,
@@ -51,7 +50,7 @@ const SelectInstances = (props) => {
                                 <ListItem
                                     key={id}
                                     leftIcon={<Check/>}
-                                    onClick={() => props.handleOnClickSelectedProblem(id)}
+                                    onClick={() => props.handleOnClickSelectedInstance(id)}
                                 >
                                     {props.instances[id].name}
                                 </ListItem>

@@ -1,30 +1,26 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { Link } from 'react-router-dom'
+import { debounce } from 'throttle-debounce'
 import PropTypes from 'prop-types'
 import {
   Step,
   Stepper,
   StepLabel,
 } from 'material-ui/Stepper'
-import Divider from 'material-ui/Divider'
 import RaisedButton from 'material-ui/RaisedButton'
 import FlatButton from 'material-ui/FlatButton'
-import ExpandTransition from 'material-ui/internal/ExpandTransition'
 import TextField from 'material-ui/TextField'
-import { RadioButton, RadioButtonGroup } from 'material-ui/RadioButton'
-import Toggle from 'material-ui/Toggle'
 import SelectInstances from '../../SelectInstances'
 import RichEditor from '../../RichEditor'
 import {
-    addRoom,
+    addProblem,
     openSnackBar,
 } from '../../../Actions/'
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
-        addRoom,
+        addProblem,
         openSnackBar,
     }, dispatch)
 }
@@ -32,10 +28,7 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
     return {
         user: state.controlPanel.user,
-        problems: state.controlPanel.problems,
-        singleRooms: state.controlPanel.singleRooms,
-        groupRooms: state.controlPanel.groupRooms,
-        groups: state.controlPanel.groups,
+        instances: state.controlPanel.instances,
     }
 }
 
@@ -45,11 +38,9 @@ class CreateProblem extends React.Component {
 
     state = {
         stepIndex: 0,
-        roomName: '',
-        roomPassword: '',
-        roomType: 'single',
-        roomVisibility: true,
-        selectedProblems: [],
+        problemName: '',
+        problemDefinition: '',
+        selectedInstances: [],
     }
 
     handleNext = () => {
@@ -66,72 +57,62 @@ class CreateProblem extends React.Component {
         })
     }
 
-    handleOnClickSelectedProblem = (problemId) => {
+    handleOnClickSelectedInstance = (instanceId) => {
         this.setState({
-            selectedProblems: this.state.selectedProblems.filter(id => (
-                problemId !== id
+            selectedInstances: this.state.selectedInstances.filter(id => (
+                instanceId !== id
             ))
         })
     }
 
-    handleOnClickProblem = (problemId) => {
+    handleOnClickInstance = (instanceId) => {
         this.setState({
-            selectedProblems: this.state.selectedProblems.concat([problemId])
+            selectedInstances: this.state.selectedInstances.concat([instanceId])
         })
     }
 
-    handleOnChangeProblemName = (event, value) => {
-        this.setState({
-            roomName: value,
-        })
-    }
+    handleOnChangeProblemName = debounce (
+        300,
+        (event, value) => {
+            this.setState({
+                problemName: value,
+            })
+        }
+    )
 
-    handleOnChangePassword = (event, value) => {
-        this.setState({
-            roomPassword: value,
-        })
-    }
 
-    handleOnChangeRoomType = (event, value) => {
-        this.setState({
-            roomType: value,
-        })
-    }
-
-    handleOnToggleVisibility = (event, value) => {
-        this.setState({
-            roomVisibility: value,
-        })
-    }
+    handleChangeEditorContent = debounce (
+        300,
+        (value) => {
+            this.setState({
+                problemDefinition: value,
+            })
+        }
+    )
 
     restartState = () => {
         this.setState({
             stepIndex: 0,
-            roomName: '',
-            roomPassword: '',
-            roomType: 'single',
-            roomVisibility: true,
-            selectedProblems: [],
+            problemName: '',
+            problemDefinition: '',
+            selectedInstances: [],
         })
     }
 
     handleCreateProblem = () => {
-        let problems = {}
-        this.state.selectedProblems.forEach((problem) => (
-            problems[problem] = true
+        let instances = {}
+        this.state.selectedInstances.forEach((instance) => (
+            instances[instance] = true
         ))
-        if (this.state.roomName.length < 3 ||  this.state.roomPassword.length < 3)
-            this.props.openSnackBar('ERROR: Could NOT create the room. Check the room name or password', 'error')
+        if (this.state.problemName.length < 3 ||  this.state.problemDefinition.length < 3)
+            this.props.openSnackBar('ERROR: Could NOT create the problem. Check the problem name or definition', 'error')
         else {
-            this.props.addRoom({
-                name: this.state.roomName,
-                members: {},
-                problems: problems,
-                visibility: this.state.roomVisibility,
-                type: this.state.roomType,
-                password: this.state.roomPassword,
+            this.props.addProblem({
+                name: this.state.problemName,
+                definition: this.state.problemDefinition,
+                instances,
             })
-            this.props.openSnackBar('SUCCESS: Room add!', 'success')
+            this.props.openSnackBar('SUCCESS: Problem created!', 'success')
             this.restartState()
         }
     }
@@ -157,20 +138,23 @@ class CreateProblem extends React.Component {
                     <h3>
                         Write the definition
                     </h3>
-                    <RichEditor />
+                    <RichEditor
+                        content={this.state.problemDefinition}
+                        handleChange={this.handleChangeEditorContent}
+                    />
                 </div>
             )
         case 2:
             return (
                 <div>
                     <h3>
-                        Select which problems will be in the room.
+                        Select which instances will be in the room.
                     </h3>
                     <SelectInstances
-                        problems={this.props.problems}
-                        selectedProblems={this.state.selectedProblems}
-                        handleOnClickSelectedProblem={this.handleOnClickSelectedProblem}
-                        handleOnClickProblem={this.handleOnClickProblem}
+                        instances={this.props.instances}
+                        selectedInstances={this.state.selectedInstances}
+                        handleOnClickSelectedInstance={this.handleOnClickSelectedInstance}
+                        handleOnClickInstance={this.handleOnClickInstance}
                     />
                 </div>
             )
@@ -181,29 +165,34 @@ class CreateProblem extends React.Component {
                         Check the problem information and click finish if it is all right.
                     </h2>
                     <h3 style={{ fontWeight: 'bold' }} >
-                        Problem name:
+                        Name:
                     </h3>
-                        <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomName}</p>
+                        <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.problemName}</p>
                     <h3 style={{ fontWeight: 'bold' }} >
-                        Problem definition:
-                    </h3> 
+                        Instances: 
+                    </h3>
+                        {console.log('this.state.selectedInstances: ', this.state.selectedInstances)}
+                        {console.log('this.props.instances: ', this.props.instances)}
                         {
-                            this.state.selectedProblems.length > 0
-                            ? this.state.selectedProblems.map(id => (
+                            this.state.selectedInstances.length > 0
+                            ? this.state.selectedInstances.map(id => (
                                 <li
                                     key={id}
                                     style={{ marginLeft: '15px', marginTop: '10px' }}
                                 >
-                                    {this.props.problems[id].name}
+                                    {this.props.instances[id].name}
                                 </li>
                             ))
-                            : 'No se asignaron problemas'             
+                            : 'No se asignaron instancias'          
                         }
-                    
                     <h3 style={{ fontWeight: 'bold' }} >
-                        Problem instances: 
-                    </h3>
-                        <p style={{ marginLeft: '15px', marginTop: '10px' }} >{this.state.roomType}</p>
+                        Definition:
+                    </h3> 
+                        <RichEditor
+                            content={this.state.problemDefinition}
+                            readOnly
+                            hideToolbar
+                        />
                     
                 </div>
             )
@@ -237,7 +226,7 @@ class CreateProblem extends React.Component {
     }
 
     render() {
-        const {loading, stepIndex} = this.state
+        const { stepIndex } = this.state
         return (
             <div style={{width: '100%', margin: 'auto'}}>
                 <Stepper activeStep={stepIndex}>
@@ -261,12 +250,12 @@ class CreateProblem extends React.Component {
 }
 
 CreateProblem.propTypes = {
-    problems: PropTypes.objectOf(
+    instances: PropTypes.objectOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
         }).isRequired,
     ).isRequired,
-    addRoom: PropTypes.func.isRequired,
+    addProblem: PropTypes.func.isRequired,
     openSnackBar: PropTypes.func.isRequired,
 }
 

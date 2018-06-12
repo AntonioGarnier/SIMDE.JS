@@ -366,7 +366,7 @@ body, html {
 
 body {
   width: 100%;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 @media (max-width: 1280px) {
@@ -522,5 +522,4 @@ subHeader {
   border-bottom-right-radius: 25px;
   width: 256px;
 }
-
 /*# sourceMappingURL=main.css.map */
