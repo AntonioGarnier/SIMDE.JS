@@ -22,6 +22,12 @@ import {
     REMOVE_ALL_GROUPS,
     GOT_REMOVE_GROUP,
     GOT_UPDATE_GROUP,
+    FETCH_ALL_PROBLEMS,
+    GOT_ADD_PROBLEM,
+    REMOVE_ALL_PROBLEMS,
+    GOT_REMOVE_PROBLEM,
+    GOT_UPDATE_PROBLEM,
+
     FETCH_ALL_INSTANCES,
     GOT_INSTANCE,
     REMOVE_ALL_INSTANCES,
@@ -35,7 +41,7 @@ import { initialState } from '../../../Store'
 
 export const MAX_HISTORY_SIZE = 10;
 export function SuperescalarReducers(state = initialState, action) {
-    let newState
+    let items = {}
     switch (action.type) {
         case NEXT_PREFETCH_CYCLE:
             return (state = Object.assign({}, state, { prefetchUnit: action.value }));
@@ -123,7 +129,7 @@ export function SuperescalarReducers(state = initialState, action) {
                     }
                 ].slice(-MAX_HISTORY_SIZE) }));
         case COLOR_CELL:
-            newState = Object.assign({}, state);
+            let newState = Object.assign({}, state);
             newState.history = colorHistoryInstruction(newState.history, action.value[0], action.value[1]);
             return newState;
         case TAKE_HISTORY:
@@ -151,7 +157,7 @@ export function SuperescalarReducers(state = initialState, action) {
         case FETCH_ALL_ROOMS:
             return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload.singleRooms, groupRooms: action.payload.groupRooms, idSingleRooms: Object.keys(action.payload.singleRooms), idGroupRooms: Object.keys(action.payload.groupRooms)}}
         case GOT_UPDATE_ROOM:
-        case GOT_ADD_ROOM: // [`${action.payload.type}Rooms`]
+        case GOT_ADD_ROOM:
             return { ...state, controlPanel: { ...state.controlPanel, [`${action.payload.type}Rooms`]: { ...state.controlPanel[`${action.payload.type}Rooms`], [action.payload.id]: {
                 name: action.payload.name,
                 members: action.payload.members,
@@ -163,13 +169,33 @@ export function SuperescalarReducers(state = initialState, action) {
         case REMOVE_ALL_ROOMS:
             return { ...state, controlPanel: { ...state.controlPanel, singleRooms: {}, groupRooms: {}}}
         case GOT_REMOVE_ROOM:
-            let items = {}
+            items = {}
             Object.keys(state.controlPanel[`${action.payload.type}Rooms`]).forEach((element) => {
                 if (element !== action.payload.id) {
                     items[element] = state.controlPanel[`${action.payload.type}Rooms`][element]
                 }
             })
             return { ...state, controlPanel: { ...state.controlPanel, [`${action.payload.type}Rooms`]: items}}
+        case FETCH_ALL_PROBLEMS:
+            return { ...state, controlPanel: { ...state.controlPanel, problems: action.payload.problems }}            
+        case GOT_UPDATE_PROBLEM:
+        case GOT_ADD_PROBLEM:
+            return { ...state, controlPanel: { ...state.controlPanel, problems: { ...state.controlPanel.problems, [action.payload.id]: {
+                name: action.payload.name,
+                definition: action.payload.definition,
+                instances: action.payload.instances,
+                createdAt: action.payload.createdAt,
+            }}}}
+        case REMOVE_ALL_PROBLEMS:
+            return { ...state, controlPanel: { ...state.controlPanel, groups: {}}}
+        case GOT_REMOVE_PROBLEM:
+            items = {}
+            Object.keys(state.controlPanel.problems).forEach((element) => {
+                if (element !== action.payload.id) {
+                    items[element] = state.controlPanel.problems[element]
+                }
+            })
+            return { ...state, controlPanel: { ...state.controlPanel, problems: items}}
             /*case FETCH_ALL_SINGLE_ROOMS:
             return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload}}
         case GOT_UPDATE_SINGLE_ROOM:

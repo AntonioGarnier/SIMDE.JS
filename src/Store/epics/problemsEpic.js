@@ -99,8 +99,8 @@ action$.pipe(
                             payload: {
                                 name: problem.name,
                                 id: Object.keys(problems).shift(),
-                                members: problem.members,
-                                leader: problem.leader,
+                                instances: problem.instances,
+                                definition: problem.definition,
                                 createdAt: problem.createdAt,
                             },
                         }

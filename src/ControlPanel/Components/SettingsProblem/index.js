@@ -57,6 +57,10 @@ class SettingsProblem extends React.Component {
     handleChange = (value) => {
         this.setState({
             slideIndex: value,
+            selectedInstances: [],
+            selectedProblemToUpdateInstance: '',
+            selectedProblemToUpdateName: '',
+            selectedProblemToRemove: '',
         })
     }
 
@@ -159,6 +163,7 @@ class SettingsProblem extends React.Component {
                         <GenericList
                             generic={this.props.problems}
                             handleOnClick={this.handleClickToUpdateProblem}
+                            type="problems"
                         />
                     )
                     : (
@@ -213,6 +218,7 @@ class SettingsProblem extends React.Component {
                         <GenericList
                             generic={this.props.problems}
                             handleOnClick={this.handleClickToRemoveProblem}
+                            type="problems"
                         />
                     )
                     : (

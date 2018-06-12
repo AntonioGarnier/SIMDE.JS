@@ -162,10 +162,12 @@ class SettingsRoom extends React.Component {
                             <GenericList
                                 generic={this.props.singleRooms}
                                 handleOnClick={this.handleClickToUpdateRoom}
+                                type="single"
                             />
                             <GenericList
                                 generic={this.props.groupRooms}
                                 handleOnClick={this.handleClickToUpdateRoom}
+                                type="group"
                             />
                         </div>
                     )
@@ -230,10 +232,12 @@ class SettingsRoom extends React.Component {
                             <GenericList
                                 generic={this.props.singleRooms}
                                 handleOnClick={this.handleClickToRemoveRoom}
+                                type="single"
                             />
                             <GenericList
                                 generic={this.props.groupRooms}
                                 handleOnClick={this.handleClickToRemoveRoom}
+                                type="group"
                             />
                         </div>
                     )
