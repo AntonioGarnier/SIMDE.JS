@@ -19,7 +19,6 @@ const mapStateToProps = (state) => {
 const SelectProblems = (props) => {
     return (
         <div style={{ display: 'flex' }} >
-            {console.log('props.selectedProblems: ', props.selectedProblems,)}
             <Paper className="listStyle" >
                 <List>
                     <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Problems</Subheader>

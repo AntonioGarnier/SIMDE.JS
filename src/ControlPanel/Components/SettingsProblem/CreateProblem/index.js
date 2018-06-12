@@ -171,8 +171,6 @@ class CreateProblem extends React.Component {
                     <h3 style={{ fontWeight: 'bold' }} >
                         Instances: 
                     </h3>
-                        {console.log('this.state.selectedInstances: ', this.state.selectedInstances)}
-                        {console.log('this.props.instances: ', this.props.instances)}
                         {
                             this.state.selectedInstances.length > 0
                             ? this.state.selectedInstances.map(id => (
