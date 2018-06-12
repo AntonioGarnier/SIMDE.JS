@@ -102,13 +102,16 @@ class SettingsProblem extends React.Component {
         this.state.selectedInstances.forEach((instance) => (
             instances[instance] = true
         ))
-        this.props.updateInstancesRoom(this.state.selectedProblemToUpdateInstance, instances)
-        this.props.openSnackBar('SUCCESS: Problem instances updated!', 'success')
-        this.setState({
-            selectedInstances: [],
-        })
+        if (Object.keys(instances).length > 0) {
+            this.props.updateInstancesRoom(this.state.selectedProblemToUpdateInstance, instances)
+            this.props.openSnackBar('SUCCESS: Problem instances updated!', 'success')
+            this.setState({
+                selectedInstances: [],
+            })
+        } else
+            this.props.openSnackBar('WARNING: You have not selected any instance', 'warning')
     }
-    //ACtion: updateNameProblem, removeProblem
+
     handleOnClickUpdateName = () => {
         if (this.state.selectedName !== '') {
             this.props.updateNameProblem(this.state.selectedProblemToUpdateName, this.state.selectedName)
@@ -119,7 +122,7 @@ class SettingsProblem extends React.Component {
     }
 
     handleClickProblemToRemove = () => {
-        this.handleOnClickBackToList()
+        this.handleOnClickBackToListFromRemove()
         this.props.removeProblem(this.state.selectedProblemToRemove)
         this.props.openSnackBar('SUCCESS: Problem removed!', 'success')
     }

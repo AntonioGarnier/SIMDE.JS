@@ -4,20 +4,23 @@ import { ListItem } from 'material-ui/List'
 import Person from 'material-ui/svg-icons/social/person'
 import Group from 'material-ui/svg-icons/social/group'
 import Work from 'material-ui/svg-icons/action/work'
+import GroupWork from 'material-ui/svg-icons/action/group-work'
 
 
 const GenericList = (props) => {
     
     const selectIcon = (type) => {
         switch (type) {
-            case 'single':
+            case 'singleRoom':
                 return <Person/> 
-            case 'group':
+            case 'groupRoom':
                 return <Group/> 
             case 'problem':
                 return <Work/> 
+            case 'group':
+                return <GroupWork/> 
             default:
-                return <Work/> 
+                return <Person/> 
         }
     }
 

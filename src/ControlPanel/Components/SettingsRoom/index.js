@@ -99,11 +99,14 @@ class SettingsRoom extends React.Component {
         this.state.selectedProblems.forEach((problem) => (
             problems[problem] = true
         ))
-        this.props.updateProblemsRoom(this.state.selectedRoomToUpdateProblem, problems)
-        this.props.openSnackBar('SUCCESS: Room problems updated', 'success')
-        this.setState({
-            selectedProblems: [],
-        })
+        if (Object.keys(problems).length > 0) {
+            this.props.updateProblemsRoom(this.state.selectedRoomToUpdateProblem, problems)
+            this.props.openSnackBar('SUCCESS: Room problems updated', 'success')
+            this.setState({
+                selectedProblems: [],
+            })
+        } else 
+            this.props.openSnackBar('WARNING: You have not selected any problem', 'warning')
     }
 
     handleOnClickUpdateName = () => {
@@ -117,7 +120,7 @@ class SettingsRoom extends React.Component {
     }
 
     handleClickRoomToRemove = () => {
-        this.handleOnClickBackToList()
+        this.handleOnClickBackToListFromRemove()
         this.props.removeRoom(this.state.selectedRoomToRemove)
         this.props.openSnackBar('SUCCESS: Room removed!', 'success')
     }
@@ -162,12 +165,12 @@ class SettingsRoom extends React.Component {
                             <GenericList
                                 generic={this.props.singleRooms}
                                 handleOnClick={this.handleClickToUpdateRoom}
-                                type="single"
+                                type="singleRoom"
                             />
                             <GenericList
                                 generic={this.props.groupRooms}
                                 handleOnClick={this.handleClickToUpdateRoom}
-                                type="group"
+                                type="groupRoom"
                             />
                         </div>
                     )
@@ -232,12 +235,12 @@ class SettingsRoom extends React.Component {
                             <GenericList
                                 generic={this.props.singleRooms}
                                 handleOnClick={this.handleClickToRemoveRoom}
-                                type="single"
+                                type="singleRoom"
                             />
                             <GenericList
                                 generic={this.props.groupRooms}
                                 handleOnClick={this.handleClickToRemoveRoom}
-                                type="group"
+                                type="groupRoom"
                             />
                         </div>
                     )
