@@ -91,7 +91,9 @@ export const initialState = {
         },
         singleRooms: {},
         groupRooms: {},
+        roomsOrdered: [],
         groups: {},
+        groupsOrdered: [],
         instances: {
             INST_ID: {
                 name: "Instancia 1",
@@ -104,7 +106,9 @@ export const initialState = {
                 finalMem: "memoria final"
             }
         },
+        instancesOrdered: [],
         problems: {},
+        problemsOrdered: [],
     },
 };
 

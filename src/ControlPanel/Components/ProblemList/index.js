@@ -7,29 +7,29 @@ import CustomList from '../CustomList'
 const mapStateToProps = (state) => { 
     return {
         user: state.controlPanel.user,
-        groups: state.controlPanel.groups,
-        groupsOrdered: state.controlPanel.groupsOrdered,
+        problems: state.controlPanel.problems,
+        problemsOrdered: state.controlPanel.problemsOrdered,
     }
 }
 
-const GroupList = ({ 
-    groups,
-    groupsOrdered,
+const ProblemList = ({ 
+    problems,
+    problemsOrdered,
 }) => {
     return (
         <div style={{ display: 'flex' }} >
             <CustomList
-                title="Groups"
-                path="/group-list/"
-                iconType="group"
-                itemList={groups}
-                orderedList={groupsOrdered}
+                title="Problems"
+                path="/problem-list/"
+                iconType="problem"
+                itemList={problems}
+                orderedList={problemsOrdered}
             />
         </div>
     )
 }
 
-GroupList.propTypes = {
+ProblemList.propTypes = {
     user: PropTypes.shape({
         displayName: PropTypes.string.isRequired,
         email: PropTypes.string.isRequired,
@@ -39,4 +39,4 @@ GroupList.propTypes = {
     }).isRequired,
 }
 
-export default connect(mapStateToProps)(GroupList)
+export default connect(mapStateToProps)(ProblemList)

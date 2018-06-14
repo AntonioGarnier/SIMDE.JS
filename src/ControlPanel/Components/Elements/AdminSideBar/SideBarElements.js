@@ -1,25 +1,30 @@
 import React from 'react'
-import Person from 'material-ui/svg-icons/social/person'
+import PersonPin from 'material-ui/svg-icons/maps/person-pin'
 import Info from 'material-ui/svg-icons/action/info'
-import FormatListBulleted from 'material-ui/svg-icons/editor/format-list-bulleted'
-import PlayListAdd from 'material-ui/svg-icons/av/playlist-add'
+import Group from 'material-ui/svg-icons/social/group'
+import Code from 'material-ui/svg-icons/action/code'
+import Problem from 'material-ui/svg-icons/action/extension'
+import GroupWork from 'material-ui/svg-icons/action/group-work'
+import Settings from 'material-ui/svg-icons/action/settings'
+import Desktop from 'material-ui/svg-icons/hardware/desktop-windows'
+
 
 
 export const sideBarElements = [
     {
         name: 'Personal Data',
         to: '/personal-data',
-        leftIcon: <Person />,
+        leftIcon: <PersonPin />,
     },
     {
         name: 'Room List',
         to: '/room-list',
-        leftIcon: <FormatListBulleted />,
+        leftIcon: <Group />,
     },
     {
         name: 'Group List',
         to: '/group-list',
-        leftIcon: <FormatListBulleted />,
+        leftIcon: <GroupWork />,
     },
     {
         name: 'About',
@@ -32,37 +37,47 @@ export const sideBarElementsAdmin = [
     {
         name: 'Personal Data',
         to: '/personal-data',
-        leftIcon: <Person />,
+        leftIcon: <PersonPin />,
     },
     {
         name: 'Room List',
         to: '/room-list',
-        leftIcon: <FormatListBulleted />,
+        leftIcon: <Desktop />,
     },
     {
         name: 'Group List',
         to: '/group-list',
-        leftIcon: <FormatListBulleted />,
+        leftIcon: <GroupWork />,
     },
     {
         name: 'Problem List',
         to: '/problem-list',
-        leftIcon: <FormatListBulleted />,
+        leftIcon: <Problem />,
+    },
+    {
+        name: 'Instance List',
+        to: '/instance-list',
+        leftIcon: <Code />,
     },
     {
         name: 'Problem Settings',
         to: '/problem-settings',
-        leftIcon: <PlayListAdd />,
+        leftIcon: <Settings />,
     },
     {
         name: 'Room Settings',
         to: '/room-settings',
-        leftIcon: <PlayListAdd />,
+        leftIcon: <Settings />,
     },
     {
         name: 'Group Settings',
         to: '/group-settings',
-        leftIcon: <PlayListAdd />,
+        leftIcon: <Settings />,
+    },
+    {
+        name: 'Instance Settings',
+        to: '/Instance-settings',
+        leftIcon: <Settings />,
     },
     {
         name: 'About',

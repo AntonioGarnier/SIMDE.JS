@@ -27,19 +27,21 @@ const instanceRemove$ = new Subject()
 export const subscribeInstances = () => (querySnapshot) => {
     let updateType
     let instances = {}
+    let instancesOrdered = []
     querySnapshot.docChanges().forEach((instance) => {
+        instancesOrdered.push(instance.doc.id)
         instances[instance.doc.id] = instance.doc.data()
         updateType = instance.type
     })
     switch (updateType) {
         case 'added':
-            instanceAdd$.next(instances)
+            instanceAdd$.next({ instances, instancesOrdered })
             break
         case 'modified':
-            instanceUpdate$.next(instances)
+            instanceUpdate$.next({ instances, instancesOrdered })
             break
         case 'removed':
-            instanceRemove$.next(instances)
+            instanceRemove$.next({ instances, instancesOrdered })
             break
         default:
             break
@@ -47,7 +49,7 @@ export const subscribeInstances = () => (querySnapshot) => {
 }
 
 export const listenInstances = firestore.collection('instances')
-    .orderBy('createdAt')
+    .orderBy('createdAt', 'desc')
 
 export const instancesEpic = action$ =>
     action$.pipe(
@@ -56,49 +58,60 @@ export const instancesEpic = action$ =>
         flatMap(() => (
             instanceAdd$.pipe(
                 //tap(v => console.log('add: ', v)),
-                map((instances) => {
-                    if (Object.keys(instances).length > 1)
+                map(({ instances, instancesOrdered }) => {
+                    if (instancesOrdered.length > 1)
                         return {
                             type: FETCH_ALL_INSTANCES,
-                            payload: instances,
+                            payload: {
+                                instances,
+                                instancesOrdered,
+                            }
                         }
-                    const instance = Object.values(instances).shift()
+                    const instance = instances[instancesOrdered[0]]
                     return {
                         type: GOT_INSTANCE,
                         payload: {
+                            id: instancesOrdered[0],
                             name: instance.name,
-                            id: Object.keys(instances).shift(),
-                            members: instance.members,
-                            problems: instance.problems,
+                            initGPR: instance.initGPR,
+                            initFPR: instance.initFPR,
+                            initMEM: instance.initMEM,
+                            finalGPR: instance.finalGPR,
+                            finalFPR: instance.finalFPR,
+                            finalMEM: instance.finalMEM,
                             createdAt: instance.createdAt,
                         },
                     }
                 }),
                 merge(instanceRemove$.pipe(
                     //tap(v => console.log('remove: ', v)),
-                    map((instances) => {
-                        if (Object.keys(instances).length > 1)
+                    map(({ instances, instancesOrdered }) => {
+                        if (instancesOrdered.length > 1)
                             return {
                                 type: REMOVE_ALL_INSTANCES,
                             }
                         return {
                             type: GOT_REMOVE_INSTANCE,
                             payload: {
-                                id: Object.keys(instances).shift(),
+                                id: instancesOrdered[0],
                             },
                         }
                     }),
                     merge(instanceUpdate$.pipe(
                         //tap(v => console.log('update: ', v)),
-                        map((instances) => {
-                            const instance = Object.values(instances).shift()
+                        map(({ instances, instancesOrdered }) => {
+                            const instance = instances[instancesOrdered[0]]
                             return {
                                 type: GOT_UPDATE_INSTANCE,
                                 payload: {
+                                    id: instancesOrdered[0],
                                     name: instance.name,
-                                    id: Object.keys(instances).shift(),
-                                    members: instance.members,
-                                    problems: instance.problems,
+                                    initGPR: instance.initGPR,
+                                    initFPR: instance.initFPR,
+                                    initMEM: instance.initMEM,
+                                    finalGPR: instance.finalGPR,
+                                    finalFPR: instance.finalFPR,
+                                    finalMEM: instance.finalMEM,
                                     createdAt: instance.createdAt,
                                 },
                             }

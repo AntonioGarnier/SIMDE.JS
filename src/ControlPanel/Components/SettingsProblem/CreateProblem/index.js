@@ -29,6 +29,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.controlPanel.user,
         instances: state.controlPanel.instances,
+        instancesOrdered: state.controlPanel.instancesOrdered,
     }
 }
 
@@ -151,7 +152,7 @@ class CreateProblem extends React.Component {
                         Select which instances will be in the room.
                     </h3>
                     <SelectInstances
-                        instances={this.props.instances}
+                        instances={this.props.instancesOrdered}
                         selectedInstances={this.state.selectedInstances}
                         handleOnClickSelectedInstance={this.handleOnClickSelectedInstance}
                         handleOnClickInstance={this.handleOnClickInstance}

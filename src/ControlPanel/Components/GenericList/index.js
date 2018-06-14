@@ -3,9 +3,10 @@ import PropTypes from 'prop-types'
 import { ListItem } from 'material-ui/List'
 import Person from 'material-ui/svg-icons/social/person'
 import Group from 'material-ui/svg-icons/social/group'
-import Work from 'material-ui/svg-icons/action/work'
+import Problem from 'material-ui/svg-icons/action/extension'
 import GroupWork from 'material-ui/svg-icons/action/group-work'
-
+import Error from 'material-ui/svg-icons/alert/error'
+import Code from 'material-ui/svg-icons/action/code'
 
 const GenericList = (props) => {
     
@@ -16,25 +17,30 @@ const GenericList = (props) => {
             case 'groupRoom':
                 return <Group/> 
             case 'problem':
-                return <Work/> 
+                return <Problem/> 
             case 'group':
                 return <GroupWork/> 
+            case 'instance':
+                return <Code/> 
             default:
-                return <Person/> 
+                return <Error/> 
         }
     }
 
     return (
         <div>
             {
-                Object.keys(props.generic).map((id) => (
-                        <ListItem
+                props.genericOrdered.map((id) => (
+                    props.generic.hasOwnProperty(id)
+                        ? <ListItem
                             key={id}
                             leftIcon={selectIcon(props.type)}
                             onClick={() => props.handleOnClick(id)}
                         >
                             {props.generic[id].name}
                         </ListItem>
+                        : null
+                    
                 ))
             }
         </div>
@@ -47,6 +53,7 @@ GenericList.propTypes = {
             name: PropTypes.string.isRequired,
         }).isRequired,
     ).isRequired,
+    genericOrdered: PropTypes.array.isRequired,
     handleOnClick: PropTypes.func.isRequired,
     type: PropTypes.string.isRequired,
 }

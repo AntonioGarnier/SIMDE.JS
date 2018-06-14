@@ -27,19 +27,21 @@ const problemRemove$ = new Subject()
 export const subscribeProblem = () => (querySnapshot) => {
     let updateType
     let problems = {}
+    let problemsOrdered = [] 
     querySnapshot.docChanges().forEach((problem) => {
+        problemsOrdered.push(problem.doc.id)
         problems[problem.doc.id] = problem.doc.data()
         updateType = problem.type
     })
     switch (updateType) {
         case 'added':
-            problemAdd$.next(problems)
+            problemAdd$.next({ problems, problemsOrdered })
             break
         case 'modified':
-            problemUpdate$.next(problems)
+            problemUpdate$.next({ problems, problemsOrdered })
             break
         case 'removed':
-            problemRemove$.next(problems)
+            problemRemove$.next({ problems, problemsOrdered })
             break
         default:
             break
@@ -47,7 +49,7 @@ export const subscribeProblem = () => (querySnapshot) => {
 }
 
 export const listenProblem = firestore.collection('problems')
-    .orderBy('createdAt')
+    .orderBy('createdAt', 'desc')
 
 export const problemsEpic = action$ =>
 action$.pipe(
@@ -56,20 +58,21 @@ action$.pipe(
     flatMap(() => (
         problemAdd$.pipe(
             //tap(v => console.log('add: ', v)),
-            map((problems) => {
-                if (Object.keys(problems).length > 1)
+            map(({ problems, problemsOrdered }) => {
+                if (problemsOrdered.length > 1)
                     return {
                         type: FETCH_ALL_PROBLEMS,
                         payload: {
                             problems,
+                            problemsOrdered,
                         }
                     }
-                const problem = Object.values(problems).shift()
+                const problem = problems[problemsOrdered[0]]
                 return {
                     type: GOT_ADD_PROBLEM,
                     payload: {
+                        id: problemsOrdered[0],
                         name: problem.name,
-                        id: Object.keys(problems).shift(),
                         instances: problem.instances,
                         definition: problem.definition,
                         createdAt: problem.createdAt,
@@ -78,27 +81,27 @@ action$.pipe(
             }),
             merge(problemRemove$.pipe(
                 //tap(v => console.log('remove: ', v)),
-                map((problems) => {
-                    if (Object.keys(problems).length > 1)
+                map(({ problems, problemsOrdered }) => {
+                    if (problemsOrdered.length > 1)
                         return {
                             type: REMOVE_ALL_PROBLEMS,
                         }
                     return {
                         type: GOT_REMOVE_PROBLEM,
                         payload: {
-                            id: Object.keys(problems).shift(),
+                            id: problemsOrdered[0],
                         },
                     }
                 }),
                 merge(problemUpdate$.pipe(
                     //tap(v => console.log('update: ', v)),
-                    map((problems) => {
-                        const problem = Object.values(problems).shift()
+                    map(({ problems, problemsOrdered }) => {
+                        const problem = problems[problemsOrdered[0]]
                         return {
                             type: GOT_UPDATE_PROBLEM,
                             payload: {
+                                id: problemsOrdered[0],
                                 name: problem.name,
-                                id: Object.keys(problems).shift(),
                                 instances: problem.instances,
                                 definition: problem.definition,
                                 createdAt: problem.createdAt,

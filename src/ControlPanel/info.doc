@@ -42,3 +42,10 @@ Mañana empezar por crear esos listados por separados. Y tratar de mejorar el cr
 
 
 Borrado en cascada: Obtener referencia a la coleccion y filtrar con where buscando si es sala grupo
+
+***Me falta Group Settings e Instance Settings, los Listados de Instance y problems no se veran, no es necesario
+si necesitas ver las instancias vas a instance settings que te permite crear modificar nombre y contenido.
+Lo mismo para los problemas*** IMPORTANTE: Settings problems tiene que dejar modificar la definition.
+
+Las varibalres de selectUpdateInstance o slectupdateName, juntarlas, es inutil tenerlaspor separado. Unificar
+en Updata. 

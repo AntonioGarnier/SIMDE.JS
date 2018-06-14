@@ -4,7 +4,8 @@ import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import SwipeableViews from 'react-swipeable-views'
-import RaisedButton from 'material-ui/RaisedButton';
+import RaisedButton from 'material-ui/RaisedButton'
+import TextField from 'material-ui/TextField/TextField'
 import CreateProblem from './CreateProblem'
 import GenericList from '../GenericList'
 import SelectInstances from '../SelectInstances'
@@ -14,7 +15,8 @@ import {
     removeProblem,
     openSnackBar,
 } from '../../Actions'
-import TextField from 'material-ui/TextField/TextField';
+import RichEditor from '../RichEditor'
+
 
 const styles = {
     headline: {
@@ -41,6 +43,8 @@ const mapStateToProps = (state) => {
     return {
         problems: state.controlPanel.problems,
         instances: state.controlPanel.instances,
+        problemsOrdered: state.controlPanel.problemsOrdered,
+        instancesOrdered: state.controlPanel.instancesOrdered,
     }
 }
 class SettingsProblem extends React.Component {
@@ -165,8 +169,9 @@ class SettingsProblem extends React.Component {
                     ? (
                         <GenericList
                             generic={this.props.problems}
+                            genericOrdered={this.props.problemsOrdered}
                             handleOnClick={this.handleClickToUpdateProblem}
-                            type="problems"
+                            type="problem"
                         />
                     )
                     : (
@@ -201,10 +206,15 @@ class SettingsProblem extends React.Component {
                                     onClick={this.handleOnClickUpdateInstances}
                                 />
                             </div>
+                            <h3>Updating definition of room: </h3>
+                            <RichEditor
+                                content={this.state.problemDefinition}
+                                handleChange={this.handleChangeEditorContent}
+                            />
                             <h3>Updating instances of room: </h3>
                             { this.props.problems[this.state.selectedProblemToUpdateInstance].name }
                             <SelectInstances
-                                instances={this.props.instances}
+                                instances={this.props.instancesOrdered}
                                 selectedInstances={this.state.selectedInstances}
                                 handleOnClickSelectedInstance={this.handleOnClickSelectedInstance}
                                 handleOnClickInstance={this.handleOnClickInstance}
@@ -220,8 +230,9 @@ class SettingsProblem extends React.Component {
                     ? (
                         <GenericList
                             generic={this.props.problems}
+                            genericOrdered={this.props.problemsOrdered}
                             handleOnClick={this.handleClickToRemoveProblem}
-                            type="problems"
+                            type="problem"
                         />
                     )
                     : (

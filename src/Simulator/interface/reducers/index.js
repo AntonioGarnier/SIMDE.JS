@@ -155,19 +155,32 @@ export function SuperescalarReducers(state = initialState, action) {
         case CHANGE_PATH:
             return { ...state, controlPanel: { ...state.controlPanel, actualPath: action.payload.path}}
         case FETCH_ALL_ROOMS:
-            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload.singleRooms, groupRooms: action.payload.groupRooms, idSingleRooms: Object.keys(action.payload.singleRooms), idGroupRooms: Object.keys(action.payload.groupRooms)}}
+            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload.singleRooms, groupRooms: action.payload.groupRooms, roomsOrdered: action.payload.roomsOrdered}}
         case GOT_UPDATE_ROOM:
         case GOT_ADD_ROOM:
-            return { ...state, controlPanel: { ...state.controlPanel, [`${action.payload.type}Rooms`]: { ...state.controlPanel[`${action.payload.type}Rooms`], [action.payload.id]: {
-                name: action.payload.name,
-                members: action.payload.members,
-                type: action.payload.type,
-                visibility: action.payload.visibility,
-                problems: action.payload.problems,
-                createdAt: action.payload.createdAt,
-            }}}}
+            let roomsOrdered = state.controlPanel.roomsOrdered.slice()
+            if (roomsOrdered.indexOf(action.payload.id) === -1)
+                roomsOrdered.unshift(action.payload.id)
+            return {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    [`${action.payload.type}Rooms`]: {
+                        ...state.controlPanel[`${action.payload.type}Rooms`],
+                        [action.payload.id]: {
+                                name: action.payload.name,
+                                members: action.payload.members,
+                                type: action.payload.type,
+                                visibility: action.payload.visibility,
+                                problems: action.payload.problems,
+                                createdAt: action.payload.createdAt,
+                            }
+                        },
+                        roomsOrdered,
+                    }
+                }
         case REMOVE_ALL_ROOMS:
-            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: {}, groupRooms: {}}}
+            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: {}, groupRooms: {}, roomsOrdered: []}}
         case GOT_REMOVE_ROOM:
             items = {}
             Object.keys(state.controlPanel[`${action.payload.type}Rooms`]).forEach((element) => {
@@ -175,19 +188,32 @@ export function SuperescalarReducers(state = initialState, action) {
                     items[element] = state.controlPanel[`${action.payload.type}Rooms`][element]
                 }
             })
-            return { ...state, controlPanel: { ...state.controlPanel, [`${action.payload.type}Rooms`]: items}}
+            return { ...state, controlPanel: { ...state.controlPanel, [`${action.payload.type}Rooms`]: items, roomsOrdered: state.controlPanel.roomsOrdered.filter(roomId => roomId !== action.payload.id)}}
         case FETCH_ALL_PROBLEMS:
-            return { ...state, controlPanel: { ...state.controlPanel, problems: action.payload.problems }}            
+            return { ...state, controlPanel: { ...state.controlPanel, problems: action.payload.problems, problemsOrdered: action.payload.problemsOrdered}}            
         case GOT_UPDATE_PROBLEM:
         case GOT_ADD_PROBLEM:
-            return { ...state, controlPanel: { ...state.controlPanel, problems: { ...state.controlPanel.problems, [action.payload.id]: {
-                name: action.payload.name,
-                definition: action.payload.definition,
-                instances: action.payload.instances,
-                createdAt: action.payload.createdAt,
-            }}}}
+            let problemsOrdered = state.controlPanel.problemsOrdered.slice()
+                if (problemsOrdered.indexOf(action.payload.id) === -1)
+                    problemsOrdered.unshift(action.payload.id)
+            return {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    problems: {
+                        ...state.controlPanel.problems,
+                        [action.payload.id]: {
+                            name: action.payload.name,
+                            definition: action.payload.definition,
+                            instances: action.payload.instances,
+                            createdAt: action.payload.createdAt,
+                        }
+                    },
+                    problemsOrdered,
+                }
+            }
         case REMOVE_ALL_PROBLEMS:
-            return { ...state, controlPanel: { ...state.controlPanel, groups: {}}}
+            return { ...state, controlPanel: { ...state.controlPanel, problems: {}, problemsOrdered: []}}
         case GOT_REMOVE_PROBLEM:
             items = {}
             Object.keys(state.controlPanel.problems).forEach((element) => {
@@ -195,63 +221,73 @@ export function SuperescalarReducers(state = initialState, action) {
                     items[element] = state.controlPanel.problems[element]
                 }
             })
-            return { ...state, controlPanel: { ...state.controlPanel, problems: items}}
-            /*case FETCH_ALL_SINGLE_ROOMS:
-            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload}}
-        case GOT_UPDATE_SINGLE_ROOM:
-        case GOT_SINGLE_ROOM:
-            const { name, id, members, problems, createdAt } = action.payload
-            return {...state, controlPanel: { ...state.controlPanel, singleRooms: { ...state.controlPanel.singleRooms, [id]: {name, members, problems, createdAt}}}}
-        case REMOVE_ALL_SINGLE_ROOMS:
-            return {...state, controlPanel: { ...state.controlPanel, singleRooms: null}}
-        case GOT_REMOVE_SINGLE_ROOM:
-            delete state.controlPanel.singleRooms[action.payload.id]
-            return state
-        case FETCH_ALL_GROUP_ROOMS:
-            return { ...state, controlPanel: { ...state.controlPanel, groupRooms: action.payload}}
-        case GOT_UPDATE_GROUP_ROOM:
-        case GOT_ADD_GROUP_ROOM:
-            return {...state, controlPanel: { ...state.controlPanel, groupRooms: { ...state.controlPanel.groupRooms, [action.payload.id]: {
-                name: action.payload.name,
-                members: action.payload.members,
-                problems: action.payload.problems,
-                createdAt: action.payload.createdAt,
-            }}}}
-        case REMOVE_ALL_GROUP_ROOMS:
-            return {...state, controlPanel: { ...state.controlPanel, groupRooms: null}}
-        case GOT_REMOVE_GROUP_ROOM:
-            delete state.controlPanel.groupRooms[action.payload.id]
-            return state*/
+            return { ...state, controlPanel: { ...state.controlPanel, problems: items, problemsOrdered: state.controlPanel.problemsOrdered.filter(problemId => problemId !== action.payload.id)}}
         case FETCH_ALL_GROUPS:
-            return { ...state, controlPanel: { ...state.controlPanel, groups: action.payload.groups, idGroups: Object.keys(action.payload.groups)}}
+            return { ...state, controlPanel: { ...state.controlPanel, groups: action.payload.groups, groupsOrdered: action.payload.groupsOrdered}}
         case GOT_UPDATE_GROUP:
         case GOT_ADD_GROUP:
-            return { ...state, controlPanel: { ...state.controlPanel, groups: { ...state.controlPanel.groups, [action.payload.id]: {
-                name: action.payload.name,
-                members: action.payload.members,
-                leader: action.payload.leader,
-                createdAt: action.payload.createdAt,
-            }}}}
+            let groupsOrdered = state.controlPanel.groupsOrdered.slice()
+                if (groupsOrdered.indexOf(action.payload.id) === -1)
+                    groupsOrdered.unshift(action.payload.id)    
+            return {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    groups: {
+                        ...state.controlPanel.groups,
+                        [action.payload.id]: {
+                            name: action.payload.name,
+                            members: action.payload.members,
+                            leader: action.payload.leader,
+                            createdAt: action.payload.createdAt,
+                        }
+                    },
+                    groupsOrdered,
+                }
+            }
         case REMOVE_ALL_GROUPS:
-            return { ...state, controlPanel: { ...state.controlPanel, groups: {}}}
+            return { ...state, controlPanel: { ...state.controlPanel, groups: {}, groupsOrdered: []}}
         case GOT_REMOVE_GROUP:
-            delete state.controlPanel.groups[action.payload.id]
-            return state
+            items = {}
+            Object.keys(state.controlPanel.groups).forEach((element) => {
+                if (element !== action.payload.id) {
+                    items[element] = state.controlPanel.groups[element]
+                }
+            })
+            return { ...state, controlPanel: { ...state.controlPanel, groups: items, groupsOrdered: state.controlPanel.groupsOrdered.filter(groupId => groupId !== action.payload.id)}}
         case FETCH_ALL_INSTANCES:
-            return { ...state, controlPanel: { ...state.controlPanel, instances: action.payload}}
+            return { ...state, controlPanel: { ...state.controlPanel, instances: action.payload, instancesOrdered: action.payload.instancesOrdered}}
         case GOT_UPDATE_INSTANCE:
         case GOT_INSTANCE:
-            return { ...state, controlPanel: { ...state.controlPanel, instances: { ...state.controlPanel.instances, [action.payload.id]: {
-                name: action.payload.name,
-                initialMem: action.payload.initialMem,
-                finalMem: action.payload.finalMem,
-                createdAt: action.payload.createdAt,
-            }}}}
+            let instancesOrdered = state.controlPanel.instancesOrdered.slice()
+                if (instancesOrdered.indexOf(action.payload.id) === -1)
+                    instancesOrdered.unshift(action.payload.id)   
+            return {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    instances: {
+                        ...state.controlPanel.instances,
+                        [action.payload.id]: {
+                            name: action.payload.name,
+                            initialMem: action.payload.initialMem,
+                            finalMem: action.payload.finalMem,
+                            createdAt: action.payload.createdAt,
+                        }
+                    },
+                    instancesOrdered,
+                }
+            }
         case REMOVE_ALL_INSTANCES:
-            return { ...state, controlPanel: { ...state.controlPanel, instances: {}}}
+            return { ...state, controlPanel: { ...state.controlPanel, instances: {}, instancesOrdered: []}}
         case GOT_REMOVE_INSTANCE:
-            delete state.controlPanel.instances[action.payload.id]
-            return state
+            items = {}
+            Object.keys(state.controlPanel.instance).forEach((element) => {
+                if (element !== action.payload.id) {
+                    items[element] = state.controlPanel.instance[element]
+                }
+            })
+            return { ...state, controlPanel: { ...state.controlPanel, instances: items, instancesOrdered: state.controlPanel.instancesOrdered.filter(instanceId => instanceId !== action.payload.id)}}
         case OPEN_SNACK_BAR:
             return { ...state, controlPanel: { 
                 ...state.controlPanel, snackBarData: {

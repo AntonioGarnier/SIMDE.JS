@@ -42,6 +42,8 @@ const mapStateToProps = (state) => {
         problems: state.controlPanel.problems,
         singleRooms: state.controlPanel.singleRooms,
         groupRooms: state.controlPanel.groupRooms,
+        roomsOrdered: state.controlPanel.roomsOrdered,
+        problemsOrdered: state.controlPanel.problemsOrdered,
     }
 }
 class SettingsRoom extends React.Component {
@@ -58,6 +60,9 @@ class SettingsRoom extends React.Component {
     handleChange = (value) => {
         this.setState({
             slideIndex: value,
+            selectedRoomToUpdateProblem: '',
+            selectedRoomToUpdateName: '',
+            selectedRoomToRemove: '',
         })
     }
 
@@ -161,14 +166,16 @@ class SettingsRoom extends React.Component {
                 {
                     this.state.selectedRoomToUpdateName === ''
                     ? (
-                        <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }} >
                             <GenericList
                                 generic={this.props.singleRooms}
+                                genericOrdered={this.props.roomsOrdered}
                                 handleOnClick={this.handleClickToUpdateRoom}
                                 type="singleRoom"
                             />
                             <GenericList
                                 generic={this.props.groupRooms}
+                                genericOrdered={this.props.roomsOrdered}
                                 handleOnClick={this.handleClickToUpdateRoom}
                                 type="groupRoom"
                             />
@@ -231,14 +238,16 @@ class SettingsRoom extends React.Component {
                 {
                     this.state.selectedRoomToRemove === ''
                     ? (
-                        <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-around' }} >
                             <GenericList
                                 generic={this.props.singleRooms}
+                                genericOrdered={this.props.roomsOrdered}
                                 handleOnClick={this.handleClickToRemoveRoom}
                                 type="singleRoom"
                             />
                             <GenericList
                                 generic={this.props.groupRooms}
+                                genericOrdered={this.props.roomsOrdered}
                                 handleOnClick={this.handleClickToRemoveRoom}
                                 type="groupRoom"
                             />

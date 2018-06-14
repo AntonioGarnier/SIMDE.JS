@@ -26,21 +26,27 @@ const roomRemove$ = new Subject()
 
 export const subscribeRoom = () => (querySnapshot) => {
     let updateType
-    let rooms = {}
+    let rooms = []
+    let singleRooms = {}
+    let groupRooms = {}
     querySnapshot.docChanges().forEach((room) => {
-        rooms[room.doc.id] = room.doc.data()
+        if (room.doc.data().type === 'single')
+            singleRooms[room.doc.id] = room.doc.data()
+        else
+            groupRooms[room.doc.id] = room.doc.data()
+        rooms.push(room.doc.id)
         updateType = room.type
     })
     // console.log('Changes: ', querySnapshot.docChanges())
     switch (updateType) {
         case 'added':
-            roomAdd$.next(rooms)
+            roomAdd$.next({ singleRooms, groupRooms, rooms })
             break
         case 'modified':
-            roomUpdate$.next(rooms)
+            roomUpdate$.next({ singleRooms, groupRooms, rooms })
             break
         case 'removed':
-            roomRemove$.next(rooms)
+            roomRemove$.next({ singleRooms, groupRooms, rooms })
             break
         default:
             break
@@ -48,41 +54,32 @@ export const subscribeRoom = () => (querySnapshot) => {
 }
 
 export const listenRoom = firestore.collection('rooms')
-    .orderBy('createdAt')
+    .orderBy('createdAt', 'desc')
 
 export const roomEpic = action$ =>
     action$.pipe(
         ofType(FETCHING_ROOMS),
-        // tap(v => console.log('Antes de flat: ', v)),        
         flatMap(() => (
             roomAdd$.pipe(
-                // tap(v => console.log('add: ', v)),
-                map((rooms) => {
-                    if (Object.keys(rooms).length > 1) {
-                        // console.log('+++', rooms)
-                        // console.log('***', Object.keys(rooms))
-                        let singleRooms = {}
-                        let groupRooms = {}
-                        Object.keys(rooms).forEach((element) => {
-                            if (rooms[element].type === 'single')
-                                singleRooms[element] = rooms[element]
-                            else
-                                groupRooms[element] = rooms[element] 
-                        })
+                // tap(v => console.log('ADD: ', v)),       
+                map(({ singleRooms, groupRooms, rooms }) => {
+                    // console.log('Diference between: ', [rooms[0]], ' and ', rooms[0])
+                    if (rooms.length > 1) {
                         return {
                             type: FETCH_ALL_ROOMS,
                             payload: {
                                 singleRooms,
                                 groupRooms,
+                                roomsOrdered: rooms,
                             }
                         }
                     }
-                    const room = Object.values(rooms).shift()
+                    let room = singleRooms.hasOwnProperty(rooms[0]) ? singleRooms[rooms[0]] : groupRooms[rooms[0]]
                     return {
                         type: GOT_ADD_ROOM,
                         payload: {
                             name: room.name,
-                            id: Object.keys(rooms).shift(),
+                            id: rooms[0],
                             members: room.members,
                             type: room.type,
                             visibility: room.visibility,
@@ -93,29 +90,29 @@ export const roomEpic = action$ =>
                 }),
                 merge(roomRemove$.pipe(
                     // tap(v => console.log('remove: ', v)),
-                    map((rooms) => {
-                        if (Object.keys(rooms).length > 1)
+                    map(({ singleRooms, groupRooms, rooms }) => {
+                        if (rooms.length > 1)
                             return {
                                 type: REMOVE_ALL_ROOMS,
                             }
-                        const room = Object.values(rooms).shift()
+                        let room = singleRooms.hasOwnProperty(rooms[0]) ? singleRooms[rooms[0]] : groupRooms[rooms[0]]
                         return {
                             type: GOT_REMOVE_ROOM,
                             payload: {
-                                id: Object.keys(rooms).shift(),
+                                id: rooms[0],
                                 type: room.type,
                             },
                         }
                     }),
                     merge(roomUpdate$.pipe(
                         // tap(v => console.log('update: ', v)),
-                        map((rooms) => {
-                            const room = Object.values(rooms).shift()
+                        map(({ singleRooms, groupRooms, rooms }) => {
+                            let room = singleRooms.hasOwnProperty(rooms[0]) ? singleRooms[rooms[0]] : groupRooms[rooms[0]]
                             return {
                                 type: GOT_UPDATE_ROOM,
                                 payload: {
                                     name: room.name,
-                                    id: Object.keys(rooms).shift(),
+                                    id: rooms[0],
                                     members: room.members,
                                     type: room.type,
                                     visibility: room.visibility,

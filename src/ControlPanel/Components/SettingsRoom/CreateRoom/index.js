@@ -31,9 +31,7 @@ const mapStateToProps = (state) => {
     return {
         user: state.controlPanel.user,
         problems: state.controlPanel.problems,
-        singleRooms: state.controlPanel.singleRooms,
-        groupRooms: state.controlPanel.groupRooms,
-        groups: state.controlPanel.groups,
+        problemsOrdered: state.controlPanel.problemsOrdered,
     }
 }
 
@@ -165,7 +163,7 @@ class CreateRoom extends React.Component {
                     Select which problems will be in the room.
                 </h3>
                 <SelectProblems
-                    problems={this.props.problems}
+                    problems={this.props.problemsOrdered}
                     selectedProblems={this.state.selectedProblems}
                     handleOnClickSelectedProblem={this.handleOnClickSelectedProblem}
                     handleOnClickProblem={this.handleOnClickProblem}

@@ -15,28 +15,32 @@ const mapStateToProps = (state) => {
     )
     return {
         user: state.controlPanel.user,
-        singleRooms: single,
-        groupRooms: group,
+        singleRooms: state.controlPanel.singleRooms,
+        groupRooms: state.controlPanel.groupRooms,
+        roomsOrdered: state.controlPanel.roomsOrdered,
     }
 }
 
 const RoomList = ({ 
     singleRooms,
     groupRooms,
+    roomsOrdered,
 }) => {
     return (
         <div style={{ display: 'flex' }} >
             <CustomList
                 title="Single Rooms"
                 path="/room-list/"
-                iconType="single"
+                iconType="singleRoom"
                 itemList={singleRooms}
+                orderedList={roomsOrdered}
             />
             <CustomList
                 title="Group Rooms"
                 path="/room-list/"
-                iconType="group"
+                iconType="groupRoom"
                 itemList={groupRooms}
+                orderedList={roomsOrdered}
             />
         </div>
     )

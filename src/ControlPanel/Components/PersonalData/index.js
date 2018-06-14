@@ -12,7 +12,9 @@ const mapStateToProps = (state) => {
         user: state.controlPanel.user,
         singleRooms: state.controlPanel.singleRooms,
         groupRooms: state.controlPanel.groupRooms,
+        roomsOrdered: state.controlPanel.roomsOrdered,
         groups: state.controlPanel.groups,
+        groupsOrdered: state.controlPanel.groupsOrdered,
     }
 }
 
@@ -20,28 +22,32 @@ const PersonalData = ({
     user,
     singleRooms,
     groupRooms,
+    roomsOrdered,
     groups,
+    groupsOrdered,
 }) => {
 
     const userGroups = {}
     Object.keys(groups).forEach((id) => {
         if (groups[id].members.hasOwnProperty(user.uid))
-            userGroups[id] = groups[id].name
+            userGroups[id] = groups[id]
     })
     let userSingleRooms = {}
     Object.keys(singleRooms).forEach((id) => {
         if (singleRooms[id].members.hasOwnProperty(user.uid))
-            userSingleRooms[id] = singleRooms[id].name
+            userSingleRooms[id] = singleRooms[id]
     })
 
     let userGroupRooms = {}
     Object.keys(groupRooms).forEach((groupRoomId) => {
         Object.keys(userGroups).forEach((userGroupId) => {
             if (groupRooms[groupRoomId].members.hasOwnProperty(userGroupId))
-                userGroupRooms[groupRoomId] = groupRooms[groupRoomId].name
+                userGroupRooms[groupRoomId] = groupRooms[groupRoomId]
         })
     })
-
+    /*console.log('userGroups: ', userGroups)
+    console.log('userSingleRooms: ', userSingleRooms)
+    console.log('userGroupRooms: ', userGroupRooms)*/
 
     return (
         <div className="infoStyle" >
@@ -69,20 +75,23 @@ const PersonalData = ({
                 <CustomList
                     title="Single Rooms"
                     path="/room-list/"
-                    iconType="single"
+                    iconType="singleRoom"
                     itemList={userSingleRooms}
+                    orderedList={roomsOrdered}
                 />
                 <CustomList
                     title="Group Rooms"
                     path="/room-list/"
-                    iconType="group"
+                    iconType="groupRoom"
                     itemList={userGroupRooms}
+                    orderedList={roomsOrdered}
                 />
                 <CustomList 
                     title="Groups"
                     path="/group-list/"
                     iconType="group"
                     itemList={userGroups}
+                    orderedList={groupsOrdered}                
                 />
             </div>
         </div>
