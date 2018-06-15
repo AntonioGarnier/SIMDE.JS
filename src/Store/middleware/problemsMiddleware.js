@@ -103,7 +103,7 @@ const problemsMiddleware = store => next => (action) => {
         case UPDATE_INSTANCES_PROBLEM:
             firestore.collection('problems').doc(action.payload.id)
                 .update({
-                    problems: action.payload.problems,
+                    instances: action.payload.instances,
                 })
                 .then(() => store.dispatch({
                     type: OPEN_SNACK_BAR,

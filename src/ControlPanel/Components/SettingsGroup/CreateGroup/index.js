@@ -56,7 +56,6 @@ class CreateGroup extends React.Component {
     handleOnChangeName = debounce (
         300,
         (event, value) => {
-            console.log('CAMBIA NAME: ', value)
             this.setState({
                 groupName: value,
             })
@@ -66,7 +65,6 @@ class CreateGroup extends React.Component {
     handleOnChangePassword = debounce (
         300,
         (event, value) => {
-            console.log('CAMBIA PW: ', value)
             this.setState({
                 groupPassword: value,
             })

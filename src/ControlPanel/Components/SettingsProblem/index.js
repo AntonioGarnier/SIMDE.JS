@@ -121,7 +121,7 @@ class SettingsProblem extends React.Component {
             instances[instance] = true
         ))
         if (Object.keys(instances).length > 0) {
-            this.props.updateInstancesRoom(this.state.selectedProblemToUpdate, instances)
+            this.props.updateInstancesProblem(this.state.selectedProblemToUpdate, instances)
             this.setState({
                 selectedInstances: [],
             })

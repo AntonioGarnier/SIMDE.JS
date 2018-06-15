@@ -94,18 +94,7 @@ export const initialState = {
         roomsOrdered: [],
         groups: {},
         groupsOrdered: [],
-        instances: {
-            INST_ID: {
-                name: "Instancia 1",
-                initMem: "MEM: [40] 2 4 3 5 3 19 28",
-                finalMem: "memoria final"
-            },
-            INST_ID2: {
-                name: "Instancia 2",
-                initMem: "memoria inicial",
-                finalMem: "memoria final"
-            }
-        },
+        instances: {},
         instancesOrdered: [],
         problems: {},
         problemsOrdered: [],

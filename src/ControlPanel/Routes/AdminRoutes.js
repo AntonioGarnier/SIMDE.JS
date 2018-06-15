@@ -6,6 +6,7 @@ import Welcome from '../Components/Welcome'
 import SettingsRoom from '../Components/SettingsRoom'
 import SettingsProblem from '../Components/SettingsProblem'
 import SettingsGroup from '../Components/SettingsGroup'
+import SettingsInstance from '../Components/SettingsInstance'
 import RoomList from '../Components/RoomList'
 import GroupList from '../Components/GroupList'
 
@@ -23,7 +24,7 @@ export default function AdminRoutes() {
                 <Route sensitive exact path="/room-settings" component={SettingsRoom} />
                 <Route sensitive path="/group-settings" component={SettingsGroup} />
                 <Route sensitive path="/problem-settings" component={SettingsProblem} />
-                <Route sensitive path="/instance-settings" render={() => <h1>INSTANCE SETTINGS</h1>} />
+                <Route sensitive path="/instance-settings" component={SettingsInstance} />
                 <Route sensitive path="/about" render={() => <h1>ABOUT</h1>} />
                 <Route render={() => <Redirect to="/" />} />
             </Switch>

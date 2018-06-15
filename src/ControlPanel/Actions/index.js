@@ -11,6 +11,7 @@ import {
     REMOVE_ROOM,
     UPDATE_NAME_ROOM,
     UPDATE_PROBLEMS_ROOM,
+    UPDATE_VISIBILITY_ROOM,
     CLOSE_SNACK_BAR,
     OPEN_SNACK_BAR,
     ADD_PROBLEM,
@@ -20,9 +21,30 @@ import {
     UPDATE_DEFINITION_PROBLEM,
     ADD_GROUP,
     REMOVE_GROUP,
-    UPDATE_VISIBILITY_ROOM,
+    REMOVE_INSTANCE,
+    ADD_INSTANCE,
 } from '../Constants'
 
+
+export function addInstance(instance) {
+    return {
+        type: ADD_INSTANCE,
+        payload: {
+            name: instance.name,
+            initial: instance.initial,
+            final: instance.final,
+        }
+    }
+}
+
+export function removeInstance(id) {
+    return {
+        type: REMOVE_INSTANCE,
+        payload: {
+            id,
+        }
+    }
+}
 
 export function removeGroup(id, leader) {
     return {

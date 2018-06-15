@@ -20,7 +20,7 @@ export class ContentIntegration {
             }
             else if (lines[i].match(/^\[\d+\]/)) {
                 this.parseLine(lines[i]);
-            }
+            } else throw new Error('Unexpected content type');
         }
     }
     parseContent(value) {

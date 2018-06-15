@@ -256,7 +256,7 @@ export function SuperescalarReducers(state = initialState, action) {
             })
             return { ...state, controlPanel: { ...state.controlPanel, groups: items, groupsOrdered: state.controlPanel.groupsOrdered.filter(groupId => groupId !== action.payload.id)}}
         case FETCH_ALL_INSTANCES:
-            return { ...state, controlPanel: { ...state.controlPanel, instances: action.payload, instancesOrdered: action.payload.instancesOrdered}}
+            return { ...state, controlPanel: { ...state.controlPanel, instances: action.payload.instances, instancesOrdered: action.payload.instancesOrdered}}
         case GOT_UPDATE_INSTANCE:
         case GOT_INSTANCE:
             let instancesOrdered = state.controlPanel.instancesOrdered.slice()
@@ -270,13 +270,8 @@ export function SuperescalarReducers(state = initialState, action) {
                         ...state.controlPanel.instances,
                         [action.payload.id]: {
                             name: action.payload.name,
-                            initGPR: action.payload.initGPR,
-                            initFPR: action.payload.initFPR,
-                            initMEM: action.payload.initMEM,
-                            finalGPR: action.payload.finalGPR,
-                            finalFPR: action.payload.finalFPR,
-                            initialMem: action.payload.initialMem,
-                            finalMEM: action.payload.finalMEM,
+                            initial: action.payload.initial,
+                            final: action.payload.final,
                             createdAt: action.payload.createdAt,
                         }
                     },
@@ -287,9 +282,9 @@ export function SuperescalarReducers(state = initialState, action) {
             return { ...state, controlPanel: { ...state.controlPanel, instances: {}, instancesOrdered: []}}
         case GOT_REMOVE_INSTANCE:
             items = {}
-            Object.keys(state.controlPanel.instance).forEach((element) => {
+            Object.keys(state.controlPanel.instances).forEach((element) => {
                 if (element !== action.payload.id) {
-                    items[element] = state.controlPanel.instance[element]
+                    items[element] = state.controlPanel.instances[element]
                 }
             })
             return { ...state, controlPanel: { ...state.controlPanel, instances: items, instancesOrdered: state.controlPanel.instancesOrdered.filter(instanceId => instanceId !== action.payload.id)}}

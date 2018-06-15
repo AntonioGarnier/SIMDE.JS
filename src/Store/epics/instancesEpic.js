@@ -4,7 +4,7 @@ import { Subject } from 'rxjs'
 import {
     map,
     flatMap,
-    // tap,
+    tap,
     merge,
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
@@ -57,7 +57,7 @@ export const instancesEpic = action$ =>
         //tap(v => console.log('Antes de flat: ', v)),        
         flatMap(() => (
             instanceAdd$.pipe(
-                //tap(v => console.log('add: ', v)),
+                tap(v => console.log('add: ', v)),
                 map(({ instances, instancesOrdered }) => {
                     if (instancesOrdered.length > 1)
                         return {
@@ -73,18 +73,14 @@ export const instancesEpic = action$ =>
                         payload: {
                             id: instancesOrdered[0],
                             name: instance.name,
-                            initGPR: instance.initGPR,
-                            initFPR: instance.initFPR,
-                            initMEM: instance.initMEM,
-                            finalGPR: instance.finalGPR,
-                            finalFPR: instance.finalFPR,
-                            finalMEM: instance.finalMEM,
+                            initial: instance.initial,
+                            final: instance.final,
                             createdAt: instance.createdAt,
                         },
                     }
                 }),
                 merge(instanceRemove$.pipe(
-                    //tap(v => console.log('remove: ', v)),
+                    tap(v => console.log('remove: ', v)),
                     map(({ instances, instancesOrdered }) => {
                         if (instancesOrdered.length > 1)
                             return {
@@ -98,7 +94,7 @@ export const instancesEpic = action$ =>
                         }
                     }),
                     merge(instanceUpdate$.pipe(
-                        //tap(v => console.log('update: ', v)),
+                        tap(v => console.log('update: ', v)),
                         map(({ instances, instancesOrdered }) => {
                             const instance = instances[instancesOrdered[0]]
                             return {
@@ -106,12 +102,8 @@ export const instancesEpic = action$ =>
                                 payload: {
                                     id: instancesOrdered[0],
                                     name: instance.name,
-                                    initGPR: instance.initGPR,
-                                    initFPR: instance.initFPR,
-                                    initMEM: instance.initMEM,
-                                    finalGPR: instance.finalGPR,
-                                    finalFPR: instance.finalFPR,
-                                    finalMEM: instance.finalMEM,
+                                    initial: instance.initial,
+                                    final: instance.final,
                                     createdAt: instance.createdAt,
                                 },
                             }
