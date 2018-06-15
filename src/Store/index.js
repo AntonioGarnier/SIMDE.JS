@@ -80,14 +80,14 @@ export const initialState = {
         actualPath: '',
         toggleSideBar: false,
         isLoading: true,
-        popUp: {
+        popUpData: {
+            title: '',
             open: false,
-            message: '',
         },
         snackBarData: {
-            open: false,
             message: '',
             type: '',
+            open: false,
         },
         singleRooms: {},
         groupRooms: {},

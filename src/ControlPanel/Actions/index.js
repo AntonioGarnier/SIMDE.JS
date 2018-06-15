@@ -23,6 +23,8 @@ import {
     REMOVE_GROUP,
     REMOVE_INSTANCE,
     ADD_INSTANCE,
+    OPEN_POP_UP,
+    CLOSE_POP_UP,
 } from '../Constants'
 
 
@@ -64,6 +66,21 @@ export function addGroup(group) {
             password: group.password,
             leader: group.leader,
             members: {},
+        }
+    }
+}
+
+export function closePopUp() {
+    return {
+        type: CLOSE_POP_UP,
+    }
+}
+
+export function openPopUp(title) {
+    return {
+        type: OPEN_POP_UP,
+        payload: {
+            title,
         }
     }
 }

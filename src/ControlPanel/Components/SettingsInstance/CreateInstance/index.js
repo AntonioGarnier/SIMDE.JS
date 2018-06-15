@@ -111,7 +111,7 @@ class CreateInstance extends React.Component {
         if (this.state.instanceName.length <= 3 || Object.keys(this.state.instanceInitialData).length === 0 || Object.keys(this.state.instanceFinalData).length === 0)
             this.props.openSnackBar('WARNING: Name length > 3. Initial & final state must not be empty', 'warning')
         else {
-            let initial = {
+            /*let initial = {
                 FPRContent: this.state.instanceInitialData.FPRContent,
                 GPRContent: this.state.instanceInitialData.GPRContent,
                 MEMContent: this.state.instanceInitialData.MEMContent,
@@ -124,7 +124,7 @@ class CreateInstance extends React.Component {
                 MEMContent: this.state.instanceFinalData.MEMContent,
                 currentContent: this.state.instanceFinalData.currentContent,
                 input: this.state.instanceFinalData.input,
-            }
+            }*/
 
 
             this.props.addInstance({

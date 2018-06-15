@@ -5,6 +5,10 @@ export const INITIALIZE_APP = 'INITIALIZE_APP'
 export const CLOSE_SNACK_BAR = 'CLOSE_SNACK_BAR'
 export const OPEN_SNACK_BAR = 'OPEN_SNACK_BAR'
 
+// Action POPUP
+export const OPEN_POP_UP = 'OPEN_POP_UP'
+export const CLOSE_POP_UP = 'CLOSE_POP_UP'
+
 // Action SIDEBAR
 export const OPEN_SIDE_BAR = 'OPEN_SIDE_BAR'
 export const CLOSE_SIDE_BAR = 'CLOSE_SIDE_BAR'

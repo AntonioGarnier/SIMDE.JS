@@ -35,6 +35,8 @@ import {
     GOT_UPDATE_INSTANCE,
     OPEN_SNACK_BAR,
     CLOSE_SNACK_BAR,
+    OPEN_POP_UP,
+    CLOSE_POP_UP,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -296,6 +298,14 @@ export function SuperescalarReducers(state = initialState, action) {
             return { ...state, controlPanel: { 
                 ...state.controlPanel, snackBarData: {
                      ...state.controlPanel.snackBarData, open: false}}}
+        case OPEN_POP_UP:
+            return { ...state, controlPanel: { 
+                ...state.controlPanel, popUpData: {
+                    ...state.controlPanel.popUpData, open: true, title: action.payload.title}}}
+        case CLOSE_POP_UP:
+            return { ...state, controlPanel: { 
+                ...state.controlPanel, popUpData: {
+                    ...state.controlPanel.popUpData, open: false}}}
         default:
             return state
     }

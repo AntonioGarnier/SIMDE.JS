@@ -9,6 +9,7 @@ import SettingsGroup from '../Components/SettingsGroup'
 import SettingsInstance from '../Components/SettingsInstance'
 import RoomList from '../Components/RoomList'
 import GroupList from '../Components/GroupList'
+import GroupView from '../Components/GroupView'
 
 export default function AdminRoutes() {
     return (
@@ -20,7 +21,7 @@ export default function AdminRoutes() {
                 <Route sensitive exact path="/room-list" component={RoomList} />
                 <Route sensitive exact path="/group-list" component={GroupList} />
                 <Route sensitive path="/room-list/:room" render={() => <h1>ONE ROOM</h1>} />
-                <Route sensitive path="/group-list/:group" render={() => <h1>ONE GROUP</h1>} />
+                <Route sensitive path="/group-list/:group" component={GroupView} />
                 <Route sensitive exact path="/room-settings" component={SettingsRoom} />
                 <Route sensitive path="/group-settings" component={SettingsGroup} />
                 <Route sensitive path="/problem-settings" component={SettingsProblem} />

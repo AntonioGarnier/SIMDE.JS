@@ -8,6 +8,7 @@ import firebase from './Components/FirebaseProvider/firebase'
 import { AnonymousRoutes, LoggedRoutes, AdminRoutes } from './Routes'
 import Loading from './Components/Loading'
 import SnackBarMessage from './Components/SnackBarMessage'
+import PopUp from './Components/PopUp'
 import {
     setUser,
     checkingUser,
@@ -81,6 +82,7 @@ class Panel extends Component {
                         : <AnonymousRoutes />
                 }
                 <SnackBarMessage/>
+                <PopUp/>
             </div>
         )
     }

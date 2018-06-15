@@ -19,7 +19,6 @@ const mapStateToProps = (state) => {
 }
 
 
-
 const SnackBarMessage = (props) => {
 
     this.getSnackStyle = () => {
