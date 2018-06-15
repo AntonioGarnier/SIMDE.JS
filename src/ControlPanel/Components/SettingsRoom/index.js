@@ -4,13 +4,16 @@ import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import SwipeableViews from 'react-swipeable-views'
-import RaisedButton from 'material-ui/RaisedButton';
+import RaisedButton from 'material-ui/RaisedButton'
+import Toggle from 'material-ui/Toggle'
+import Divider from 'material-ui/Divider'
 import CreateRoom from './CreateRoom'
 import GenericList from '../GenericList'
 import SelectProblems from '../SelectProblems'
 import {
     updateNameRoom,
     updateProblemsRoom,
+    updateVisibilityRoom,
     removeRoom,
     openSnackBar,
 } from '../../Actions'
@@ -32,6 +35,7 @@ const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         updateNameRoom,
         updateProblemsRoom,
+        updateVisibilityRoom,
         removeRoom,
         openSnackBar,
     }, dispatch)
@@ -51,8 +55,7 @@ class SettingsRoom extends React.Component {
     state = {
         slideIndex: 0,
         selectedProblems: [],
-        selectedRoomToUpdateProblem: '',
-        selectedRoomToUpdateName: '',
+        selectedRoomToUpdate: '',
         selectedRoomToRemove: '',
         selectedName: '',
     }
@@ -60,8 +63,7 @@ class SettingsRoom extends React.Component {
     handleChange = (value) => {
         this.setState({
             slideIndex: value,
-            selectedRoomToUpdateProblem: '',
-            selectedRoomToUpdateName: '',
+            selectedRoomToUpdate: '',
             selectedRoomToRemove: '',
         })
     }
@@ -82,8 +84,7 @@ class SettingsRoom extends React.Component {
 
     handleOnClickBackToList = () => {
         this.setState({
-            selectedRoomToUpdateProblem: '',
-            selectedRoomToUpdateName: '',
+            selectedRoomToUpdate: '',
         })
     }
 
@@ -105,8 +106,7 @@ class SettingsRoom extends React.Component {
             problems[problem] = true
         ))
         if (Object.keys(problems).length > 0) {
-            this.props.updateProblemsRoom(this.state.selectedRoomToUpdateProblem, problems)
-            this.props.openSnackBar('SUCCESS: Room problems updated', 'success')
+            this.props.updateProblemsRoom(this.state.selectedRoomToUpdate, problems)
             this.setState({
                 selectedProblems: [],
             })
@@ -115,33 +115,42 @@ class SettingsRoom extends React.Component {
     }
 
     handleOnClickUpdateName = () => {
-        if (this.state.selectedName !== '') {
-            this.props.updateNameRoom(this.state.selectedRoomToUpdateName, this.state.selectedName)
-            this.props.openSnackBar('SUCCESS: Room name updated!', 'success')
-        }
+        if (this.state.selectedName.length > 3)
+            this.props.updateNameRoom(this.state.selectedRoomToUpdate, this.state.selectedName)
         else
-            this.props.openSnackBar('WARNING: Check empty name!', 'warning')
+            this.props.openSnackBar('WARNING: Check name length (> 3) !', 'warning')
 
     }
 
     handleClickRoomToRemove = () => {
         this.handleOnClickBackToListFromRemove()
         this.props.removeRoom(this.state.selectedRoomToRemove)
-        this.props.openSnackBar('SUCCESS: Room removed!', 'success')
+    }
+
+    scrollTop = () => {
+        window.scroll(0, 0)
     }
 
     handleClickToUpdateRoom = (id) => {
         this.setState({
-            selectedRoomToUpdateProblem: id,
-            selectedRoomToUpdateName: id,
-        })
+            selectedRoomToUpdate: id,
+        }, this.scrollTop())
     }
 
     handleClickToRemoveRoom = (id) => {
         this.setState({
             selectedRoomToRemove: id,
-        })
+        }, this.scrollTop())
     }
+
+    handleOnToggleVisibility = (event, value) => {
+        let type = this.props.singleRooms[this.state.selectedRoomToUpdate]
+            ? `${this.props.singleRooms[this.state.selectedRoomToUpdate].type}Rooms`
+            : `${this.props.groupRooms[this.state.selectedRoomToUpdate].type}Rooms`
+        if (value !== this.props[type][this.state.selectedRoomToUpdate])
+            this.props.updateVisibilityRoom(this.state.selectedRoomToUpdate, value)
+    }
+    
 
     render() {
         return (
@@ -152,7 +161,7 @@ class SettingsRoom extends React.Component {
                 value={this.state.slideIndex}
             >
                 <Tab label="Create room" value={0} />
-                <Tab label="Update Name & Problems" value={1} />
+                <Tab label="Update Name, Problems & Visibility" value={1} />
                 <Tab label="Remove room" value={2} />
             </Tabs>
             <SwipeableViews
@@ -164,7 +173,7 @@ class SettingsRoom extends React.Component {
             </div>
             <div style={styles.slide}>
                 {
-                    this.state.selectedRoomToUpdateName === ''
+                    this.state.selectedRoomToUpdate === ''
                     ? (
                         <div style={{ display: 'flex', justifyContent: 'space-around' }} >
                             <GenericList
@@ -194,34 +203,42 @@ class SettingsRoom extends React.Component {
                                     label="Update Name"
                                     onClick={this.handleOnClickUpdateName}
                                 />
-                            <h3>Changing name of room: </h3>
+                            <h3>Change name: </h3>
                             {
-                                this.props.singleRooms[this.state.selectedRoomToUpdateName]
-                                ? this.props.singleRooms[this.state.selectedRoomToUpdateName].name 
-                                : this.props.groupRooms[this.state.selectedRoomToUpdateName].name
+                                this.props.singleRooms[this.state.selectedRoomToUpdate]
+                                ? this.props.singleRooms[this.state.selectedRoomToUpdate].name 
+                                : this.props.groupRooms[this.state.selectedRoomToUpdate].name
                             }
                             </div>
                             <TextField
                                 floatingLabelText="New room name"
                                 onChange={this.handleOnChangeName}
                             />
+                            <Divider style={{ backgroundColor: 'white', height: '35px' }} />
+                            <h3>Change visibility: </h3>
+                            <Toggle
+                                style={{ maxWidth: '250px' }}
+                                toggled={
+                                    this.props.singleRooms[this.state.selectedRoomToUpdate]
+                                        ? this.props.singleRooms[this.state.selectedRoomToUpdate].visibility
+                                        : this.props.groupRooms[this.state.selectedRoomToUpdate].visibility
+                                }
+                                label="Visibility"
+                                onToggle={this.handleOnToggleVisibility}
+                            />
+                            <Divider style={{ backgroundColor: 'white', height: '35px' }}/>
                             <div>
-                                <RaisedButton
-                                    style={{ marginRight: '15px' }}
-                                    label="Back"
-                                    onClick={this.handleOnClickBackToList}
-                                />
                                 <RaisedButton 
                                     primary
                                     label="Update Problems"
                                     onClick={this.handleOnClickUpdateProblems}
                                 />
                             </div>
-                            <h3>Updating problems of room: </h3>
+                            <h3>Update problems: </h3>
                             {
-                                this.props.singleRooms[this.state.selectedRoomToUpdateProblem]
-                                ? this.props.singleRooms[this.state.selectedRoomToUpdateProblem].name 
-                                : this.props.groupRooms[this.state.selectedRoomToUpdateProblem].name
+                                this.props.singleRooms[this.state.selectedRoomToUpdate]
+                                ? this.props.singleRooms[this.state.selectedRoomToUpdate].name 
+                                : this.props.groupRooms[this.state.selectedRoomToUpdate].name
                             }
                             <SelectProblems
                                 problems={this.props.problems}

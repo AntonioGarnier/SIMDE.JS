@@ -29,7 +29,7 @@ const PersonalData = ({
 
     const userGroups = {}
     Object.keys(groups).forEach((id) => {
-        if (groups[id].members.hasOwnProperty(user.uid))
+        if (groups[id].members.hasOwnProperty(user.uid) || groups[id].leader === user.uid)
             userGroups[id] = groups[id]
     })
     let userSingleRooms = {}

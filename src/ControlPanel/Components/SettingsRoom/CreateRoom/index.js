@@ -125,8 +125,8 @@ class CreateRoom extends React.Component {
         this.state.selectedProblems.forEach((problem) => (
             problems[problem] = true
         ))
-        if (this.state.roomName.length < 3 ||  this.state.roomPassword.length < 3)
-            this.props.openSnackBar('ERROR: Could NOT create the room. Check the room name or password', 'error')
+        if (this.state.roomName.length <= 3 ||  this.state.roomPassword.length <= 3)
+            this.props.openSnackBar('WARNING: Name and password length should be > 3', 'warning')
         else {
             this.props.addRoom({
                 name: this.state.roomName,
@@ -136,7 +136,6 @@ class CreateRoom extends React.Component {
                 type: this.state.roomType,
                 password: this.state.roomPassword,
             })
-            this.props.openSnackBar('SUCCESS: Room created!', 'success')
             this.restartState()
         }
     }
@@ -147,7 +146,7 @@ class CreateRoom extends React.Component {
             return (
             <div>
                 <h3>
-                    Add a room name.
+                    Add a name.
                 </h3>
                 <TextField 
                     style={{marginTop: 0}}

@@ -16,7 +16,7 @@ import RichEditor from '../../RichEditor'
 import {
     addProblem,
     openSnackBar,
-} from '../../../Actions/'
+} from '../../../Actions'
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
@@ -105,15 +105,14 @@ class CreateProblem extends React.Component {
         this.state.selectedInstances.forEach((instance) => (
             instances[instance] = true
         ))
-        if (this.state.problemName.length < 3 ||  this.state.problemDefinition.length < 3)
-            this.props.openSnackBar('ERROR: Could NOT create the problem. Check the problem name or definition', 'error')
+        if (this.state.problemName.length <= 3 ||  this.state.problemDefinition.length <= 3)
+            this.props.openSnackBar('WARNING: Name or definition length should be > 3', 'warning')
         else {
             this.props.addProblem({
                 name: this.state.problemName,
                 definition: this.state.problemDefinition,
                 instances,
             })
-            this.props.openSnackBar('SUCCESS: Problem created!', 'success')
             this.restartState()
         }
     }
@@ -124,7 +123,7 @@ class CreateProblem extends React.Component {
             return (
             <div>
                 <h3>
-                    Add a problem name.
+                    Add a name.
                 </h3>
                 <TextField 
                     style={{marginTop: 0}}

@@ -270,8 +270,13 @@ export function SuperescalarReducers(state = initialState, action) {
                         ...state.controlPanel.instances,
                         [action.payload.id]: {
                             name: action.payload.name,
+                            initGPR: action.payload.initGPR,
+                            initFPR: action.payload.initFPR,
+                            initMEM: action.payload.initMEM,
+                            finalGPR: action.payload.finalGPR,
+                            finalFPR: action.payload.finalFPR,
                             initialMem: action.payload.initialMem,
-                            finalMem: action.payload.finalMem,
+                            finalMEM: action.payload.finalMEM,
                             createdAt: action.payload.createdAt,
                         }
                     },

@@ -2,8 +2,6 @@ import React from 'react'
 import PersonPin from 'material-ui/svg-icons/maps/person-pin'
 import Info from 'material-ui/svg-icons/action/info'
 import Group from 'material-ui/svg-icons/social/group'
-import Code from 'material-ui/svg-icons/action/code'
-import Problem from 'material-ui/svg-icons/action/extension'
 import GroupWork from 'material-ui/svg-icons/action/group-work'
 import Settings from 'material-ui/svg-icons/action/settings'
 import Desktop from 'material-ui/svg-icons/hardware/desktop-windows'
@@ -50,16 +48,6 @@ export const sideBarElementsAdmin = [
         leftIcon: <GroupWork />,
     },
     {
-        name: 'Problem List',
-        to: '/problem-list',
-        leftIcon: <Problem />,
-    },
-    {
-        name: 'Instance List',
-        to: '/instance-list',
-        leftIcon: <Code />,
-    },
-    {
         name: 'Problem Settings',
         to: '/problem-settings',
         leftIcon: <Settings />,
@@ -76,7 +64,7 @@ export const sideBarElementsAdmin = [
     },
     {
         name: 'Instance Settings',
-        to: '/Instance-settings',
+        to: '/instance-settings',
         leftIcon: <Settings />,
     },
     {

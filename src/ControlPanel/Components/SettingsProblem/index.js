@@ -1,10 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { debounce } from 'throttle-debounce'
 import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
 import {Tabs, Tab} from 'material-ui/Tabs'
 import SwipeableViews from 'react-swipeable-views'
 import RaisedButton from 'material-ui/RaisedButton'
+import Divider from 'material-ui/Divider'
 import TextField from 'material-ui/TextField/TextField'
 import CreateProblem from './CreateProblem'
 import GenericList from '../GenericList'
@@ -12,6 +14,7 @@ import SelectInstances from '../SelectInstances'
 import {
     updateNameProblem,
     updateInstancesProblem,
+    updateDefinitionProblem,
     removeProblem,
     openSnackBar,
 } from '../../Actions'
@@ -34,6 +37,7 @@ const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         updateNameProblem,
         updateInstancesProblem,
+        updateDefinitionProblem,
         removeProblem,
         openSnackBar,
     }, dispatch)
@@ -52,18 +56,17 @@ class SettingsProblem extends React.Component {
     state = {
         slideIndex: 0,
         selectedInstances: [],
-        selectedProblemToUpdateInstance: '',
-        selectedProblemToUpdateName: '',
+        selectedProblemToUpdate: '',
         selectedProblemToRemove: '',
         selectedName: '',
+        problemDefinition: '',
     }
 
     handleChange = (value) => {
         this.setState({
             slideIndex: value,
             selectedInstances: [],
-            selectedProblemToUpdateInstance: '',
-            selectedProblemToUpdateName: '',
+            selectedProblemToUpdate: '',
             selectedProblemToRemove: '',
         })
     }
@@ -84,8 +87,7 @@ class SettingsProblem extends React.Component {
 
     handleOnClickBackToList = () => {
         this.setState({
-            selectedProblemToUpdateInstance: '',
-            selectedProblemToUpdateName: '',
+            selectedProblemToUpdate: '',
         })
     }
 
@@ -95,11 +97,23 @@ class SettingsProblem extends React.Component {
         })
     }
     
-    handleOnChangeName = (event, value) => {
-        this.setState({
-            selectedName: value,
-        })
-    }
+    handleChangeEditorContent = debounce (
+        300,
+        (value) => {
+            this.setState({
+                problemDefinition: value,
+            })
+        }
+    )
+
+    handleOnChangeName = debounce (
+        300,
+        (event, value) => {
+            this.setState({
+                selectedName: value,
+            })
+        }
+    )
 
     handleOnClickUpdateInstances = () => {
         let instances = {}
@@ -107,8 +121,7 @@ class SettingsProblem extends React.Component {
             instances[instance] = true
         ))
         if (Object.keys(instances).length > 0) {
-            this.props.updateInstancesRoom(this.state.selectedProblemToUpdateInstance, instances)
-            this.props.openSnackBar('SUCCESS: Problem instances updated!', 'success')
+            this.props.updateInstancesRoom(this.state.selectedProblemToUpdate, instances)
             this.setState({
                 selectedInstances: [],
             })
@@ -117,31 +130,39 @@ class SettingsProblem extends React.Component {
     }
 
     handleOnClickUpdateName = () => {
-        if (this.state.selectedName !== '') {
-            this.props.updateNameProblem(this.state.selectedProblemToUpdateName, this.state.selectedName)
-            this.props.openSnackBar('SUCCESS: Problem name updated!', 'success')
+        if (this.state.selectedName.length > 3) {
+            this.props.updateNameProblem(this.state.selectedProblemToUpdate, this.state.selectedName)
         }
         else
-            this.props.openSnackBar('WARNING: Check empty name!', 'warning')
+            this.props.openSnackBar('WARNING: Check empty name! (length > 3)', 'warning')
+    }
+
+    handleOnClickUpdateDefinition = () => {
+        if (this.state.problemDefinition.length > 3)
+            this.props.updateDefinitionProblem(this.state.selectedProblemToUpdate, this.state.problemDefinition)
+        else
+            this.props.openSnackBar('WARNING: Check empty definition! (length > 3)', 'warning')
     }
 
     handleClickProblemToRemove = () => {
         this.handleOnClickBackToListFromRemove()
         this.props.removeProblem(this.state.selectedProblemToRemove)
-        this.props.openSnackBar('SUCCESS: Problem removed!', 'success')
+    }
+
+    scrollTop = () => {
+        window.scroll(0, 0)
     }
 
     handleClickToUpdateProblem = (id) => {
         this.setState({
-            selectedProblemToUpdateInstance: id,
-            selectedProblemToUpdateName: id,
-        })
+            selectedProblemToUpdate: id,
+        }, this.scrollTop())
     }
 
     handleClickToRemoveProblem = (id) => {
         this.setState({
             selectedProblemToRemove: id,
-        })
+        }, this.scrollTop())
     }
 
     render() {
@@ -165,7 +186,7 @@ class SettingsProblem extends React.Component {
             </div>
             <div style={styles.slide}>
                 {
-                    this.state.selectedProblemToUpdateName === ''
+                    this.state.selectedProblemToUpdate === ''
                     ? (
                         <GenericList
                             generic={this.props.problems}
@@ -187,32 +208,35 @@ class SettingsProblem extends React.Component {
                                     label="Update Name"
                                     onClick={this.handleOnClickUpdateName}
                                 />
-                            <h3>Changing name of problem: </h3>
-                            { this.props.problems[this.state.selectedProblemToUpdateName].name }
+                            <h3>Change name: </h3>
+                            { this.props.problems[this.state.selectedProblemToUpdate].name }
                             </div>
                             <TextField
                                 floatingLabelText="New problem name"
                                 onChange={this.handleOnChangeName}
                             />
                             <div>
-                                <RaisedButton
-                                    style={{ marginRight: '15px' }}
-                                    label="Back"
-                                    onClick={this.handleOnClickBackToList}
+                                <RaisedButton 
+                                    primary
+                                    label="Update Definition"
+                                    onClick={this.handleOnClickUpdateDefinition}
                                 />
+                            </div>
+                            <h3>Update definition: </h3>
+                            <RichEditor
+                                content={this.state.problemDefinition}
+                                handleChange={this.handleChangeEditorContent}
+                            />
+                            <Divider style={{ backgroundColor: 'white', height: '30px' }} />
+                            <div>
                                 <RaisedButton 
                                     primary
                                     label="Update Instances"
                                     onClick={this.handleOnClickUpdateInstances}
                                 />
                             </div>
-                            <h3>Updating definition of room: </h3>
-                            <RichEditor
-                                content={this.state.problemDefinition}
-                                handleChange={this.handleChangeEditorContent}
-                            />
-                            <h3>Updating instances of room: </h3>
-                            { this.props.problems[this.state.selectedProblemToUpdateInstance].name }
+                            <h3>Update instances: </h3>
+                            { this.props.problems[this.state.selectedProblemToUpdate].name }
                             <SelectInstances
                                 instances={this.props.instancesOrdered}
                                 selectedInstances={this.state.selectedInstances}

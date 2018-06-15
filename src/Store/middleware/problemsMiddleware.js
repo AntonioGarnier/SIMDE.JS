@@ -6,6 +6,7 @@ import {
     UPDATE_NAME_PROBLEM,
     UPDATE_INSTANCES_PROBLEM,
     OPEN_SNACK_BAR,
+    UPDATE_DEFINITION_PROBLEM,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -17,28 +18,44 @@ const problemsMiddleware = store => next => (action) => {
             let newRoomRef
             const createdAt = firebase.firestore.FieldValue.serverTimestamp()
             newRoomRef = firestore.collection('problems').doc()
-            newRoomRef.set({
-                name: action.payload.name,
-                instances: action.payload.instances,
-                definition: action.payload.definition,
-                createdAt,
-            }).catch(() => store.dispatch({
-                type: OPEN_SNACK_BAR,
-                payload: {
-                    message: 'ERROR - Creating problem: Could not connect with database',
-                    type: 'error',
-                }
-            }))
+            newRoomRef
+                .set({
+                    name: action.payload.name,
+                    instances: action.payload.instances,
+                    definition: action.payload.definition,
+                    createdAt,
+                })
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'SUCCESS: Problem added!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not add problem! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
             return next(action)
         case REMOVE_PROBLEM:
             firestore
                 .collection('problems')
                 .doc(action.payload.id)
                 .delete()
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'SUCCESS: Problem removed!',
+                        type: 'success',
+                    }
+                }))
                 .catch(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
-                        message: 'ERROR - Removing problem: Could not connect with database',
+                        message: 'ERROR: Could not remove problem! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))
@@ -47,10 +64,38 @@ const problemsMiddleware = store => next => (action) => {
             firestore.collection('problems').doc(action.payload.id)
                 .update({
                     name: action.payload.name,
-                }).catch(() => store.dispatch({
+                })
+                .then(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
-                        message: 'ERROR - Updating name problem: Could not connect with database',
+                        message: 'SUCCESS: Problem name updated!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not update name! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
+            return next(action)
+        case UPDATE_DEFINITION_PROBLEM:
+            firestore.collection('problems').doc(action.payload.id)
+                .update({
+                    definition: action.payload.definition,
+                })
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'SUCCESS: Problem definition updated!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not update definition! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))
@@ -59,10 +104,18 @@ const problemsMiddleware = store => next => (action) => {
             firestore.collection('problems').doc(action.payload.id)
                 .update({
                     problems: action.payload.problems,
-                }).catch(() => store.dispatch({
+                })
+                .then(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
-                        message: 'ERROR - Updating instance problem: Could not connect with database',
+                        message: 'SUCCESS: Problem instances updated!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not update instances! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))

@@ -47,5 +47,5 @@ Borrado en cascada: Obtener referencia a la coleccion y filtrar con where buscan
 si necesitas ver las instancias vas a instance settings que te permite crear modificar nombre y contenido.
 Lo mismo para los problemas*** IMPORTANTE: Settings problems tiene que dejar modificar la definition.
 
-Las varibalres de selectUpdateInstance o slectupdateName, juntarlas, es inutil tenerlaspor separado. Unificar
-en Updata. 
+Las varibales de selectUpdateInstance o slectupdateName, juntarlas, es inutil tenerlas por separado. Unificar
+en Update. ***HECHO***

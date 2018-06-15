@@ -26,7 +26,8 @@
         "GROUP_ID": {
             "name": "Grupo Mañana",
             "leader": "Id_leader",
-            "members": ["Antonio", "Carlos"]
+            "members": ["Antonio", "Carlos"],
+            "password": "asdasd"
         }
     },
     "RoomPW": {

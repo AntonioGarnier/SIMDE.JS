@@ -7,7 +7,8 @@ import {
     UPDATE_PROBLEMS_ROOM,
     JOIN_ROOM,
     LEAVE_ROOM,
-    ERROR_POPUP_OPEN,
+    OPEN_SNACK_BAR,
+    UPDATE_VISIBILITY_ROOM,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -21,63 +22,109 @@ const roomMiddleware = store => next => (action) => {
             const createdAt = firebase.firestore.FieldValue.serverTimestamp()
             newRoomRef = firestore.collection('rooms').doc()
             newRoomPwRef = firestore.collection('roomsPw').doc(newRoomRef.id)
-            newRoomRef.set({
-                name: action.payload.name,
-                members: action.payload.members,
-                problems: action.payload.problems,
-                visibility: action.payload.visibility,
-                type: action.payload.type,
-                createdAt,
-            }).catch((errorMessage) => store.dispatch({
-                type: ERROR_POPUP_OPEN,
-                payload: {
-                    from: 'Error while creating a new room',
-                    errorMessage
-                }
-            }))
-            newRoomPwRef.set({
-                password: action.payload.password,
-            }).catch((errorMessage) => store.dispatch({
-                type: ERROR_POPUP_OPEN,
-                payload: {
-                    from: 'Error while setting room password',
-                    errorMessage
-                }
-            }))
+            newRoomRef
+                .set({
+                    name: action.payload.name,
+                    members: action.payload.members,
+                    problems: action.payload.problems,
+                    visibility: action.payload.visibility,
+                    type: action.payload.type,
+                    createdAt,
+                })
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'SUCCESS: Room added!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not add room! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
+            newRoomPwRef
+                .set({
+                    password: action.payload.password,
+                })
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not add room password! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
             return next(action)
         case REMOVE_ROOM:
             firestore
                 .collection('rooms')
                 .doc(action.payload.id)
                 .delete()
-                .catch((errorMessage) => store.dispatch({
-                    type: ERROR_POPUP_OPEN,
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
                     payload: {
-                        from: 'Error while removing room',
-                        errorMessage
+                        message: 'SUCCESS: Room removed!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not remove room! (DataBase - Problem)',
+                        type: 'error',
                     }
                 }))
             firestore
                 .collection('roomsPw')
                 .doc(action.payload.id)
                 .delete()
-                .catch((errorMessage) => store.dispatch({
-                    type: ERROR_POPUP_OPEN,
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
                     payload: {
-                        from: 'Error while removing room password',
-                        errorMessage
+                        message: 'ERROR: Could remove password! (DataBase - Problem)',
+                        type: 'error',
                     }
                 }))
+            return next(action)
+        case UPDATE_VISIBILITY_ROOM:
+            firestore.collection('rooms').doc(action.payload.id)
+            .update({
+                visibility: action.payload.visibility,
+            })
+            .then(() => store.dispatch({
+                type: OPEN_SNACK_BAR,
+                payload: {
+                    message: 'SUCCESS: Room visibility updated!',
+                    type: 'success',
+                }
+            }))
+            .catch(() => store.dispatch({
+                type: OPEN_SNACK_BAR,
+                payload: {
+                    message: 'ERROR: Could not update visibility! (DataBase - Problem)',
+                    type: 'error',
+                }
+            }))
             return next(action)
         case UPDATE_NAME_ROOM:
             firestore.collection('rooms').doc(action.payload.id)
                 .update({
                     name: action.payload.name,
-                }).catch((errorMessage) => store.dispatch({
-                    type: ERROR_POPUP_OPEN,
+                })
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
                     payload: {
-                        from: 'Error while updating room name',
-                        errorMessage
+                        message: 'SUCCESS: Room name updated!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not update name! (DataBase - Problem)',
+                        type: 'error',
                     }
                 }))
             return next(action)
@@ -85,11 +132,19 @@ const roomMiddleware = store => next => (action) => {
             firestore.collection('rooms').doc(action.payload.id)
                 .update({
                     problems: action.payload.problems,
-                }).catch((errorMessage) => store.dispatch({
-                    type: ERROR_POPUP_OPEN,
+                })
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
                     payload: {
-                        from: 'Error while updating room problems',
-                        errorMessage
+                        message: 'SUCCESS: Room problems updated!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not update problems! (DataBase - Problem)',
+                        type: 'error',
                     }
                 }))
             return next(action)
@@ -97,11 +152,19 @@ const roomMiddleware = store => next => (action) => {
             firestore.collection('rooms').doc(action.payload.id)
                 .set({
                     members: action.payload.members,
-                }, {merge: true}).catch((errorMessage) => store.dispatch({
-                    type: ERROR_POPUP_OPEN,
+                }, {merge: true})
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
                     payload: {
-                        from: 'Error while joining room',
-                        errorMessage
+                        message: 'SUCCESS: Joined!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not join room! (DataBase - Problem)',
+                        type: 'error',
                     }
                 }))
             return next(action)
@@ -109,11 +172,19 @@ const roomMiddleware = store => next => (action) => {
             firestore.collection('rooms').doc(action.payload.id)
                 .update({
                     members: action.payload.members,
-                }).catch((errorMessage) => store.dispatch({
-                    type: ERROR_POPUP_OPEN,
+                })
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
                     payload: {
-                        from: 'Error while leaving room',
-                        errorMessage
+                        message: 'SUCCESS: Room left!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not leave room! (DataBase - Problem)',
+                        type: 'error',
                     }
                 }))
             return next(action)

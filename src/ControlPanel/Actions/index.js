@@ -17,7 +17,34 @@ import {
     UPDATE_INSTANCES_PROBLEM,
     UPDATE_NAME_PROBLEM,
     REMOVE_PROBLEM,
+    UPDATE_DEFINITION_PROBLEM,
+    ADD_GROUP,
+    REMOVE_GROUP,
+    UPDATE_VISIBILITY_ROOM,
 } from '../Constants'
+
+
+export function removeGroup(id, leader) {
+    return {
+        type: REMOVE_GROUP,
+        payload: {
+            id,
+            leader,
+        }
+    }
+}
+
+export function addGroup(group) {
+    return {
+        type: ADD_GROUP,
+        payload: {
+            name: group.name,
+            password: group.password,
+            leader: group.leader,
+            members: {},
+        }
+    }
+}
 
 export function closeSnackBar() {
     return {
@@ -31,6 +58,16 @@ export function openSnackBar(message, type) {
         payload: {
             message,
             type,
+        }
+    }
+}
+
+export function updateDefinitionProblem(id, definition) {
+    return {
+        type: UPDATE_DEFINITION_PROBLEM,
+        payload: {
+            id,
+            definition,
         }
     }
 }
@@ -81,6 +118,16 @@ export function updateProblemsRoom(id, problems) {
         payload: {
             id,
             problems,
+        }
+    }
+}
+
+export function updateVisibilityRoom(id, visibility) {
+    return {
+        type: UPDATE_VISIBILITY_ROOM,
+        payload: {
+            id,
+            visibility,
         }
     }
 }

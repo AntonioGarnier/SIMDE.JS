@@ -40,6 +40,7 @@ export const TEST2 = 'TEST2'
     export const REMOVE_ROOM = 'REMOVE_ROOM'
     export const UPDATE_NAME_ROOM = 'UPDATE_NAME_ROOM'
     export const UPDATE_PROBLEMS_ROOM = 'UPDATE_PROBLEMS_ROOM'
+    export const UPDATE_VISIBILITY_ROOM = 'UPDATE_VISIBILITY_ROOM'
     // Epic
     export const FETCHING_ROOMS = 'FETCHING_ROOMS'
     export const FETCH_ALL_ROOMS = 'FETCH_ALL_ROOMS'
@@ -67,6 +68,7 @@ export const TEST2 = 'TEST2'
 // Actions for PROBLEMS
     // Middleware
     export const ADD_PROBLEM = 'ADD_PROBLEM'
+    export const UPDATE_DEFINITION_PROBLEM = 'UPDATE_DEFINITION_PROBLEM'
     export const UPDATE_INSTANCES_PROBLEM = 'UPDATE_INSTANCES_PROBLEM'
     export const UPDATE_NAME_PROBLEM = 'UPDATE_NAME_PROBLEM'
     export const REMOVE_PROBLEM = 'REMOVE_PROBLEM'
