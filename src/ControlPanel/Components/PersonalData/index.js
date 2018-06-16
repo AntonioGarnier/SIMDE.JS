@@ -45,9 +45,6 @@ const PersonalData = ({
                 userGroupRooms[groupRoomId] = groupRooms[groupRoomId]
         })
     })
-    /*console.log('userGroups: ', userGroups)
-    console.log('userSingleRooms: ', userSingleRooms)
-    console.log('userGroupRooms: ', userGroupRooms)*/
 
     return (
         <div className="infoStyle" >
@@ -86,12 +83,13 @@ const PersonalData = ({
                     itemList={userGroupRooms}
                     orderedList={roomsOrdered}
                 />
-                <CustomList 
+                <CustomList
                     title="Groups"
                     path="/group-list/"
                     iconType="group"
                     itemList={userGroups}
-                    orderedList={groupsOrdered}                
+                    orderedList={groupsOrdered}
+                    active
                 />
             </div>
         </div>

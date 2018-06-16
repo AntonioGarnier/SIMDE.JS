@@ -19,6 +19,9 @@ export const ERROR_POPUP_OPEN = 'ERROR_POPUP_OPEN'
 // Action Path
 export const CHANGE_PATH = 'CHANGE_PATH'
 
+// Action change active group
+export const CHANGE_ACTIVE_GROUP = 'CHANGE_ACTIVE_GROUP'
+
 // INITIALIZE_APP dispatch all the FETCH actions
     // Action when USER_LOGIN
     export const FETCHING_SINGLE_ROOMS = 'FETCHING_SINGLE_ROOMS'
@@ -31,13 +34,15 @@ export const USER_LOGOUT = 'USER_LOGOUT'
 export const CHECKING_USER = 'CHECKING_USER'
 export const CHECKED_USER = 'CHECKED_USER'
 
+// Action request
+export const REQUEST_JOIN_FAILED = 'REQUEST_JOIN_FAILED'
+
 // Other constants
 export const HEADER_BAR_TITLE = 'SIMDE'
-export const TEST1 = 'TEST1'
-export const TEST2 = 'TEST2'
 
 // Actions for ROOMS
     // Middleware
+    export const CHECK_ROOM_PASSWORD = 'CHECK_ROOM_PASSWORD'
     export const JOIN_ROOM = 'JOIN_ROOM'
     export const LEAVE_ROOM = 'LEAVE_ROOM'
     export const ADD_ROOM = 'ADD_ROOM'
@@ -55,6 +60,7 @@ export const TEST2 = 'TEST2'
 
 // Action Groups
     // MiddleWare
+    export const CHECK_GROUP_PASSWORD = 'CHECK_GROUP_PASSWORD'
     export const ADD_GROUP = 'ADD_GROUP'
     export const REMOVE_GROUP = 'REMOVE_GROUP'
     export const UPDATE_NAME_GROUP = 'UPDATE_NAME_GROUP'

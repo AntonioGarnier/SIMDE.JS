@@ -74,14 +74,14 @@ export const initialState = {
     controlPanel: {
         user: null,
         userList: {},
-        idSingleRooms: [],
-        idGroupRooms: [],
-        idGroups: [],
         actualPath: '',
+        activeGroup: '',
         toggleSideBar: false,
         isLoading: true,
+        shouldRedirect: false,
         popUpData: {
             title: '',
+            type: '',
             open: false,
         },
         snackBarData: {
@@ -91,6 +91,7 @@ export const initialState = {
         },
         singleRooms: {},
         groupRooms: {},
+        userGroupRooms: [],
         roomsOrdered: [],
         groups: {},
         groupsOrdered: [],

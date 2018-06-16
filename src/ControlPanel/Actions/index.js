@@ -25,8 +25,42 @@ import {
     ADD_INSTANCE,
     OPEN_POP_UP,
     CLOSE_POP_UP,
+    REQUEST_JOIN_FAILED,
+    CHECK_GROUP_PASSWORD,
+    CHECK_ROOM_PASSWORD,
+    CHANGE_ACTIVE_GROUP,
 } from '../Constants'
 
+
+export function changeActiveGroup(id) {
+    return {
+        type: CHANGE_ACTIVE_GROUP,
+        payload: {
+            id,
+        }
+    }
+}
+
+export function checkGroupPassword(id, password) {
+    return {
+        type: CHECK_GROUP_PASSWORD,
+        payload: {
+            id,
+            password,
+        }
+    }
+}
+
+export function checkRoomPassword(id, password, member) {
+    return {
+        type: CHECK_ROOM_PASSWORD,
+        payload: {
+            id,
+            password,
+            member,
+        }
+    }
+}
 
 export function addInstance(instance) {
     return {
@@ -70,17 +104,27 @@ export function addGroup(group) {
     }
 }
 
+export function requestJoinFailed() {
+    return {
+        type: REQUEST_JOIN_FAILED,
+    }
+}
+
 export function closePopUp() {
     return {
         type: CLOSE_POP_UP,
     }
 }
 
-export function openPopUp(title) {
+export function openPopUp(title, type, id, name, member = '') {
     return {
         type: OPEN_POP_UP,
         payload: {
             title,
+            type,
+            id,
+            name,
+            member,
         }
     }
 }

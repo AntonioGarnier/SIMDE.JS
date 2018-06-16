@@ -37,6 +37,8 @@ import {
     CLOSE_SNACK_BAR,
     OPEN_POP_UP,
     CLOSE_POP_UP,
+    REQUEST_JOIN_FAILED,
+    CHANGE_ACTIVE_GROUP,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -44,6 +46,9 @@ import { initialState } from '../../../Store'
 export const MAX_HISTORY_SIZE = 10;
 export function SuperescalarReducers(state = initialState, action) {
     let items = {}
+    let userGroups = {}
+    let userGroupsArray = []
+    let userGroupRooms = []
     switch (action.type) {
         case NEXT_PREFETCH_CYCLE:
             return (state = Object.assign({}, state, { prefetchUnit: action.value }));
@@ -155,11 +160,38 @@ export function SuperescalarReducers(state = initialState, action) {
         case CHECKED_USER:
             return { ...state, controlPanel: { ...state.controlPanel, isLoading: false }}
         case CHANGE_PATH:
-            return { ...state, controlPanel: { ...state.controlPanel, actualPath: action.payload.path}}
+            return { ...state, controlPanel: { ...state.controlPanel, actualPath: action.payload.path, shouldRedirect: false}}
         case FETCH_ALL_ROOMS:
-            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload.singleRooms, groupRooms: action.payload.groupRooms, roomsOrdered: action.payload.roomsOrdered}}
+            userGroups = {}
+            Object.keys(state.controlPanel.groups).forEach((id) => {
+                if (state.controlPanel.groups[id].members.hasOwnProperty(state.controlPanel.user.uid) || state.controlPanel.groups[id].leader === state.controlPanel.user.uid)
+                    userGroups[id] = state.controlPanel.groups[id]
+            })
+            userGroupRooms = []
+            Object.keys(state.controlPanel.groupRooms).forEach((groupRoomId) => {
+                Object.keys(userGroups).forEach((userGroupId) => {
+                    if (state.controlPanel.groupRooms[groupRoomId].members.hasOwnProperty(userGroupId))
+                        userGroupRooms.push(groupRoomId)
+                })
+            })
+            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload.singleRooms, groupRooms: action.payload.groupRooms, roomsOrdered: action.payload.roomsOrdered, userGroupRooms}}
         case GOT_UPDATE_ROOM:
         case GOT_ADD_ROOM:
+            userGroups = {}
+            Object.keys(state.controlPanel.groups).forEach((id) => {
+                if (state.controlPanel.groups[id].members.hasOwnProperty(state.controlPanel.user.uid) || state.controlPanel.groups[id].leader === state.controlPanel.user.uid)
+                    userGroups[id] = state.controlPanel.groups[id]
+            })
+            
+            userGroupRooms = []
+            let isGroupRoom = false
+            Object.keys(userGroups).forEach((groupId) => {
+                if (action.payload.members.hasOwnProperty(groupId))
+                    isGroupRoom = true
+            })
+            if (isGroupRoom)
+                userGroupRooms = state.controlPanel.userGroupRooms.concat([action.payload.id])
+
             let roomsOrdered = state.controlPanel.roomsOrdered.slice()
             if (roomsOrdered.indexOf(action.payload.id) === -1)
                 roomsOrdered.unshift(action.payload.id)
@@ -179,10 +211,11 @@ export function SuperescalarReducers(state = initialState, action) {
                             }
                         },
                         roomsOrdered,
+                        userGroupRooms,
                     }
                 }
         case REMOVE_ALL_ROOMS:
-            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: {}, groupRooms: {}, roomsOrdered: []}}
+            return { ...state, controlPanel: { ...state.controlPanel, singleRooms: {}, groupRooms: {}, roomsOrdered: [], userGroupRooms: []}}
         case GOT_REMOVE_ROOM:
             items = {}
             Object.keys(state.controlPanel[`${action.payload.type}Rooms`]).forEach((element) => {
@@ -190,7 +223,13 @@ export function SuperescalarReducers(state = initialState, action) {
                     items[element] = state.controlPanel[`${action.payload.type}Rooms`][element]
                 }
             })
-            return { ...state, controlPanel: { ...state.controlPanel, [`${action.payload.type}Rooms`]: items, roomsOrdered: state.controlPanel.roomsOrdered.filter(roomId => roomId !== action.payload.id)}}
+            return { ...state, controlPanel: { 
+                ...state.controlPanel, 
+                [`${action.payload.type}Rooms`]: items,
+                roomsOrdered: state.controlPanel.roomsOrdered.filter(roomId => roomId !== action.payload.id),
+                userGroupRooms: state.controlPanel.userGroupRooms.filter(roomId => roomId !== action.payload.id)
+            }
+        }
         case FETCH_ALL_PROBLEMS:
             return { ...state, controlPanel: { ...state.controlPanel, problems: action.payload.problems, problemsOrdered: action.payload.problemsOrdered}}            
         case GOT_UPDATE_PROBLEM:
@@ -225,9 +264,22 @@ export function SuperescalarReducers(state = initialState, action) {
             })
             return { ...state, controlPanel: { ...state.controlPanel, problems: items, problemsOrdered: state.controlPanel.problemsOrdered.filter(problemId => problemId !== action.payload.id)}}
         case FETCH_ALL_GROUPS:
-            return { ...state, controlPanel: { ...state.controlPanel, groups: action.payload.groups, groupsOrdered: action.payload.groupsOrdered}}
+            const {
+                user,
+                groups,
+            } = state.controlPanel
+            userGroupsArray = []
+            Object.keys(groups).forEach((id) => {
+                if (groups[id].members.hasOwnProperty(user.uid) || groups[id].leader === user.uid)
+                userGroupsArray.push(id)
+            })
+            return { ...state, controlPanel: { ...state.controlPanel, groups: action.payload.groups, groupsOrdered: action.payload.groupsOrdered, userGroups: userGroupsArray}}
         case GOT_UPDATE_GROUP:
         case GOT_ADD_GROUP:
+            userGroupsArray = state.controlPanel.userGroups.slice()
+            if (state.controlPanel.groups[action.payload.id].members.hasOwnProperty(state.controlPanel.user.uid) || state.controlPanel.groups[action.payload.id].leader === state.controlPanel.user.uid)
+                if (userGroupsArray.indexOf(action.payload.id) !== -1)
+                    userGroupsArray.unshift(action.payload.id)
             let groupsOrdered = state.controlPanel.groupsOrdered.slice()
                 if (groupsOrdered.indexOf(action.payload.id) === -1)
                     groupsOrdered.unshift(action.payload.id)    
@@ -245,10 +297,11 @@ export function SuperescalarReducers(state = initialState, action) {
                         }
                     },
                     groupsOrdered,
+                    userGroups: userGroupsArray,
                 }
             }
         case REMOVE_ALL_GROUPS:
-            return { ...state, controlPanel: { ...state.controlPanel, groups: {}, groupsOrdered: []}}
+            return { ...state, controlPanel: { ...state.controlPanel, groups: {}, groupsOrdered: [], userGroups: []}}
         case GOT_REMOVE_GROUP:
             items = {}
             Object.keys(state.controlPanel.groups).forEach((element) => {
@@ -256,7 +309,11 @@ export function SuperescalarReducers(state = initialState, action) {
                     items[element] = state.controlPanel.groups[element]
                 }
             })
-            return { ...state, controlPanel: { ...state.controlPanel, groups: items, groupsOrdered: state.controlPanel.groupsOrdered.filter(groupId => groupId !== action.payload.id)}}
+            return { ...state, controlPanel: { ...state.controlPanel, groups: items,
+                    groupsOrdered: state.controlPanel.groupsOrdered.filter(groupId => groupId !== action.payload.id),
+                    userGroups: state.controlPanel.userGroups.filter(groupId => groupId !== action.payload.id)
+                }
+            }
         case FETCH_ALL_INSTANCES:
             return { ...state, controlPanel: { ...state.controlPanel, instances: action.payload.instances, instancesOrdered: action.payload.instancesOrdered}}
         case GOT_UPDATE_INSTANCE:
@@ -301,11 +358,35 @@ export function SuperescalarReducers(state = initialState, action) {
         case OPEN_POP_UP:
             return { ...state, controlPanel: { 
                 ...state.controlPanel, popUpData: {
-                    ...state.controlPanel.popUpData, open: true, title: action.payload.title}}}
+                    ...state.controlPanel.popUpData, open: true, title: action.payload.title, type: action.payload.type, id: action.payload.id, name: action.payload.name, member: action.payload.member}}}
         case CLOSE_POP_UP:
             return { ...state, controlPanel: { 
-                ...state.controlPanel, popUpData: {
-                    ...state.controlPanel.popUpData, open: false}}}
+                ...state.controlPanel,
+                popUpData: {
+                    ...state.controlPanel.popUpData, open: false
+                }
+            }
+        }
+        case REQUEST_JOIN_FAILED: 
+            return {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    shouldRedirect: true,
+                    popUpData: {
+                        ...state.controlPanel.popUpData,
+                        open: false,
+                    }
+                }
+            }
+        case CHANGE_ACTIVE_GROUP:
+            return { 
+                ...state,
+                controlPanel: { 
+                    ...state.controlPanel,
+                    activeGroup: action.payload.id,
+                }
+            }
         default:
             return state
     }

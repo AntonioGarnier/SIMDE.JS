@@ -9,6 +9,8 @@ import {
     LEAVE_ROOM,
     OPEN_SNACK_BAR,
     UPDATE_VISIBILITY_ROOM,
+    CHECK_ROOM_PASSWORD,
+    REQUEST_JOIN_FAILED,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -150,9 +152,9 @@ const roomMiddleware = store => next => (action) => {
             return next(action)
         case JOIN_ROOM:
             firestore.collection('rooms').doc(action.payload.id)
-                .set({
-                    members: action.payload.members,
-                }, {merge: true})
+                .update({
+                    ['members.' + action.payload.member]: true,
+                })
                 .then(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
@@ -171,15 +173,20 @@ const roomMiddleware = store => next => (action) => {
         case LEAVE_ROOM:
             firestore.collection('rooms').doc(action.payload.id)
                 .update({
-                    members: action.payload.members,
+                    ['members.' + action.payload.member]: firebase.firestore.FieldValue.delete(),
                 })
-                .then(() => store.dispatch({
-                    type: OPEN_SNACK_BAR,
-                    payload: {
-                        message: 'SUCCESS: Room left!',
-                        type: 'success',
-                    }
-                }))
+                .then(() => {
+                    store.dispatch({
+                        type: OPEN_SNACK_BAR,
+                        payload: {
+                            message: 'SUCCESS: Room left!',
+                            type: 'success',
+                        }
+                    })
+                    store.dispatch({
+                        type: REQUEST_JOIN_FAILED,
+                    })
+                })
                 .catch(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
@@ -187,6 +194,56 @@ const roomMiddleware = store => next => (action) => {
                         type: 'error',
                     }
                 }))
+            return next(action)
+        case CHECK_ROOM_PASSWORD:
+            const pwRef = firestore.collection('roomsPw').doc(action.payload.id)
+            pwRef
+                .get()
+                .then((doc) => {
+                    console.log(doc.data().password, ' = ', action.payload.password)
+                    if (doc.exists) {
+                        if (doc.data().password === action.payload.password)
+                            store.dispatch({
+                                type: JOIN_ROOM,
+                                payload: {
+                                    id: action.payload.id,
+                                    member: action.payload.member,
+                                }
+                            })
+                        else {
+                            store.dispatch({
+                                type: OPEN_SNACK_BAR,
+                                payload: {
+                                    message: 'WARNING: Wrong password',
+                                    type: 'warning',
+                                }
+                            })
+                            store.dispatch({
+                                type: REQUEST_JOIN_FAILED,
+                            })
+                        }
+                    } else {
+                        store.dispatch({
+                            type: OPEN_SNACK_BAR,
+                            payload: {
+                                message: 'ERROR: Room password nor registered',
+                                type: 'error',
+                            }
+                        })
+                    }
+                    console.log('QUE PASO¿')
+                }).catch(() => {
+                    store.dispatch({
+                        type: OPEN_SNACK_BAR,
+                        payload: {
+                            message: 'ERROR: Could not check passowrd! (DataBase - Problem)',
+                            type: 'error',
+                        }
+                    })
+                    store.dispatch({
+                        type: REQUEST_JOIN_FAILED,
+                    })
+                }) 
             return next(action)
         default:
             return next(action)

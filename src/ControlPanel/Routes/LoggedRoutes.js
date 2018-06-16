@@ -5,8 +5,11 @@ import PersonalData from '../Components/PersonalData'
 import Welcome from '../Components/Welcome'
 import RoomList from '../Components/RoomList'
 import GroupList from '../Components/GroupList'
+import RoomView from '../Components/RoomView'
+import GroupView from '../Components/GroupView'
 import SettingsGroup from '../Components/SettingsGroup'
 // import App from '../../Simulator/interface/App'
+
 
 export default function LoggedRoutes() {
     return (
@@ -18,8 +21,8 @@ export default function LoggedRoutes() {
                 <Route sensitive exact path="/room-list" component={RoomList} />
                 <Route sensitive exact path="/group-list" component={GroupList} />
                 <Route sensitive path="/group-settings" component={SettingsGroup} />
-                <Route sensitive path="/room-list/:room" render={() => <h1>ONE ROOM</h1>} />
-                <Route sensitive path="/group-list/:group" render={() => <h1>ONE GROUP</h1>} />
+                <Route sensitive path="/room-list/:room" component={RoomView} />
+                <Route sensitive path="/group-list/:group" component={GroupView} />
                 <Route sensitive path="/about" render={() => <h1>ABOUT</h1>} />
                 <Route render={() => <Redirect to="/" />} />
             </Switch>

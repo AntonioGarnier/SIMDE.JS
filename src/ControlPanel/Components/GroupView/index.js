@@ -3,9 +3,6 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { Redirect } from 'react-router'
 import PropTypes from 'prop-types'
-import {Tabs, Tab} from 'material-ui/Tabs'
-import RaisedButton from 'material-ui/RaisedButton'
-import GenericList from '../GenericList'
 import Loading from '../Loading'
 import {
     openSnackBar,
@@ -23,37 +20,36 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
     return {
         user: state.controlPanel.user,
+        shouldRedirect: state.controlPanel.shouldRedirect,
         groups: state.controlPanel.groups,
         groupsOrdered: state.controlPanel.groupsOrdered,
     }
 }
 
 const GroupView = (props) => {
-    console.log('PROPS: ', props)
+    /*console.log('PROPS: ', props)
     console.log('groupID: ', props.match.params.group)
     console.log('props.user.uid: ', props.user.uid)
     console.log('props.groups: ', props.groups)
-    console.log('TRUE O FALSE: ', props.groups[props.match.params.group].leader === props.user.uid)
-    if (props.groups[props.match.params.group]) {
-        if (props.groups[props.match.params.group].members.hasOwnProperty(props.user.uid) || props.groups[props.match.params.group].leader === props.user.uid)
-            return(
-                <div>VISTA</div>
-            )
-        else {
-            props.openPopUp('Request join group')
-            return <Loading />
-        }
-            
-
-
-    }
-    else {
-        props.openSnackBar('This group does not exist or has been deleted', 'warning')
+    console.log('TRUE O FALSE: ', props.groups[props.match.params.group].leader === props.user.uid)*/
+    // console.log('PROPS: ', props)
+    if (!props.groups[props.match.params.group]) {
+        props.openSnackBar('WARNING: This group does not exist or has been deleted', 'warning')
         return (
             <Redirect to="/group-list" />
         )
     }
-    
+    if (props.groups[props.match.params.group].members.hasOwnProperty(props.user.uid) /*|| props.groups[props.match.params.group].leader === props.user.uid || props.user.rol === 'admin'*/)
+        return(
+            <div>VISTA</div>
+        )
+    if (!props.shouldRedirect) {
+        props.openPopUp('Request join group', 'group', props.match.params.group, props.groups[props.match.params.group].name)
+        return <Loading />
+    }
+    if (props.shouldRedirect) {
+        return <Redirect to="/group-list" />
+    }
 }
 
 GroupView.propTypes = {
@@ -63,6 +59,8 @@ GroupView.propTypes = {
         }).isRequired,
     }).isRequired,
     openSnackBar: PropTypes.func.isRequired,
+    openPopUp: PropTypes.func.isRequired,
+    shouldRedirect: PropTypes.bool.isRequired,
     groups: PropTypes.objectOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,

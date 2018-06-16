@@ -7,11 +7,17 @@ import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
 import {
     closePopUp,
+    requestJoinFailed,
+    checkGroupPassword,
+    checkRoomPassword,
 } from '../../Actions'
 
 const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         closePopUp,
+        requestJoinFailed,
+        checkGroupPassword,
+        checkRoomPassword,
     }, dispatch)
 }
 
@@ -29,12 +35,21 @@ class PopUp extends React.Component {
     }
 
     handleClose = () => {
+        this.props.requestJoinFailed()
         this.props.closePopUp()
+    }
+
+    handleJoin = () => {
+        this.props.closePopUp()
+        if (this.props.popUpData.type === 'group')
+            this.props.checkGroupPassword(this.props.popUpData.id, this.state.inputPassword)
+        else
+            this.props.checkRoomPassword(this.props.popUpData.id, this.state.inputPassword, this.props.popUpData.member)
     }
 
     handleOnChange = debounce (
         250,
-        (value) => {
+        (event, value) => {
             this.setState({
                 inputPassword: value,
             })
@@ -50,13 +65,12 @@ class PopUp extends React.Component {
         <RaisedButton
             label="Join"
             primary
-            onClick={this.handleClose}
+            onClick={this.handleJoin}
         />,
         ]
-
         return (
             <Dialog
-                title={this.props.popUpData.title}
+                title={`${this.props.popUpData.title} ${this.props.popUpData.name}`}
                 actions={actions}
                 modal
                 open={this.props.popUpData.open}

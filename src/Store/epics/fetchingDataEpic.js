@@ -23,16 +23,16 @@ const fetchingDataEpic = action$ =>
         flatMap(() => (
             of(
                 {
-                    type: FETCHING_ROOMS,
+                    type: FETCHING_GROUPS,
+                },
+                {
+                    type: FETCHING_INSTANCES,
                 },
                 {
                     type: FETCHING_PROBLEMS,
                 },
                 {
-                    type: FETCHING_GROUPS,
-                },
-                {
-                    type: FETCHING_INSTANCES,
+                    type: FETCHING_ROOMS,
                 },
             )
         ))

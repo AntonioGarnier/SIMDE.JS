@@ -6,6 +6,8 @@ import {
     JOIN_GROUP,
     LEAVE_GROUP,
     OPEN_SNACK_BAR,
+    CHECK_GROUP_PASSWORD,
+    REQUEST_JOIN_FAILED,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -95,9 +97,9 @@ const groupsMiddleware = store => next => (action) => {
             return next(action)
         case JOIN_GROUP:
             firestore.collection('groups').doc(action.payload.id)
-                .set({
-                    members: action.payload.members,
-                }, { merge: true })
+                .update({
+                    ['members.' + store.getState().controlPanel.user.uid]: true
+                })
                 .then(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
@@ -117,15 +119,20 @@ const groupsMiddleware = store => next => (action) => {
             if (store.getState().controlPanel.user.uid !== action.payload.leader)
                 firestore.collection('groups').doc(action.payload.id)
                     .update({
-                        members: action.payload.members,
+                        ['members.' + store.getState().controlPanel.user.uid]: firebase.firestore.FieldValue.delete()
                     })
-                    .then(() => store.dispatch({
-                        type: OPEN_SNACK_BAR,
-                        payload: {
-                            message: 'SUCCESS: Group left!',
-                            type: 'success',
-                        }
-                    }))
+                    .then(() => {
+                        store.dispatch({
+                            type: OPEN_SNACK_BAR,
+                            payload: {
+                                message: 'SUCCESS: Group left!',
+                                type: 'success',
+                            }
+                        })
+                        store.dispatch({
+                            type: REQUEST_JOIN_FAILED,
+                        })
+                    })
                     .catch(() => store.dispatch({
                         type: OPEN_SNACK_BAR,
                         payload: {
@@ -141,6 +148,54 @@ const groupsMiddleware = store => next => (action) => {
                         type: 'warning',
                     }
                 })
+            return next(action)            
+            case CHECK_GROUP_PASSWORD:
+                const pwRef = firestore.collection('groupsPw').doc(action.payload.id)
+                pwRef
+                    .get()
+                    .then((doc) => {
+                        console.log(doc.data().password, ' = ', action.payload.password)
+                        if (doc.exists) {
+                            if (doc.data().password === action.payload.password)
+                                store.dispatch({
+                                    type: JOIN_GROUP,
+                                    payload: {
+                                        id: action.payload.id,
+                                    }
+                                })
+                            else {
+                                store.dispatch({
+                                    type: OPEN_SNACK_BAR,
+                                    payload: {
+                                        message: 'WARNING: Wrong password',
+                                        type: 'warning',
+                                    }
+                                })
+                                store.dispatch({
+                                    type: REQUEST_JOIN_FAILED,
+                                })
+                            }
+                        } else {
+                            store.dispatch({
+                                type: OPEN_SNACK_BAR,
+                                payload: {
+                                    message: 'ERROR: Group password nor registered',
+                                    type: 'error',
+                                }
+                            })
+                        }
+                    }).catch(() => {
+                        store.dispatch({
+                            type: OPEN_SNACK_BAR,
+                            payload: {
+                                message: 'ERROR: Could not check passowrd! (DataBase - Problem)',
+                                type: 'error',
+                            }
+                        })
+                        store.dispatch({
+                            type: REQUEST_JOIN_FAILED,
+                        })
+                    })
             return next(action)
         default:
             return next(action)

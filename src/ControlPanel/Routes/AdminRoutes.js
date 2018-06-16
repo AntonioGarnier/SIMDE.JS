@@ -14,6 +14,7 @@ import InstanceList from '../Components/InstanceList'
 import GroupView from '../Components/GroupView'
 import InstanceView from '../Components/InstanceView'
 import ProblemView from '../Components/ProblemView'
+import RoomView from '../Components/RoomView'
 
 export default function AdminRoutes() {
     return (
@@ -26,7 +27,7 @@ export default function AdminRoutes() {
                 <Route sensitive exact path="/group-list" component={GroupList} />
                 <Route sensitive exact path="/problem-list" component={ProblemList} />
                 <Route sensitive exact path="/instance-list" component={InstanceList} />
-                <Route sensitive path="/room-list/:room" render={() => <h1>ONE ROOM</h1>} />
+                <Route sensitive path="/room-list/:room" component={RoomView} />
                 <Route sensitive path="/group-list/:group" component={GroupView} />
                 <Route sensitive path="/problem-list/:problem" component={ProblemView} />
                 <Route sensitive path="/instance-list/:instance" component={InstanceView} />
