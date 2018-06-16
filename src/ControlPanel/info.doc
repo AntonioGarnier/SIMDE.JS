@@ -49,3 +49,6 @@ Lo mismo para los problemas*** IMPORTANTE: Settings problems tiene que dejar mod
 
 Las varibales de selectUpdateInstance o slectupdateName, juntarlas, es inutil tenerlas por separado. Unificar
 en Update. ***HECHO***
+
+-----GroupView y RoomView faltan, ya tengo que compruebe si perteneces al grupo o no, faltaria la forma en la que se ve el grupo
+

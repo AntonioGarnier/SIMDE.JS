@@ -5,7 +5,8 @@ import Group from 'material-ui/svg-icons/social/group'
 import GroupWork from 'material-ui/svg-icons/action/group-work'
 import Settings from 'material-ui/svg-icons/action/settings'
 import Desktop from 'material-ui/svg-icons/hardware/desktop-windows'
-
+import Problem from 'material-ui/svg-icons/action/extension'
+import Code from 'material-ui/svg-icons/action/code'
 
 
 export const sideBarElements = [
@@ -23,6 +24,11 @@ export const sideBarElements = [
         name: 'Group List',
         to: '/group-list',
         leftIcon: <GroupWork />,
+    },
+    {
+        name: 'Group Settings',
+        to: '/group-settings',
+        leftIcon: <Settings />,
     },
     {
         name: 'About',
@@ -46,6 +52,16 @@ export const sideBarElementsAdmin = [
         name: 'Group List',
         to: '/group-list',
         leftIcon: <GroupWork />,
+    },
+    {
+        name: 'Problem List',
+        to: '/problem-list',
+        leftIcon: <Problem />,
+    },
+    {
+        name: 'Instance List',
+        to: '/instance-list',
+        leftIcon: <Code />,
     },
     {
         name: 'Problem Settings',
