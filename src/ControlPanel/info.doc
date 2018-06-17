@@ -53,3 +53,51 @@ en Update. ***HECHO***
 -----GroupView y RoomView faltan, ya tengo que compruebe si perteneces al grupo o no, faltaria la forma en la que se ve el grupo
 
 FALTA LA VISUALIZACION DE LAS ROOMS Y LOS GROUPS. La validacion al entrar esta hecha **REVISAR IS MEMBER***
+
+CARGA DE CODIGO
+LoadModalComponent {
+    import { Code } from '../../../core/Common/Code';
+    import SuperescalarIntegration from '../../../integration/superescalar-integration';
+    loadCode() {
+            try {
+                let code = new Code();
+                code.load(document.getElementById('codeInput').value);
+                this.setState({ error: '' });
+                SuperescalarIntegration.loadCode(code);
+                this.close();
+            }
+            catch (error) {
+                console.log(error)
+                this.setState({ error: error.message });
+            }
+        }
+}
+
+CARGA DE MEMORIA
+LoadContentModalComponent {
+    import { ContentIntegration } from '../../../integration/content-integration';
+    loadContent() {
+        try {
+            const content = document.getElementById('contentInput').value;
+            this.setState({ error: '' });
+            const contentIntegration = new ContentIntegration(content);
+            SuperescalarIntegration.contentIntegration = contentIntegration;
+            SuperescalarIntegration.setFpr(contentIntegration.FPRContent);
+            SuperescalarIntegration.setGpr(contentIntegration.GPRContent);
+            SuperescalarIntegration.setMemory(contentIntegration.MEMContent);
+            SuperescalarIntegration.dispatchAllSuperescalarActions();
+            this.close();
+        }
+        catch (error) {
+            this.setState({ error: error.message });
+        }
+    }
+}
+
+FINALMENTE:  en BatchModalComponent {
+    setOptions() {
+        SuperescalarIntegration.setBatchMode(this.state.replications, this.state.cacheFailPercentage, this.state.cacheFailLatency);
+        this.close();
+        SuperescalarIntegration.makeBatchExecution();
+    }
+}

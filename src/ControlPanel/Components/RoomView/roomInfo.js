@@ -15,8 +15,10 @@ import {
     openSnackBar,
     openPopUp,
     getMembers,
+    updateRankingResults,
 } from '../../Actions'
 import ProblemInfo from '../ProblemView/problemInfo'
+import SuperescalarIntegration from '../../../Simulator/integration/superescalar-integration'
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -24,6 +26,7 @@ const mapDispatchToProps = (dispatch) => {
         openSnackBar,
         openPopUp,
         getMembers,
+        updateRankingResults,
     }, dispatch)
 }
 
@@ -38,23 +41,31 @@ const mapStateToProps = (state) => {
 class RoomInfo extends React.Component {
 
     state = {
-        finished: false,
         stepIndex: 0,
-      }
+    }
     
     handleNext = () => {
         const {stepIndex} = this.state
         this.setState({
             stepIndex: stepIndex + 1,
-            finished: stepIndex >= 2,
         })
     }
     
     handlePrev = () => {
         const {stepIndex} = this.state
-            if (stepIndex > 0) {
+        if (stepIndex > 0) {
             this.setState({stepIndex: stepIndex - 1})
-            }
+        }
+    }
+
+    handleTestCodeWithAllInstances = () => {
+        // Necesito el tipo de sala aqui pasado por props para hacer cosas segun sea una sala u otra
+    }
+
+    handleTestCodeWithSelectedInstance = () => {
+        /* Testea el codigo con la instancia seleccionada*/
+        // SuperescalarIntegration.testCodeWithInstance()
+
     }
 
     handleFinish = () => {
@@ -68,7 +79,7 @@ class RoomInfo extends React.Component {
                     problemId={this.props.problemsId[stepIndex]}
                 />
             </div>
-                
+
 
         </div>
     )
@@ -129,6 +140,7 @@ RoomInfo.propTypes = {
         }).isRequired,
     ).isRequired,
     openSnackBar: PropTypes.func.isRequired,
+    updateRankingResults: PropTypes.func.isRequired,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoomInfo)

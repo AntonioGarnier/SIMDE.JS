@@ -63,7 +63,6 @@ class LoadModalComponent extends React.Component {
             this.close();
         }
         catch (error) {
-            console.log(error)
             this.setState({ error: error.message });
         }
     }

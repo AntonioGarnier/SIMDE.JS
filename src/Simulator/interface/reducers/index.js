@@ -207,6 +207,7 @@ export function SuperescalarReducers(state = initialState, action) {
                                 members: action.payload.members,
                                 type: action.payload.type,
                                 visibility: action.payload.visibility,
+                                ranking: action.payload.ranking,
                                 problems: action.payload.problems,
                                 createdAt: action.payload.createdAt,
                             }

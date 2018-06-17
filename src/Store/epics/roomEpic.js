@@ -84,6 +84,7 @@ export const roomEpic = action$ =>
                             type: room.type,
                             visibility: room.visibility,
                             problems: room.problems,
+                            ranking: room.ranking,
                             createdAt: room.createdAt,
                         },
                     }
@@ -116,6 +117,7 @@ export const roomEpic = action$ =>
                                     members: room.members,
                                     type: room.type,
                                     visibility: room.visibility,
+                                    ranking: room.ranking,
                                     problems: room.problems,
                                     createdAt: room.createdAt,
                                 },

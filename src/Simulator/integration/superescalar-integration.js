@@ -9,6 +9,11 @@ import { Code } from '../core/Common/Code';
 import { SuperescalarStatus } from '../core/Superescalar/SuperescalarEnums';
 import { displayBatchResults } from '../interface/actions/modals';
 import { MachineIntegration } from './machine-integration';
+import { ContentIntegration } from './content-integration';
+import {
+    OPEN_SNACK_BAR,
+} from '../../ControlPanel/Constants'
+
 export class SuperescalarIntegration extends MachineIntegration {
     constructor() {
         super(...arguments);
@@ -132,6 +137,20 @@ export class SuperescalarIntegration extends MachineIntegration {
                 this.finishedExecution = true;
                 alert(t('execution.finished'));
             }
+        };
+        this.playWithResults = () => {
+            if (!this.superescalar.code || !this.contentIntegration) {
+                return;
+            }
+            this.executing = true;
+            // Check if the execution has finished
+            if (this.finishedExecution) {
+                this.finishedExecution = false;
+                let code = Object.assign(new Code(), this.superescalar.code);
+                this.superExe();
+                this.superescalar.code = code;
+            }
+                this.executionLoopWithResults();
         };
         this.makeBatchExecution = () => {
             if (!this.superescalar.code) {
@@ -270,6 +289,16 @@ export class SuperescalarIntegration extends MachineIntegration {
                 this.resetMachine();
             }
         };
+        this.executionLoopWithResults = () => {
+            let machineStatus = this.stepForward();
+            if (!(machineStatus === SuperescalarStatus.SUPER_ENDEXE)) {
+                this.executionLoopWithResults();
+            }
+            else if (machineStatus === SuperescalarStatus.SUPER_ENDEXE) {
+                    this.finishedExecution = true;
+                    alert(t('execution.finished'));
+                }
+        };
         this.saveSuperConfig = (superConfig) => {
             const superConfigKeys = Object.keys(superConfig);
             for (let i = 0; i < (superConfigKeys.length - 2); i++) {
@@ -317,5 +346,64 @@ export class SuperescalarIntegration extends MachineIntegration {
         this.superescalar.memoryFailLatency = 0;
         this.resetMachine();
     }
+    loadInstance(instanceData) {
+        try {
+            const contentIntegration = new ContentIntegration(instanceData);
+            this.contentIntegration = contentIntegration;
+            this.setFpr(contentIntegration.FPRContent);
+            this.setGpr(contentIntegration.GPRContent);
+            this.setMemory(contentIntegration.MEMContent);
+            this.dispatchAllSuperescalarActions();
+        }
+        catch (error) {
+            store.dispatch({
+                type: OPEN_SNACK_BAR,
+                payload: {
+                    message: `ERROR: ${error.message}`,
+                    type: 'error',
+                }
+            })
+        }
+    }
+    loadCodeFromPanel(codeData) {
+        try {
+            let code = new Code();
+            code.load(codeData);
+            this.loadCode(code);
+        }
+        catch (error) {
+            store.dispatch({
+                type: OPEN_SNACK_BAR,
+                payload: {
+                    message: `ERROR: ${error.message}`,
+                    type: 'error',
+                }
+            })
+        }
+    }
+    testCodeWithInstance(instanceData, codeData){
+        this.resetMachine()
+        const code = `11
+        ADDI    R2 R0 #50
+        ADDI    R3 R0 #70
+        ADDI    R4 R0 #40
+        LF        F0 (R4)
+        ADDI    R5 R2 #5
+    LOOP:
+        LF         F1 (R2)
+        ADDF    F1 F1 F0
+        SF        F1 (R3)
+        ADDI     R2 R2 #1
+        ADDI    R3 R3 #1
+        BNE        R2 R5 LOOP`
+        const inst = `#MEM
+[40] 2
+[50] 4 3 8 6 5`
+        this.loadInstance(inst)
+        this.loadCodeFromPanel(code)
+        this.playWithResults()
+
+    }
+
 }
 export default new SuperescalarIntegration();

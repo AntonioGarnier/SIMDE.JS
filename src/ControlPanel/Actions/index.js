@@ -30,8 +30,19 @@ import {
     CHECK_ROOM_PASSWORD,
     CHANGE_ACTIVE_GROUP,
     GET_MEMBERS_FROM_GROUP,
+    UPDATE_RANKING_RESULTS,
 } from '../Constants'
 
+export function updateRankingResults(id, member, result) {
+    return {
+        type: UPDATE_RANKING_RESULTS,
+        payload: {
+            id,
+            member,
+            result,
+        }
+    }
+}
 
 export function getMembers(members) {
     return {

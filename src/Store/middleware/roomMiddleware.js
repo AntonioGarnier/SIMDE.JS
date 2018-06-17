@@ -11,6 +11,7 @@ import {
     UPDATE_VISIBILITY_ROOM,
     CHECK_ROOM_PASSWORD,
     REQUEST_JOIN_FAILED,
+    UPDATE_RANKING_RESULTS,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -20,9 +21,11 @@ const roomMiddleware = store => next => (action) => {
     switch (action.type) {
         case ADD_ROOM:
             let newRoomPwRef
+            let newRankingRef
             let newRoomRef
             const createdAt = firebase.firestore.FieldValue.serverTimestamp()
             newRoomRef = firestore.collection('rooms').doc()
+            newRankingRef = firestore.collection('ranking').doc(newRoomRef.id)
             newRoomPwRef = firestore.collection('roomsPw').doc(newRoomRef.id)
             newRoomRef
                 .set({
@@ -30,6 +33,7 @@ const roomMiddleware = store => next => (action) => {
                     members: action.payload.members,
                     problems: action.payload.problems,
                     visibility: action.payload.visibility,
+                    ranking: newRankingRef.id,
                     type: action.payload.type,
                     createdAt,
                 })
@@ -55,6 +59,17 @@ const roomMiddleware = store => next => (action) => {
                     type: OPEN_SNACK_BAR,
                     payload: {
                         message: 'ERROR: Could not add room password! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
+            newRankingRef
+                .set({
+                    members: {},
+                })
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not add ranking! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))
@@ -244,6 +259,26 @@ const roomMiddleware = store => next => (action) => {
                         type: REQUEST_JOIN_FAILED,
                     })
                 }) 
+            return next(action)
+        case UPDATE_RANKING_RESULTS: // id: roomId; member: MemberID; result: integer
+            firestore.collection('ranking').doc(action.payload.id)
+                .update({
+                    ['members.' + action.payload.member]: firebase.firestore.FieldValue + action.payload.result,
+                })
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'SUCCESS: Room problems updated!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not update problems! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
             return next(action)
         default:
             return next(action)
