@@ -4,12 +4,19 @@ import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
 import { CardHeader } from 'material-ui/Card'
+import {
+    Step,
+    Stepper,
+    StepLabel,
+  } from 'material-ui/Stepper'
+  import RaisedButton from 'material-ui/RaisedButton'
 import Loading from '../Loading'
 import {
     openSnackBar,
     openPopUp,
     getMembers,
 } from '../../Actions'
+import ProblemInfo from '../ProblemView/problemInfo'
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -23,63 +30,105 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
     return {
         userList: state.controlPanel.userList,
+        problems: state.controlPanel.problems,
+        instances: state.controlPanel.instances,
     }
 }
 
-const GroupInfo = ({
-    userList,
-    leader,
-    members,
-    getMembers,
-    groupName,
-}) => {
-    return (
+class RoomInfo extends React.Component {
+
+    state = {
+        finished: false,
+        stepIndex: 0,
+      }
+    
+    handleNext = () => {
+        const {stepIndex} = this.state
+        this.setState({
+            stepIndex: stepIndex + 1,
+            finished: stepIndex >= 2,
+        })
+    }
+    
+    handlePrev = () => {
+        const {stepIndex} = this.state
+            if (stepIndex > 0) {
+            this.setState({stepIndex: stepIndex - 1})
+            }
+    }
+
+    handleFinish = () => {
+    
+    }
+
+    getStepContent = (stepIndex) => (
         <div>
-            <h1>{groupName}</h1>
-            {
-                userList[leader]
-                ? <Paper zDepth={5} style={{ display: 'flex', width: '25%', marginBottom: '30px' }} >
-                    <CardHeader
-                        className="header"
-                        titleColor="white"
-                        subtitleColor="white"
-                        title={userList[leader].name}
-                        subtitle={`Leader - Rol: ${userList[leader].rol}`}
-                        avatar={userList[leader].picture}
-                    />
-                </Paper>
-                : getMembers([leader]) && <Loading />
-            }
-            {
-                members.every((member) => userList[member])
-                ? <Paper zDepth={5} style={{ display: 'flex', width: '25%', justifyContent: 'center' }} >
-                    {
-                        members.length > 0
-                        ? members.map(member => (
-                            <CardHeader
-                                key={member}
-                                className="sub-header"
-                                titleColor="white"
-                                subtitleColor="white"
-                                title={userList[member].name}
-                                subtitle={`Member - Rol: ${userList[member].rol}`}
-                                avatar={userList[member].picture}
-                            />
-                        ))
-                        : <h3>No members yet</h3>
-                    }
-                </Paper>
-                : getMembers(members) && <Loading />
-            }
+            <div>
+                <ProblemInfo 
+                    problemId={this.props.problemsId[stepIndex]}
+                />
+            </div>
+                
+
         </div>
     )
+    
+    render() {
+        const {
+            problemsId,
+            userList,
+            leader,
+            problems,
+            instances,
+            members,
+            getMembers,
+            roomName,
+        } = this.props
+        const {finished, stepIndex} = this.state
+        return (
+            <div>
+                <h1>{roomName}</h1>
+
+                <div style={{width: '100%', maxWidth: 700, margin: 'auto'}}>
+                    <Stepper activeStep={stepIndex}>
+                        {
+                            problemsId.map((problem) => (
+                                <Step key={problem}>
+                                    <StepLabel>{problems[problem].name}</StepLabel>
+                                </Step>
+                            ))
+                        }
+                    </Stepper>
+                    {this.getStepContent(stepIndex)}
+                    <div style={{marginTop: 12}}>
+                        <RaisedButton
+                            label="Back"
+                            disabled={stepIndex === 0}
+                            onClick={this.handlePrev}
+                            style={{marginRight: 12}}
+                        />
+                        <RaisedButton
+                            label={stepIndex === problemsId.length - 1 ? 'Finish' : 'Send Results'}
+                            primary={true}
+                            onClick={stepIndex === problemsId.length - 1 ? this.handleFinish : this.handleNext}
+                        />
+                    </div>
+                </div>
+            </div>
+        )
+    }
 }
 
-GroupInfo.propTypes = {
-    groupName: PropTypes.string.isRequired,
-    leader: PropTypes.string.isRequired,
+RoomInfo.propTypes = {
+    roomName: PropTypes.string.isRequired,
     members: PropTypes.array.isRequired,
+    problemsId: PropTypes.array.isRequired,
+    instances: PropTypes.objectOf(
+        PropTypes.shape({
+            name: PropTypes.string.isRequired,
+        }).isRequired,
+    ).isRequired,
     openSnackBar: PropTypes.func.isRequired,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(GroupInfo)
+export default connect(mapStateToProps, mapDispatchToProps)(RoomInfo)

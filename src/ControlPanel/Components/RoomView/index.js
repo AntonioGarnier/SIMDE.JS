@@ -24,6 +24,7 @@ const mapStateToProps = (state) => {
         shouldRedirect: state.controlPanel.shouldRedirect,
         singleRooms: state.controlPanel.singleRooms,
         groupRooms: state.controlPanel.groupRooms,
+        problems: state.controlPanel.problems,
         userGroups: state.controlPanel.userGroups,
         activeGroup: state.controlPanel.activeGroup,
     }
@@ -41,16 +42,16 @@ const RoomsView = (props) => {
         : props.groupRooms[props.match.params.room]
 
 
-    console.log('room: ', room)
-    console.log('userGroups: ', props.userGroups)
     if (room.type === 'single') {
-    if (room.members.hasOwnProperty(props.user.uid)/* || props.user.rol === 'admin'*/)
-        return(
-            <RoomInfo 
-            
-            
-            />
-        )
+        if (room.members.hasOwnProperty(props.user.uid)/* || props.user.rol === 'admin'*/) {
+            return(
+                <RoomInfo 
+                    roomName={room.name}
+                    members={Object.keys(room.members)}
+                    problemsId={Object.keys(room.problems)}
+                />
+            )
+        }
         if (!props.shouldRedirect) {
             props.openPopUp('Request join room', 'room', props.match.params.room, room.name, props.user.uid)
             return <Loading />
@@ -97,6 +98,11 @@ RoomsView.propTypes = {
         }).isRequired,
     ).isRequired,
     groupRooms: PropTypes.objectOf(
+        PropTypes.shape({
+            name: PropTypes.string.isRequired,
+        }).isRequired,
+    ).isRequired,
+    problems: PropTypes.objectOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
         }).isRequired,
