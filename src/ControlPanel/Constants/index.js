@@ -60,6 +60,8 @@ export const HEADER_BAR_TITLE = 'SIMDE'
 
 // Action Groups
     // MiddleWare
+    export const GET_MEMBERS_FROM_GROUP = 'GET_MEMBERS_FROM_GROUP'
+    export const GOT_MEMBER_TO_USERLIST = 'GOT_MEMBER_TO_USERLIST'
     export const CHECK_GROUP_PASSWORD = 'CHECK_GROUP_PASSWORD'
     export const ADD_GROUP = 'ADD_GROUP'
     export const REMOVE_GROUP = 'REMOVE_GROUP'

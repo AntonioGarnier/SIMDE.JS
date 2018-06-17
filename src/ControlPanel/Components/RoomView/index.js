@@ -8,6 +8,7 @@ import {
     openSnackBar,
     openPopUp,
 } from '../../Actions'
+import RoomInfo from './roomInfo'
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -43,9 +44,12 @@ const RoomsView = (props) => {
     console.log('room: ', room)
     console.log('userGroups: ', props.userGroups)
     if (room.type === 'single') {
-        if (room.members.hasOwnProperty(props.user.uid) || props.user.rol === 'admin')
+    if (room.members.hasOwnProperty(props.user.uid)/* || props.user.rol === 'admin'*/)
         return(
-            <div>VISTA SINGLE</div>
+            <RoomInfo 
+            
+            
+            />
         )
         if (!props.shouldRedirect) {
             props.openPopUp('Request join room', 'room', props.match.params.room, room.name, props.user.uid)
@@ -60,7 +64,6 @@ const RoomsView = (props) => {
         let isMember = props.userGroups.some((currentValue) => (
             members.includes(currentValue)
         ))
-        /* Aqui deberia dejarte entrar si no tienes grupo activo pero ya eres miembro */
         if (isMember /*|| props.user.rol === 'admin'*/)
             return(
                 <div>VISTA GROUP</div>

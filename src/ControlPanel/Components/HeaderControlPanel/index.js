@@ -12,6 +12,7 @@ import {
     logout,
     openSideBar,
 } from '../../Actions'
+import { ListItem } from 'material-ui/List';
 //import './style.css'
 
 
@@ -40,7 +41,15 @@ const HeaderControlPanel = (props) => {
             onLeftIconButtonClick={props.openSideBar}
             iconElementRight={
                 <div style={{ display: 'flex', alignItems: 'center', color: 'white' }} >
-                    <Avatar style={{ marginRight: '20px' }} src={props.user.picture} />
+                    <ListItem
+                        style={{ color: 'white' }}
+                        disabled
+                        leftAvatar= {
+                            <Avatar style={{ marginRight: '20px' }} src={props.user.picture} />
+                        }
+                    >
+                        {props.user.displayName}
+                    </ListItem>
                     <IconButton
                         style={{ marginLeft: '20px' }}
                         onClick={props.logout}

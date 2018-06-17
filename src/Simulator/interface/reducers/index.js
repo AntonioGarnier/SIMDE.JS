@@ -39,6 +39,7 @@ import {
     CLOSE_POP_UP,
     REQUEST_JOIN_FAILED,
     CHANGE_ACTIVE_GROUP,
+    GOT_MEMBER_TO_USERLIST,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -385,6 +386,17 @@ export function SuperescalarReducers(state = initialState, action) {
                 controlPanel: { 
                     ...state.controlPanel,
                     activeGroup: action.payload.id,
+                }
+            }
+        case GOT_MEMBER_TO_USERLIST:
+            return {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    userList: {
+                        ...state.controlPanel.userList,
+                        [action.payload.id] : action.payload.userData,
+                    }
                 }
             }
         default:

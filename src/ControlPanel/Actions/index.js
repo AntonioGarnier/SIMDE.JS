@@ -29,8 +29,18 @@ import {
     CHECK_GROUP_PASSWORD,
     CHECK_ROOM_PASSWORD,
     CHANGE_ACTIVE_GROUP,
+    GET_MEMBERS_FROM_GROUP,
 } from '../Constants'
 
+
+export function getMembers(members) {
+    return {
+        type: GET_MEMBERS_FROM_GROUP,
+        payload: {
+            members,
+        }
+    }
+}
 
 export function changeActiveGroup(id) {
     return {

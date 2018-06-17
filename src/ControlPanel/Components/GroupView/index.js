@@ -8,6 +8,7 @@ import {
     openSnackBar,
     openPopUp,
 } from '../../Actions'
+import GroupInfo from './groupInfo'
 
 
 const mapDispatchToProps = (dispatch) => {
@@ -39,9 +40,13 @@ const GroupView = (props) => {
             <Redirect to="/group-list" />
         )
     }
-    if (props.groups[props.match.params.group].members.hasOwnProperty(props.user.uid) /*|| props.groups[props.match.params.group].leader === props.user.uid || props.user.rol === 'admin'*/)
+    if (props.groups[props.match.params.group].members.hasOwnProperty(props.user.uid) || props.groups[props.match.params.group].leader === props.user.uid || props.user.rol === 'admin')
         return(
-            <div>VISTA</div>
+            <GroupInfo 
+                groupName={props.groups[props.match.params.group].name}
+                leader={props.groups[props.match.params.group].leader}
+                members={Object.keys(props.groups[props.match.params.group].members)}
+            />
         )
     if (!props.shouldRedirect) {
         props.openPopUp('Request join group', 'group', props.match.params.group, props.groups[props.match.params.group].name)

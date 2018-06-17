@@ -8,6 +8,8 @@ import {
     OPEN_SNACK_BAR,
     CHECK_GROUP_PASSWORD,
     REQUEST_JOIN_FAILED,
+    GET_MEMBERS_FROM_GROUP,
+    GOT_MEMBER_TO_USERLIST,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -196,6 +198,50 @@ const groupsMiddleware = store => next => (action) => {
                             type: REQUEST_JOIN_FAILED,
                         })
                     })
+            return next(action)
+        case GET_MEMBERS_FROM_GROUP:
+            action.payload.members.forEach((member) => {
+                firestore
+                    .collection('userList')
+                    .doc(member)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            store.dispatch({
+                                type: GOT_MEMBER_TO_USERLIST,
+                                payload: {
+                                    id: member,
+                                    userData: doc.data(),
+                                }
+                            })
+                        } 
+                        else {
+                            store.dispatch({
+                                type: OPEN_SNACK_BAR,
+                                payload: {
+                                    message: 'WARNING: Member does not exist',
+                                    type: 'warning',
+                                }
+                            })
+                            store.dispatch({
+                                type: REQUEST_JOIN_FAILED,
+                            })
+                        }
+                    })
+                    .catch(() => {
+                        store.dispatch({
+                            type: OPEN_SNACK_BAR,
+                            payload: {
+                                message: 'ERROR: Could not get member passowrd! (DataBase - Problem)',
+                                type: 'error',
+                            }
+                        })
+                        store.dispatch({
+                            type: REQUEST_JOIN_FAILED,
+                        })
+                    })
+            })
+            console.log('GET_MEMBERS_FROM_GROUP: ', action)
             return next(action)
         default:
             return next(action)
