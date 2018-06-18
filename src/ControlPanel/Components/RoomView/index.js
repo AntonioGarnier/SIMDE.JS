@@ -47,6 +47,8 @@ const RoomsView = (props) => {
             return(
                 <RoomInfo 
                     roomName={room.name}
+                    roomType={room.type}
+                    roomId={props.match.params.room}
                     members={Object.keys(room.members)}
                     problemsId={Object.keys(room.problems)}
                 />

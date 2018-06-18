@@ -31,6 +31,8 @@ import {
     CHANGE_ACTIVE_GROUP,
     GET_MEMBERS_FROM_GROUP,
     UPDATE_RANKING_RESULTS,
+    OPEN_SIDE_BAR_RANK,
+    CLOSE_SIDE_BAR_RANK,
 } from '../Constants'
 
 export function updateRankingResults(id, member, result) {
@@ -355,16 +357,26 @@ export function logout() {
     }
 }
 
+export function openSideBarRank() {
+    return {
+        type: OPEN_SIDE_BAR_RANK,
+    }
+}
+
+export function closeSideBarRank() {
+    return {
+        type: CLOSE_SIDE_BAR_RANK,
+    }
+}
+
 export function openSideBar() {
     return {
         type: OPEN_SIDE_BAR,
-        payload: true,
     }
 }
 
 export function closeSideBar() {
     return {
         type: CLOSE_SIDE_BAR,
-        payload: false,
     }
 }

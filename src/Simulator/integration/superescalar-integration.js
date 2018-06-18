@@ -402,7 +402,7 @@ export class SuperescalarIntegration extends MachineIntegration {
         this.loadInstance(inst)
         this.loadCodeFromPanel(code)
         this.playWithResults()
-
+        return this.superescalar.status.cycle
     }
 
 }

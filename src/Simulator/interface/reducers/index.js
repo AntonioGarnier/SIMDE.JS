@@ -40,6 +40,8 @@ import {
     REQUEST_JOIN_FAILED,
     CHANGE_ACTIVE_GROUP,
     GOT_MEMBER_TO_USERLIST,
+    OPEN_SIDE_BAR_RANK,
+    CLOSE_SIDE_BAR_RANK,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -153,15 +155,19 @@ export function SuperescalarReducers(state = initialState, action) {
         case USER_LOGOUT:
             return initialState
         case OPEN_SIDE_BAR:
-            return { ...state, controlPanel: { ...state.controlPanel, toggleSideBar: action.payload }}
+            return { ...state, controlPanel: { ...state.controlPanel, toggleSideBar: true }}
         case CLOSE_SIDE_BAR:
-            return { ...state, controlPanel: { ...state.controlPanel, toggleSideBar: action.payload }}
+            return { ...state, controlPanel: { ...state.controlPanel, toggleSideBar: false }}
+        case OPEN_SIDE_BAR_RANK:
+            return { ...state, controlPanel: { ...state.controlPanel, toggleSideBarRank: !state.controlPanel.toggleSideBarRank }}
+        case CLOSE_SIDE_BAR_RANK:
+            return { ...state, controlPanel: { ...state.controlPanel, toggleSideBarRank: false }}
         case CHECKING_USER:
             return { ...state, controlPanel: { ...state.controlPanel, isLoading: true }}
         case CHECKED_USER:
             return { ...state, controlPanel: { ...state.controlPanel, isLoading: false }}
         case CHANGE_PATH:
-            return { ...state, controlPanel: { ...state.controlPanel, actualPath: action.payload.path, shouldRedirect: false}}
+            return { ...state, controlPanel: { ...state.controlPanel, actualPath: action.payload.path, shouldRedirect: false, toggleSideBarRank: false}}
         case FETCH_ALL_ROOMS:
             userGroups = {}
             Object.keys(state.controlPanel.groups).forEach((id) => {

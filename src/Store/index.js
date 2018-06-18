@@ -73,10 +73,20 @@ export const initialState = {
     batchResults: {},
     controlPanel: {
         user: null,
-        userList: {},
+        userList: {
+            QsmYNTiwPdSlo3nYQG4WqCDWzxl2: {
+                name: "Real Anto con un nombre ultra long",
+                picture: "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+            },
+            hVNk4RTe5xXwYQXvZPbWPOBtFj62: {
+                name: "Fake Anto",
+                picture: "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+            }
+        },
         actualPath: '',
         activeGroup: '',
         toggleSideBar: false,
+        toggleSideBarRank: false,
         isLoading: true,
         shouldRedirect: false,
         popUpData: {
@@ -99,6 +109,17 @@ export const initialState = {
         instancesOrdered: [],
         problems: {},
         problemsOrdered: [],
+        ranking: {
+            "1WevwO2PCwviHO3P9L9j": {
+                "QsmYNTiwPdSlo3nYQG4WqCDWzxl2": {
+                    "nRp4virjEHDbYjByw36t": 52,
+                    "w0Ids2qZ2xKRNbMaXH8m": 60,
+                },
+                "hVNk4RTe5xXwYQXvZPbWPOBtFj62": {
+                    "nRp4virjEHDbYjByw36t": 70,
+                }
+            }
+        }
     },
 };
 

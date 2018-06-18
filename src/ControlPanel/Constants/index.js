@@ -12,6 +12,8 @@ export const CLOSE_POP_UP = 'CLOSE_POP_UP'
 // Action SIDEBAR
 export const OPEN_SIDE_BAR = 'OPEN_SIDE_BAR'
 export const CLOSE_SIDE_BAR = 'CLOSE_SIDE_BAR'
+export const OPEN_SIDE_BAR_RANK = 'OPEN_SIDE_BAR_RANK'
+export const CLOSE_SIDE_BAR_RANK = 'CLOSE_SIDE_BAR_RANK'
 
 // Action ERRORS
 export const ERROR_POPUP_OPEN = 'ERROR_POPUP_OPEN'

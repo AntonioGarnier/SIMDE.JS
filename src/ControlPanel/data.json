@@ -104,13 +104,18 @@
             }
         }
     },
-    "ranking": {
-        "ROOM_ID": "pending"
-    },
     "admins": ["Antonio"],
     "def": "MEM: [40] 2 4 3 5 3 19 28",
-    "instancias": "DropMenu para instancias (Alumnos: resolver instancias por ordende eleccion)",
+    "instancias": "DropMenu para instancias (Alumnos: resolver instancias por orden de eleccion)",
     "Definicion": "richEditor - Comprobar con firebase",
     "control": "controlar la configuracion superescalar",
-    "member": "memberlist"
+    "member": "memberlist",
+    "ranking": {
+        "ROOM_ID": {
+            "ID_MEMBER": {
+                "ID_PROBLEMA": "cycles",
+                "ID_PROBLEMA2": "cycles"
+            }
+        }
+    }
 }

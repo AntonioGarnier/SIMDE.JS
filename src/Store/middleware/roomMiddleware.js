@@ -33,7 +33,6 @@ const roomMiddleware = store => next => (action) => {
                     members: action.payload.members,
                     problems: action.payload.problems,
                     visibility: action.payload.visibility,
-                    ranking: newRankingRef.id,
                     type: action.payload.type,
                     createdAt,
                 })
@@ -48,6 +47,17 @@ const roomMiddleware = store => next => (action) => {
                     type: OPEN_SNACK_BAR,
                     payload: {
                         message: 'ERROR: Could not add room! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
+            newRankingRef
+                .set({
+
+                })
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not add room ranking! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))
