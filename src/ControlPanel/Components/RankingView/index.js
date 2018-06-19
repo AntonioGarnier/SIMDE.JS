@@ -49,7 +49,7 @@ const RankingView = (props) => {
     }
     const rankingOrdered = Object.keys(props.scores).sort((a , b) => props.scores[b]-props.scores[a])
 
-    console.log('PROPS: ', props)
+    //console.log('PROPS: ', props)
     return (
         <Drawer
             containerStyle={{ top: '64px'}}

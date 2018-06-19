@@ -52,6 +52,7 @@ const ProblemInfo = (props) => {
                                 name={props.instances[id].name}
                                 initial={props.instances[id].initial}
                                 final={props.instances[id].final}
+                                showFinal={props.user.rol === 'admin'}
                             />
                         ))
                         : 'No se asignaron instancias'          

@@ -11,7 +11,7 @@ import {
     UPDATE_VISIBILITY_ROOM,
     CHECK_ROOM_PASSWORD,
     REQUEST_JOIN_FAILED,
-    UPDATE_RANKING_RESULTS,
+    SEND_RESULTS_TO_RANK,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -52,7 +52,7 @@ const roomMiddleware = store => next => (action) => {
                 }))
             newRankingRef
                 .set({
-
+                    members: {},
                 })
                 .catch(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
@@ -270,22 +270,22 @@ const roomMiddleware = store => next => (action) => {
                     })
                 }) 
             return next(action)
-        case UPDATE_RANKING_RESULTS: // id: roomId; member: MemberID; result: integer
-            firestore.collection('ranking').doc(action.payload.id)
-                .update({
-                    ['members.' + action.payload.member]: firebase.firestore.FieldValue + action.payload.result,
+        case SEND_RESULTS_TO_RANK: // id: roomId; entity: MemberID; problem: id; result: integer
+            firestore.collection('ranking').doc(action.payload.room)
+                .set({
+                    ['members.' + action.payload.entity + '.' + action.payload.problem]: action.payload.cycle,
                 })
                 .then(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
-                        message: 'SUCCESS: Room problems updated!',
+                        message: 'SUCCESS: Results sent!',
                         type: 'success',
                     }
                 }))
                 .catch(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
-                        message: 'ERROR: Could not update problems! (DataBase - Problem)',
+                        message: 'ERROR: Could not update ranking! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))

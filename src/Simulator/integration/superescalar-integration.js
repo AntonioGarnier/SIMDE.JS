@@ -25,7 +25,7 @@ export class SuperescalarIntegration extends MachineIntegration {
         this.stopCondition = ExecutionStatus.EXECUTABLE;
         this.finishedExecution = false;
         this.executing = false;
-        this.replications = 0;
+        this.replications = 1;
         this.cacheFailPercentage = 0;
         this.cacheFailLatency = 0;
         /*
@@ -138,7 +138,7 @@ export class SuperescalarIntegration extends MachineIntegration {
                 alert(t('execution.finished'));
             }
         };
-        this.playWithResults = () => {
+        /*this.playWithResults = () => {
             if (!this.superescalar.code || !this.contentIntegration) {
                 return;
             }
@@ -151,12 +151,13 @@ export class SuperescalarIntegration extends MachineIntegration {
                 this.superescalar.code = code;
             }
                 this.executionLoopWithResults();
-        };
+        };*/
         this.makeBatchExecution = () => {
             if (!this.superescalar.code) {
                 return;
             }
             const results = [];
+            this.clearBatchStateEffects();
             for (let i = 0; i < this.replications; i++) {
                 let code = Object.assign(new Code(), this.superescalar.code);
                 this.superExe();
@@ -169,12 +170,13 @@ export class SuperescalarIntegration extends MachineIntegration {
                     this.setGpr(this.contentIntegration.GPRContent);
                     this.setMemory(this.contentIntegration.MEMContent);
                 }
+                
                 // tslint:disable-next-line:no-empty
                 while (this.superescalar.tic() !== SuperescalarStatus.SUPER_ENDEXE) { }
                 results.push(this.superescalar.status.cycle);
             }
+            
             const statistics = this.calculateBatchStatistics(results);
-            this.clearBatchStateEffects();
             store.dispatch(displayBatchResults(statistics));
         };
         this.pause = () => {
@@ -289,16 +291,16 @@ export class SuperescalarIntegration extends MachineIntegration {
                 this.resetMachine();
             }
         };
-        this.executionLoopWithResults = () => {
+        /*this.executionLoopWithResults = () => {
             let machineStatus = this.stepForward();
             if (!(machineStatus === SuperescalarStatus.SUPER_ENDEXE)) {
                 this.executionLoopWithResults();
             }
             else if (machineStatus === SuperescalarStatus.SUPER_ENDEXE) {
                     this.finishedExecution = true;
-                    alert(t('execution.finished'));
+                    //alert(t('execution.finished'));
                 }
-        };
+        };*/
         this.saveSuperConfig = (superConfig) => {
             const superConfigKeys = Object.keys(superConfig);
             for (let i = 0; i < (superConfigKeys.length - 2); i++) {
@@ -346,20 +348,16 @@ export class SuperescalarIntegration extends MachineIntegration {
         this.superescalar.memoryFailLatency = 0;
         this.resetMachine();
     }
-    loadInstance(instanceData) {
+    loadInstance(instanceDataInitial) {
         try {
-            const contentIntegration = new ContentIntegration(instanceData);
+            const contentIntegration = new ContentIntegration(instanceDataInitial);
             this.contentIntegration = contentIntegration;
-            this.setFpr(contentIntegration.FPRContent);
-            this.setGpr(contentIntegration.GPRContent);
-            this.setMemory(contentIntegration.MEMContent);
-            this.dispatchAllSuperescalarActions();
         }
         catch (error) {
             store.dispatch({
                 type: OPEN_SNACK_BAR,
                 payload: {
-                    message: `ERROR: ${error.message}`,
+                    message: `ERROR(loadInstance): ${error.message}`,
                     type: 'error',
                 }
             })
@@ -375,35 +373,29 @@ export class SuperescalarIntegration extends MachineIntegration {
             store.dispatch({
                 type: OPEN_SNACK_BAR,
                 payload: {
-                    message: `ERROR: ${error.message}`,
+                    message: `ERROR(loadCodeFromPanel): ${error.message}`,
                     type: 'error',
                 }
             })
         }
     }
-    testCodeWithInstance(instanceData, codeData){
-        this.resetMachine()
-        const code = `11
-        ADDI    R2 R0 #50
-        ADDI    R3 R0 #70
-        ADDI    R4 R0 #40
-        LF        F0 (R4)
-        ADDI    R5 R2 #5
-    LOOP:
-        LF         F1 (R2)
-        ADDF    F1 F1 F0
-        SF        F1 (R3)
-        ADDI     R2 R2 #1
-        ADDI    R3 R3 #1
-        BNE        R2 R5 LOOP`
-        const inst = `#MEM
-[40] 2
-[50] 4 3 8 6 5`
-        this.loadInstance(inst)
-        this.loadCodeFromPanel(code)
-        this.playWithResults()
-        return this.superescalar.status.cycle
+    checkResult(instanceDataFinal) {
+        try {
+            const contentIntegration = new ContentIntegration(instanceDataFinal);
+            return Object.keys(contentIntegration.MEMContent).every((memPosition) => {
+                console.log(contentIntegration.MEMContent[memPosition], ' === ', this.superescalar.memory.data[memPosition])
+                return contentIntegration.MEMContent[memPosition] === this.superescalar.memory.data[memPosition]
+            })
+        }
+        catch (error) {
+            store.dispatch({
+                type: OPEN_SNACK_BAR,
+                payload: {
+                    message: `ERROR(checkResult): ${error.message}`,
+                    type: 'error',
+                }
+            })
+        }
     }
-
 }
 export default new SuperescalarIntegration();

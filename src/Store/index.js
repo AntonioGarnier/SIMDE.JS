@@ -119,7 +119,8 @@ export const initialState = {
                     "nRp4virjEHDbYjByw36t": 70,
                 }
             }
-        }
+        },
+        results: {}
     },
 };
 

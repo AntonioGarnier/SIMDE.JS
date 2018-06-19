@@ -33,7 +33,45 @@ import {
     UPDATE_RANKING_RESULTS,
     OPEN_SIDE_BAR_RANK,
     CLOSE_SIDE_BAR_RANK,
+    SAVE_INSTANCE_RESULT,
+    RESET_INSTANCE_RESULT,
+    SEND_RESULTS_TO_RANK,
 } from '../Constants'
+
+export function sendResultsToRank({ room, entity, problem, cycle }) {
+    return {
+        type: SEND_RESULTS_TO_RANK,
+        payload: {
+            room,
+            entity,
+            problem,
+            cycle,
+        }
+    }
+}
+
+export function resetInstanceResult(room, problem) {
+    return {
+        type: RESET_INSTANCE_RESULT,
+        payload: {
+            room,
+            problem,
+        }
+    }
+}
+
+export function saveInstanceResult({ room, problem, instance, isCorrect, cycles }) {
+    return {
+        type: SAVE_INSTANCE_RESULT,
+        payload: {
+            room,
+            problem,
+            instance,
+            isCorrect,
+            cycles,
+        }
+    }
+}
 
 export function updateRankingResults(id, member, result) {
     return {

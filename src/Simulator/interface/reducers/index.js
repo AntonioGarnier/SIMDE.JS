@@ -42,6 +42,8 @@ import {
     GOT_MEMBER_TO_USERLIST,
     OPEN_SIDE_BAR_RANK,
     CLOSE_SIDE_BAR_RANK,
+    SAVE_INSTANCE_RESULT,
+    RESET_INSTANCE_RESULT,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -403,6 +405,82 @@ export function SuperescalarReducers(state = initialState, action) {
                     userList: {
                         ...state.controlPanel.userList,
                         [action.payload.id] : action.payload.userData,
+                    }
+                }
+            }
+            case SAVE_INSTANCE_RESULT:
+            let temp = {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    results: {
+                        ...state.controlPanel.results,
+                        [action.payload.room]: {
+                            ...state.controlPanel.results[action.payload.room]
+                        }
+                    }
+                }
+            }
+            /*
+            let room = {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    results: {
+                        ...state.controlPanel.results,
+                        [action.payload.room]: {
+                            ...state.controlPanel.results[action.payload.room],
+                        }
+                    }
+                }
+            }
+            console.log('room: ', room) 
+            let problem = {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    results: {
+                        ...room.controlPanel.results,
+                        [action.payload.room]: {
+                            ...room.controlPanel.results[action.payload.room],
+                            [action.payload.problem]: {
+                                ...room.controlPanel.results[action.payload.room][action.payload.problem],
+                            }
+                        }
+                    }
+                }
+            }
+            console.log('problem: ', problem) */
+            return {
+                ...temp,
+                controlPanel: {
+                    ...temp.controlPanel,
+                    results: {
+                        ...temp.controlPanel.results,
+                        [action.payload.room]: {
+                            ...temp.controlPanel.results[action.payload.room],
+                            [action.payload.problem]: {
+                                ...temp.controlPanel.results[action.payload.room][action.payload.problem],
+                                [action.payload.instance]: {
+                                    isCorrect: action.payload.isCorrect,
+                                    cycles: action.payload.cycles,
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            case RESET_INSTANCE_RESULT:
+            return {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    results: {
+                        ...state.controlPanel.results,
+                        [action.payload.room]: {
+                            ...state.controlPanel.results[action.payload.room],
+                            [action.payload.problem]: {}
+                        }
                     }
                 }
             }

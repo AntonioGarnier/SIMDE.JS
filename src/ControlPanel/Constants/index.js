@@ -96,6 +96,9 @@ export const HEADER_BAR_TITLE = 'SIMDE'
 
 // Actions for INSTANCES
     // Middleware
+    export const SEND_RESULTS_TO_RANK = 'SEND_RESULTS_TO_RANK'
+    export const SAVE_INSTANCE_RESULT = 'SAVE_INSTANCE_RESULT'
+    export const RESET_INSTANCE_RESULT = 'RESET_INSTANCE_RESULT'
     export const ADD_INSTANCE = 'ADD_INSTANCE'
     export const REMOVE_INSTANCE = 'REMOVE_INSTANCE'
     // Epic
