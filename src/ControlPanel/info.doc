@@ -116,10 +116,10 @@ FALTA RANKING EPIC, Hecho*** falta testeo
 FALTA comprobar las salas de grupo. Hecho, falta testeo
 Falta separar los epics en usuarios y admin
 Falta las reglas de firestore.
-
-Quitar de admin routes el history
-Poner en admin routes una user list
-Falta separar los epics en usuarios y admin
-Falta las reglas de firestore.
 Borrado cascada. Si borras grupo, borrar ese grupo de las salas
+
+Quitar de admin routes el history AL FINAL SE QUEDA
+Poner en admin routes una user list DONE
+Falta separar los epics en usuarios y admin FALTA
+Falta las reglas de firestore. FALTA
 
