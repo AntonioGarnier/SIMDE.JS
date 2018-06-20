@@ -22,11 +22,9 @@ const roomMiddleware = store => next => (action) => {
     switch (action.type) {
         case ADD_ROOM:
             let newRoomPwRef
-            let newRankingRef
             let newRoomRef
             const createdAt = firebase.firestore.FieldValue.serverTimestamp()
             newRoomRef = firestore.collection('rooms').doc()
-            newRankingRef = firestore.collection('ranking').doc(newRoomRef.id)
             newRoomPwRef = firestore.collection('roomsPw').doc(newRoomRef.id)
             newRoomRef
                 .set({
@@ -51,17 +49,6 @@ const roomMiddleware = store => next => (action) => {
                         type: 'error',
                     }
                 }))
-            newRankingRef
-                .set({
-                    members: {},
-                })
-                .catch(() => store.dispatch({
-                    type: OPEN_SNACK_BAR,
-                    payload: {
-                        message: 'ERROR: Could not add room ranking! (DataBase - Problem)',
-                        type: 'error',
-                    }
-                }))
             newRoomPwRef
                 .set({
                     password: action.payload.password,
@@ -70,17 +57,6 @@ const roomMiddleware = store => next => (action) => {
                     type: OPEN_SNACK_BAR,
                     payload: {
                         message: 'ERROR: Could not add room password! (DataBase - Problem)',
-                        type: 'error',
-                    }
-                }))
-            newRankingRef
-                .set({
-                    members: {},
-                })
-                .catch(() => store.dispatch({
-                    type: OPEN_SNACK_BAR,
-                    payload: {
-                        message: 'ERROR: Could not add ranking! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))

@@ -4,7 +4,7 @@ import { Subject } from 'rxjs'
 import {
     map,
     flatMap,
-    // tap,
+    tap,
     merge,
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
@@ -15,6 +15,7 @@ import {
     REMOVE_ALL_ROOMS,
     GOT_REMOVE_ROOM,
     GOT_UPDATE_ROOM,
+    GOT_UPDATE_SOME_ROOMS,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -105,8 +106,17 @@ export const roomEpic = action$ =>
                         }
                     }),
                     merge(roomUpdate$.pipe(
-                        // tap(v => console.log('update: ', v)),
+                        tap(v => console.log('update: ', v)),
                         map(({ singleRooms, groupRooms, rooms }) => {
+                            if (rooms.length > 1) {
+                                return {
+                                    type: GOT_UPDATE_SOME_ROOMS,
+                                    payload: {
+                                        singleRooms,
+                                        groupRooms,
+                                    }
+                                }
+                            }
                             let room = singleRooms.hasOwnProperty(rooms[0]) ? singleRooms[rooms[0]] : groupRooms[rooms[0]]
                             return {
                                 type: GOT_UPDATE_ROOM,

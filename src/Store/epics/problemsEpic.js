@@ -15,6 +15,7 @@ import {
     REMOVE_ALL_PROBLEMS,
     GOT_REMOVE_PROBLEM,
     GOT_UPDATE_PROBLEM,
+    GOT_UPDATE_SOME_PROBLEMS,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -96,6 +97,13 @@ action$.pipe(
                 merge(problemUpdate$.pipe(
                     //tap(v => console.log('update: ', v)),
                     map(({ problems, problemsOrdered }) => {
+                        if (problemsOrdered.length > 1)
+                            return {
+                                type: GOT_UPDATE_SOME_PROBLEMS,
+                                payload: {
+                                    problems,
+                                }
+                            }
                         const problem = problems[problemsOrdered[0]]
                         return {
                             type: GOT_UPDATE_PROBLEM,

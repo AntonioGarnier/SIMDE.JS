@@ -92,10 +92,22 @@ const groupsMiddleware = store => next => (action) => {
                     .where('type', '==', 'group')
                     .get()
                     .then((querySnapshot) => {
-                        querySnapshot.forEach(function(doc, i) {
-                            console.log(`DOC${i}:`, doc.data())
+                        let batch = firestore.batch();
+                        querySnapshot.forEach(function(doc) {
+
+                            if (doc.data().members.hasOwnProperty(action.payload.id)) {
+                                batch.update(firestore.collection('rooms').doc(doc.id), { ['members.' + action.payload.id]: firebase.firestore.FieldValue.delete() })
+                                console.log('DOC:', doc.data())
+                                console.log('ID:', doc.id)
+                            }
                         })
-                        
+                        batch.commit().then(() => store.dispatch({
+                            type: OPEN_SNACK_BAR,
+                            payload: {
+                                message: 'SUCCESS: Group removed from all rooms',
+                                type: 'success',
+                            }
+                        }))
                     })
             } 
             else 

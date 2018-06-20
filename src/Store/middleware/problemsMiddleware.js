@@ -59,6 +59,25 @@ const problemsMiddleware = store => next => (action) => {
                         type: 'error',
                     }
                 }))
+            firestore
+                .collection('rooms')
+                .get()
+                .then((querySnapshot) => {
+                    let batch = firestore.batch();
+                    querySnapshot.forEach(function(doc) {
+
+                        if (doc.data().problems.hasOwnProperty(action.payload.id)) {
+                            batch.update(firestore.collection('rooms').doc(doc.id), { ['problems.' + action.payload.id]: firebase.firestore.FieldValue.delete() })
+                        }
+                    })
+                    batch.commit().then(() => store.dispatch({
+                        type: OPEN_SNACK_BAR,
+                        payload: {
+                            message: 'SUCCESS: Problem removed from all rooms',
+                            type: 'success',
+                        }
+                    }))
+                })
             return next(action)
         case UPDATE_NAME_PROBLEM:
             firestore.collection('problems').doc(action.payload.id)

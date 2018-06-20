@@ -72,7 +72,7 @@ const RankingView = (props) => {
                                 key={id}
                                 disabled
                                 primaryText={ props.type === 'single' ? props.userList[id].name : props.groups[id].name }
-                                secondaryText={`Score - ${props.scores[id]}`}
+                                secondaryText={`Score - ${parseFloat(parseFloat(props.scores[id]).toFixed(2))}`}
                                 leftAvatar={<Avatar src={props.type === 'single' ? props.userList[id].picture : props.userList[props.groups[id].leader].picture} />}
                                 rightIcon={getRightIcon(index)}
                             />

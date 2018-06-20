@@ -17,6 +17,7 @@ import {
     REMOVE_ALL_ROOMS,
     GOT_REMOVE_ROOM,
     GOT_UPDATE_ROOM,
+    GOT_UPDATE_SOME_ROOMS,
     FETCH_ALL_GROUPS,
     GOT_ADD_GROUP,
     REMOVE_ALL_GROUPS,
@@ -54,6 +55,7 @@ import {
     REMOVE_ALL_RANKINGS,
     GOT_REMOVE_RANKING,
     GOT_UPDATE_RANKING,
+    GOT_UPDATE_SOME_PROBLEMS,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -194,6 +196,22 @@ export function SuperescalarReducers(state = initialState, action) {
                 })
             })
             return { ...state, controlPanel: { ...state.controlPanel, singleRooms: action.payload.singleRooms, groupRooms: action.payload.groupRooms, roomsOrdered: action.payload.roomsOrdered, userGroupRooms}}
+        case GOT_UPDATE_SOME_ROOMS:
+            console.log('Action: ', action)
+            return { 
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    singleRooms: {
+                        ...state.controlPanel.singleRooms,
+                        ...action.payload.singleRooms,
+                    },
+                    groupRooms: {
+                        ...state.controlPanel.singleRooms,
+                        ...action.payload.groupRooms,
+                    }
+                }
+            }
         case GOT_UPDATE_ROOM:
         case GOT_ADD_ROOM:
             userGroups = {}
@@ -252,6 +270,18 @@ export function SuperescalarReducers(state = initialState, action) {
         }
         case FETCH_ALL_PROBLEMS:
             return { ...state, controlPanel: { ...state.controlPanel, problems: action.payload.problems, problemsOrdered: action.payload.problemsOrdered}}            
+        case GOT_UPDATE_SOME_PROBLEMS:
+            console.log('Action: ', action)
+            return { 
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    problems: {
+                        ...state.controlPanel.problems,
+                        ...action.payload.problems,
+                    }
+                }
+            }
         case GOT_UPDATE_PROBLEM:
         case GOT_ADD_PROBLEM:
             let problemsOrdered = state.controlPanel.problemsOrdered.slice()
@@ -297,7 +327,7 @@ export function SuperescalarReducers(state = initialState, action) {
         case GOT_ADD_GROUP:
             userGroupsArray = state.controlPanel.userGroups.slice()
             if (action.payload.members.hasOwnProperty(state.controlPanel.user.uid) || action.payload.leader === state.controlPanel.user.uid)
-                if (userGroupsArray.indexOf(action.payload.id) !== -1)
+                if (userGroupsArray.indexOf(action.payload.id) === -1)
                     userGroupsArray.unshift(action.payload.id)
             let groupsOrdered = state.controlPanel.groupsOrdered.slice()
                 if (groupsOrdered.indexOf(action.payload.id) === -1)

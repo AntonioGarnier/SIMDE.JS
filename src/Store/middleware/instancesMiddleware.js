@@ -57,6 +57,25 @@ const instancesMiddleware = store => next => (action) => {
                         type: 'error',
                     }
                 }))
+            firestore
+                .collection('problems')
+                .get()
+                .then((querySnapshot) => {
+                    let batch = firestore.batch();
+                    querySnapshot.forEach(function(doc) {
+
+                        if (doc.data().instances.hasOwnProperty(action.payload.id)) {
+                            batch.update(firestore.collection('problems').doc(doc.id), { ['instances.' + action.payload.id]: firebase.firestore.FieldValue.delete() })
+                        }
+                    })
+                    batch.commit().then(() => store.dispatch({
+                        type: OPEN_SNACK_BAR,
+                        payload: {
+                            message: 'SUCCESS: Instance removed from all problems',
+                            type: 'success',
+                        }
+                    }))
+                })
             return next(action)
         default:
             return next(action)

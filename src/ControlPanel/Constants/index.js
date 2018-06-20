@@ -59,6 +59,7 @@ export const HEADER_BAR_TITLE = 'SIMDE'
     export const GOT_ADD_ROOM = 'GOT_ADD_ROOM'
     export const GOT_REMOVE_ROOM = 'GOT_REMOVE_ROOM'
     export const GOT_UPDATE_ROOM = 'GOT_UPDATE_ROOM'
+    export const GOT_UPDATE_SOME_ROOMS = 'GOT_UPDATE_SOME_ROOMS'
 
 // Action Groups
     // MiddleWare
@@ -93,6 +94,7 @@ export const HEADER_BAR_TITLE = 'SIMDE'
     export const GOT_ADD_PROBLEM = 'GOT_ADD_PROBLEM'
     export const GOT_REMOVE_PROBLEM = 'GOT_REMOVE_PROBLEM'
     export const GOT_UPDATE_PROBLEM = 'GOT_UPDATE_PROBLEM'
+    export const GOT_UPDATE_SOME_PROBLEMS = 'GOT_UPDATE_SOME_PROBLEMS'
 
 // Actions for INSTANCES
     // Middleware
