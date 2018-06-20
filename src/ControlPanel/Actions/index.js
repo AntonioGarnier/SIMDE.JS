@@ -29,7 +29,7 @@ import {
     CHECK_GROUP_PASSWORD,
     CHECK_ROOM_PASSWORD,
     CHANGE_ACTIVE_GROUP,
-    GET_MEMBERS_FROM_GROUP,
+    GET_MEMBERS,
     UPDATE_RANKING_RESULTS,
     OPEN_SIDE_BAR_RANK,
     CLOSE_SIDE_BAR_RANK,
@@ -39,12 +39,13 @@ import {
     SAVE_CODE_TO_HISTORY,
 } from '../Constants'
 
-export function saveCodeToHistory({ user, room, problemId, problem, code }) {
+export function saveCodeToHistory({ user, room, roomName, problemId, problem, code }) {
     return {
         type: SAVE_CODE_TO_HISTORY,
         payload: {
             user,
             room,
+            roomName,
             problemId,
             problem,
             code,
@@ -100,7 +101,7 @@ export function updateRankingResults(id, member, result) {
 
 export function getMembers(members) {
     return {
-        type: GET_MEMBERS_FROM_GROUP,
+        type: GET_MEMBERS,
         payload: {
             members,
         }

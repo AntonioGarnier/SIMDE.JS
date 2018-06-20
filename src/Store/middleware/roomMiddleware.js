@@ -272,7 +272,6 @@ const roomMiddleware = store => next => (action) => {
                 }) 
             return next(action)
         case SEND_RESULTS_TO_RANK: // id: roomId; entity: MemberID; problem: id; result: integer
-            console.log('Action: ', action.payload)
             firestore.collection('ranking').doc(action.payload.room)
                 .set({
                     [action.payload.member]: {
@@ -295,14 +294,14 @@ const roomMiddleware = store => next => (action) => {
                 }))
             return next(action)
         case SAVE_CODE_TO_HISTORY:
-            const createdHistoryAt = firebase.firestore.FieldValue.serverTimestamp()
             firestore.collection('history').doc(action.payload.user)
                 .set({
-                    [action.payload.problemId]: {
-                        problem: action.payload.problem,
-                        room: action.payload.room,
-                        code: action.payload.code,
-                        createdAt: createdHistoryAt,
+                    [action.payload.room]: {
+                        [action.payload.problemId]: {
+                            room: action.payload.roomName,
+                            problem: action.payload.problem,
+                            code: action.payload.code,
+                        }
                     }
                 }, { merge: true })
                 .then(() => store.dispatch({

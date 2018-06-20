@@ -19,6 +19,7 @@ import {
     roomEpic,
     problemsEpic,
     historyEpic,
+    rankingEpic,
 } from './epics'
 
 
@@ -74,16 +75,7 @@ export const initialState = {
     batchResults: {},
     controlPanel: {
         user: null,
-        userList: {
-            QsmYNTiwPdSlo3nYQG4WqCDWzxl2: {
-                name: "Real Anto con un nombre ultra long",
-                picture: "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
-            },
-            hVNk4RTe5xXwYQXvZPbWPOBtFj62: {
-                name: "Fake Anto",
-                picture: "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
-            }
-        },
+        userList: {},
         actualPath: '',
         activeGroup: '',
         toggleSideBar: false,
@@ -103,6 +95,7 @@ export const initialState = {
         singleRooms: {},
         groupRooms: {},
         userGroupRooms: [],
+        userGroups: [],
         roomsOrdered: [],
         groups: {},
         groupsOrdered: [],
@@ -112,7 +105,23 @@ export const initialState = {
         problemsOrdered: [],
         history: {},
         historyOrdered: [],
-        ranking: {
+        ranking: {},
+        results: {}
+    },
+};
+/*
+
+            QsmYNTiwPdSlo3nYQG4WqCDWzxl2: {
+                name: "Real Anto con un nombre ultra long",
+                picture: "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+            },
+            hVNk4RTe5xXwYQXvZPbWPOBtFj62: {
+                name: "Fake Anto",
+                picture: "https://lh3.googleusercontent.com/-XdUIqdMkCWA/AAAAAAAAAAI/AAAAAAAAAAA/4252rscbv5M/photo.jpg",
+            }
+        
+
+
             "1WevwO2PCwviHO3P9L9j": {
                 "QsmYNTiwPdSlo3nYQG4WqCDWzxl2": {
                     "nRp4virjEHDbYjByw36t": 52,
@@ -122,11 +131,8 @@ export const initialState = {
                     "nRp4virjEHDbYjByw36t": 70,
                 }
             }
-        },
-        results: {}
-    },
-};
-
+        
+*/
 const loadFromLocalStorage = () => (
     loadState()
         ? { ...initialState, controlPanel: loadState() }
@@ -147,6 +153,7 @@ const rootEpic = combineEpics(
     roomEpic,
     problemsEpic,
     historyEpic,
+    rankingEpic,
 )
 
 const epicMiddleware = createEpicMiddleware(rootEpic)

@@ -1,13 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
 import PropTypes from 'prop-types'
-import { List } from 'material-ui/List'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
+import {List, ListItem} from 'material-ui/List'
 import Paper from 'material-ui/Paper'
 import Divider from 'material-ui/Divider'
 import Subheader from 'material-ui/Subheader'
 import TextField from 'material-ui/TextField'
-import CustomList from '../CustomList'
-
+import Desktop from 'material-ui/svg-icons/hardware/desktop-windows'
+import Problem from 'material-ui/svg-icons/action/extension'
+import {
+    openSnackBar,
+} from '../../Actions'
 
 const mapStateToProps = (state) => { 
     return {
@@ -17,31 +22,63 @@ const mapStateToProps = (state) => {
     }
 }
 
-const HistoryList = ({ 
+const mapDispatchToProps = (dispatch) => {
+    return bindActionCreators({
+        openSnackBar,
+    }, dispatch)
+}
+
+const HistoryList = ({
     history,
     singleRooms,
     groupRooms,
-}) => {
+    openSnackBar,
+}) => { 
     return (
         <Paper className="listStyle" >
             <List>
                 <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >History</Subheader>
                 <Divider />
                 {
-                    Object.keys(history).map(item => (
-                        <div key={item} >
-                            <p>Sala: {singleRooms[history[item].room] ? singleRooms[history[item].room].name : groupRooms[history[item].room].name}</p>
-                            <p>Problema: {history[item].problem}</p>
-                            <TextField
-                                id={item}
-                                rows={10}
-                                disabled
-                                defaultValue={history[item].code}
-                                underlineShow={false}
-                                style={{ paddingLeft: '10px', marginTop: 0, width: '500px', borderStyle: 'solid', borderWidth: '1px' }}
-                                multiLine
-                            />
-                        </div>
+                    Object.keys(history).map(room => (
+                        <ListItem
+                            key={room}
+                            primaryText={history[room][Object.keys(history[room])[0]].room}
+                            leftIcon={<Desktop />}
+                            initiallyOpen={false}
+                            primaryTogglesNestedList={true}
+                            nestedItems={
+                                Object.keys(history[room]).map(problem => (
+                                    <ListItem
+                                        key={problem}
+                                        primaryText={history[room][problem].problem}
+                                        leftIcon={<Problem />}
+                                        initiallyOpen={false}
+                                        primaryTogglesNestedList={true}
+                                        nestedItems={[
+                                            <CopyToClipboard
+                                                key={`clip${problem}`}
+                                                    style={{ display: 'flex', flexDirection: 'column' }}
+                                                    onCopy={() => openSnackBar('Code Copied!', 'success')}
+                                                    text={history[room][problem].code}
+                                                >
+                                                    <ListItem key={`nested${problem}`} >
+                                                    <TextField
+                                                        id={problem}
+                                                        rows={10}
+                                                        disabled
+                                                        defaultValue={history[room][problem].code}
+                                                        underlineShow={false}
+                                                        style={{ paddingLeft: '10px', marginTop: 0, width: '500px', borderStyle: 'solid', borderWidth: '1px' }}
+                                                        multiLine
+                                                    />
+                                                </ListItem>
+                                            </CopyToClipboard>
+                                        ]}
+                                    />
+                                ))
+                            }
+                        />
                     ))
 
                 }
@@ -51,7 +88,28 @@ const HistoryList = ({
 }
 
 HistoryList.propTypes = {
-
+    singleRooms: PropTypes.objectOf(
+        PropTypes.shape({
+            name: PropTypes.string.isRequired,
+        }).isRequired,
+    ).isRequired,
+    groupRooms:  PropTypes.objectOf(
+        PropTypes.shape({
+            name: PropTypes.string.isRequired,
+        }).isRequired,
+    ).isRequired,
+    history:  PropTypes.objectOf(
+        PropTypes.shape(
+            PropTypes.objectOf(
+                PropTypes.shape({
+                    room: PropTypes.string.isRequired,
+                    problem: PropTypes.string.isRequired,
+                    code: PropTypes.string.isRequired,
+                }).isRequired,
+            ).isRequired,
+        ).isRequired,
+    ).isRequired,
+    openSnackBar: PropTypes.func.isRequired,
 }
 
-export default connect(mapStateToProps)(HistoryList)
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryList)

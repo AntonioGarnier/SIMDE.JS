@@ -20,6 +20,8 @@ import {
     listenProblem,
     subscribeHistory,
     listenHistory,
+    subscribeRanking,
+    listenRanking,
  } from '../epics'
 
 const firestore = firebase.firestore()
@@ -47,8 +49,6 @@ const userLogin = store => next => (action) => {
                 })
             return next(action)
         case CHECKED_USER:
-            listenRoom
-                .onSnapshot(subscribeRoom(),() => {store.dispatch(unsubscribe)})
             listenGroups
                 .onSnapshot(subscribeGroups(),() => {store.dispatch(unsubscribe)})
             listenInstances
@@ -59,6 +59,10 @@ const userLogin = store => next => (action) => {
             //.orderBy('createdAt', 'desc')
                 .where(firebase.firestore.FieldPath.documentId(), '==', store.getState().controlPanel.user.uid)
                 .onSnapshot(subscribeHistory(),() => {store.dispatch(unsubscribe)})
+            listenRanking
+                .onSnapshot(subscribeRanking(),() => {store.dispatch(unsubscribe)})
+            listenRoom
+                .onSnapshot(subscribeRoom(),() => {store.dispatch(unsubscribe)})
             return next(action)
         case USER_LOGIN:
             const userRef = firestore.collection('userList').doc(action.payload.uid)

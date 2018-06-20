@@ -8,7 +8,7 @@ import {
     OPEN_SNACK_BAR,
     CHECK_GROUP_PASSWORD,
     REQUEST_JOIN_FAILED,
-    GET_MEMBERS_FROM_GROUP,
+    GET_MEMBERS,
     GOT_MEMBER_TO_USERLIST,
 } from '../../ControlPanel/Constants'
 
@@ -87,6 +87,9 @@ const groupsMiddleware = store => next => (action) => {
                             type: 'error',
                         }
                     }))
+                /*firestore
+                    .collection('rooms')
+                    .where('type', '==', 'group')*/
             } 
             else 
                 store.dispatch({
@@ -199,7 +202,7 @@ const groupsMiddleware = store => next => (action) => {
                         })
                     })
             return next(action)
-        case GET_MEMBERS_FROM_GROUP:
+        case GET_MEMBERS:
             action.payload.members.forEach((member) => {
                 firestore
                     .collection('userList')
@@ -232,7 +235,7 @@ const groupsMiddleware = store => next => (action) => {
                         store.dispatch({
                             type: OPEN_SNACK_BAR,
                             payload: {
-                                message: 'ERROR: Could not get member passowrd! (DataBase - Problem)',
+                                message: 'ERROR: Could not get member! (DataBase - Problem)',
                                 type: 'error',
                             }
                         })
@@ -241,7 +244,6 @@ const groupsMiddleware = store => next => (action) => {
                         })
                     })
             })
-            console.log('GET_MEMBERS_FROM_GROUP: ', action)
             return next(action)
         default:
             return next(action)

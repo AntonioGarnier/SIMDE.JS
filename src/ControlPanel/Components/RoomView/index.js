@@ -7,6 +7,7 @@ import Loading from '../Loading'
 import {
     openSnackBar,
     openPopUp,
+    getMembers,
 } from '../../Actions'
 import RoomInfo from './roomInfo'
 
@@ -15,15 +16,18 @@ const mapDispatchToProps = (dispatch) => {
     return bindActionCreators({
         openSnackBar,
         openPopUp,
+        getMembers,
     }, dispatch)
 }
 
 const mapStateToProps = (state) => {
     return {
         user: state.controlPanel.user,
+        userList: state.controlPanel.userList,
         shouldRedirect: state.controlPanel.shouldRedirect,
         singleRooms: state.controlPanel.singleRooms,
         groupRooms: state.controlPanel.groupRooms,
+        groups: state.controlPanel.groups,
         problems: state.controlPanel.problems,
         userGroups: state.controlPanel.userGroups,
         activeGroup: state.controlPanel.activeGroup,
@@ -44,13 +48,15 @@ const RoomsView = (props) => {
 
     if (room.type === 'single') {
         if (room.members.hasOwnProperty(props.user.uid)/* || props.user.rol === 'admin'*/) {
+            if (!Object.keys(room.members).every(member => props.userList[member]))
+                props.getMembers(Object.keys(room.members))
             return(
                 <RoomInfo 
                     roomName={room.name}
                     roomType={room.type}
                     roomId={props.match.params.room}
-                    members={Object.keys(room.members)}
                     problemsId={Object.keys(room.problems)}
+                    members={Object.keys(room.members)}
                 />
             )
         }
@@ -67,10 +73,24 @@ const RoomsView = (props) => {
         let isMember = props.userGroups.some((currentValue) => (
             members.includes(currentValue)
         ))
-        if (isMember /*|| props.user.rol === 'admin'*/)
+        if (isMember /*|| props.user.rol === 'admin'*/) {
+            // Para cada lider de cada grupo se tiene que cumplir que todos los lideres esten en userList
+            console.log('En user list estan los lideres: ', Object.keys(room.members).every(member => props.userList[props.groups[member].leader]))
+            if (!Object.keys(room.members).every(member => props.userList[props.groups[member].leader])){
+                let leaders = Object.keys(room.members).map(member => props.groups[member].leader)
+                console.log('LEADERS: ', leaders)
+                props.getMembers(leaders)
+            }
             return(
-                <div>VISTA GROUP</div>
+                <RoomInfo 
+                    roomName={room.name}
+                    roomType={room.type}
+                    roomId={props.match.params.room}
+                    problemsId={Object.keys(room.problems)}
+                    members={Object.keys(room.members)}
+                />
             )
+        }
         if (props.activeGroup.length < 1) {
             props.openSnackBar('WARNING: You do not have an active group', 'warning')
             return <Redirect to="/room-list" />
@@ -100,6 +120,11 @@ RoomsView.propTypes = {
         }).isRequired,
     ).isRequired,
     groupRooms: PropTypes.objectOf(
+        PropTypes.shape({
+            name: PropTypes.string.isRequired,
+        }).isRequired,
+    ).isRequired,
+    groups: PropTypes.objectOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
         }).isRequired,

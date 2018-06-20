@@ -48,8 +48,6 @@ const RankingView = (props) => {
         }
     }
     const rankingOrdered = Object.keys(props.scores).sort((a , b) => props.scores[b]-props.scores[a])
-
-    //console.log('PROPS: ', props)
     return (
         <Drawer
             containerStyle={{ top: '64px'}}
@@ -67,7 +65,8 @@ const RankingView = (props) => {
             <Menu>
                 <List>
                     { 
-                        rankingOrdered.map((id, index) => (
+                        rankingOrdered.every(id => props.type === 'single' ? props.userList.hasOwnProperty(id) : props.groups.hasOwnProperty(id) && props.userList.hasOwnProperty(props.groups[id].leader))
+                        ? rankingOrdered.map((id, index) => (
                             <ListItem
                                 style={{ width: '350px' }}
                                 key={id}
@@ -78,6 +77,7 @@ const RankingView = (props) => {
                                 rightIcon={getRightIcon(index)}
                             />
                         ))
+                        : null
                     }
                 </List>
             </Menu>

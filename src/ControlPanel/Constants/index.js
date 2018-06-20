@@ -62,7 +62,7 @@ export const HEADER_BAR_TITLE = 'SIMDE'
 
 // Action Groups
     // MiddleWare
-    export const GET_MEMBERS_FROM_GROUP = 'GET_MEMBERS_FROM_GROUP'
+    export const GET_MEMBERS = 'GET_MEMBERS'
     export const GOT_MEMBER_TO_USERLIST = 'GOT_MEMBER_TO_USERLIST'
     export const CHECK_GROUP_PASSWORD = 'CHECK_GROUP_PASSWORD'
     export const ADD_GROUP = 'ADD_GROUP'
@@ -118,6 +118,15 @@ export const HEADER_BAR_TITLE = 'SIMDE'
     export const REMOVE_ALL_HISTORY = 'REMOVE_ALL_HISTORY'
     export const GOT_REMOVE_HISTORY = 'GOT_REMOVE_HISTORY'
     export const GOT_UPDATE_HISTORY = 'GOT_UPDATE_HISTORY'
+
+// Actions for RANKING
+    //Epic
+    export const FETCHING_RANKINGS = 'FETCHING_RANKINGS'
+    export const FETCH_ALL_RANKINGS = 'FETCH_ALL_RANKINGS'
+    export const GOT_ADD_RANKING = 'GOT_ADD_RANKING'
+    export const REMOVE_ALL_RANKINGS = 'REMOVE_ALL_RANKINGS'
+    export const GOT_REMOVE_RANKING = 'GOT_REMOVE_RANKING'
+    export const GOT_UPDATE_RANKING = 'GOT_UPDATE_RANKING'
 
 //Action for RANKING
 export const UPDATE_RANKING_RESULTS = 'UPDATE_RANKING_RESULTS'

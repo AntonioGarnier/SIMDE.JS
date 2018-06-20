@@ -358,10 +358,9 @@ export class SuperescalarIntegration extends MachineIntegration {
     checkResult(instanceDataFinal) {
         try {
             const contentIntegration = new ContentIntegration(instanceDataFinal);
-            return Object.keys(contentIntegration.MEMContent).every((memPosition) => {
-                console.log(contentIntegration.MEMContent[memPosition], ' === ', this.superescalar.memory.data[memPosition])
-                return contentIntegration.MEMContent[memPosition] === this.superescalar.memory.data[memPosition]
-            })
+            return Object.keys(contentIntegration.MEMContent).every((memPosition) => (
+                contentIntegration.MEMContent[memPosition] === this.superescalar.memory.data[memPosition]
+            ))
         }
         catch (error) {
             store.dispatch({

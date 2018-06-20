@@ -44,12 +44,16 @@ import {
     CLOSE_SIDE_BAR_RANK,
     SAVE_INSTANCE_RESULT,
     RESET_INSTANCE_RESULT,
-    FETCHING_HISTORY,
     FETCH_ALL_HISTORY,
     GOT_ADD_HISTORY,
     REMOVE_ALL_HISTORY,
     GOT_REMOVE_HISTORY,
     GOT_UPDATE_HISTORY,
+    FETCH_ALL_RANKINGS,
+    GOT_ADD_RANKING,
+    REMOVE_ALL_RANKINGS,
+    GOT_REMOVE_RANKING,
+    GOT_UPDATE_RANKING,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -282,12 +286,11 @@ export function SuperescalarReducers(state = initialState, action) {
         case FETCH_ALL_GROUPS:
             const {
                 user,
-                groups,
             } = state.controlPanel
             userGroupsArray = []
-            Object.keys(groups).forEach((id) => {
-                if (groups[id].members.hasOwnProperty(user.uid) || groups[id].leader === user.uid)
-                userGroupsArray.push(id)
+            Object.keys(action.payload.groups).forEach((id) => {
+                if (action.payload.groups[id].members.hasOwnProperty(user.uid) || action.payload.groups[id].leader === user.uid)
+                    userGroupsArray.push(id)
             })
             return { ...state, controlPanel: { ...state.controlPanel, groups: action.payload.groups, groupsOrdered: action.payload.groupsOrdered, userGroups: userGroupsArray}}
         case GOT_UPDATE_GROUP:
@@ -447,16 +450,19 @@ export function SuperescalarReducers(state = initialState, action) {
                 }
             }
         case RESET_INSTANCE_RESULT:
+            items = {}
+            Object.keys(state.controlPanel.results[action.payload.room]).forEach((element) => {
+                if (element !== action.payload.problem) {
+                    items[element] = state.controlPanel.results[action.payload.room][element]
+                }
+            })
             return {
                 ...state,
                 controlPanel: {
                     ...state.controlPanel,
                     results: {
                         ...state.controlPanel.results,
-                        [action.payload.room]: {
-                            ...state.controlPanel.results[action.payload.room],
-                            [action.payload.problem]: {}
-                        }
+                        [action.payload.room]: items,
                     }
                 }
             }
@@ -493,6 +499,30 @@ export function SuperescalarReducers(state = initialState, action) {
                 }
             })
             return { ...state, controlPanel: { ...state.controlPanel, history: items, historyOrdered: state.controlPanel.historyOrdered.filter(historyId => historyId !== action.payload.id)}}
+        case FETCH_ALL_RANKINGS:
+            return { ...state, controlPanel: { ...state.controlPanel, ranking: action.payload.ranking}}
+        case GOT_UPDATE_RANKING:
+        case GOT_ADD_RANKING:
+        return {
+            ...state,
+            controlPanel: {
+                ...state.controlPanel,
+                ranking: {
+                    ...state.controlPanel.ranking,
+                    [action.payload.id]: action.payload.ranking,
+                },
+            }
+        }
+        case REMOVE_ALL_RANKINGS:
+            return { ...state, controlPanel: { ...state.controlPanel, ranking: {}}}
+        case GOT_REMOVE_RANKING:
+        items = {}
+            Object.keys(state.controlPanel.ranking).forEach((element) => {
+                if (element !== action.payload.id) {
+                    items[element] = state.controlPanel.ranking[element]
+                }
+            })
+            return { ...state, controlPanel: { ...state.controlPanel, ranking: items }}
         default:
             return state
     }

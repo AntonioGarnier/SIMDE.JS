@@ -3,10 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { debounce } from 'throttle-debounce'
 import PropTypes from 'prop-types'
-import Paper from 'material-ui/Paper'
-import { CardHeader } from 'material-ui/Card'
 import ActionGrade from 'material-ui/svg-icons/action/grade'
-import IconButton from 'material-ui/IconButton'
 import {
     Step,
     Stepper,
@@ -14,7 +11,6 @@ import {
   } from 'material-ui/Stepper'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
-import Loading from '../Loading'
 import {
     openSnackBar,
     openPopUp,
@@ -72,7 +68,6 @@ class RoomInfo extends React.Component {
     state = {
         stepIndex: 0,
         code: {},
-        results: {},
         scores: {},
         superConfig: {
             integerSumQuantity: 2,
@@ -118,7 +113,8 @@ class RoomInfo extends React.Component {
     )
 
     handleClickResetInstances = () => {
-        if (this.state.scores.hasOwnProperty(this.props.problemsId[this.state.stepIndex]) || this.props.results[this.props.roomId].hasOwnProperty(this.props.problemsId[this.state.stepIndex])) {
+        console.log('RESET: ',  this.props.results[this.props.roomId])
+        if (this.state.scores.hasOwnProperty(this.props.problemsId[this.state.stepIndex]) || (this.props.results.hasOwnProperty(this.props.roomId) &&  this.props.results[this.props.roomId].hasOwnProperty(this.props.problemsId[this.state.stepIndex]))) {
             let temp = { ...this.state.scores }
             delete temp[this.props.problemsId[this.state.stepIndex]]
             this.setState({
@@ -209,7 +205,6 @@ class RoomInfo extends React.Component {
         let result = []
         let correct = []
         SuperescalarIntegration.saveSuperConfig(this.state.superConfig);
-        console.log('TEST CON ESTAS INSTANCES: ', problems[problemsId[stepIndex]].instances)
         Object.keys(problems[problemsId[stepIndex]].instances).forEach((instanceId) => {
             let test = this.handleTestCodeWithSelectedInstance(instanceId, instances[instanceId].initial, instances[instanceId].final, this.state.code[problemsId[stepIndex]])
             result.push(test.cycles)
@@ -219,7 +214,7 @@ class RoomInfo extends React.Component {
             scores: {
                 ...this.state.scores,
                 [problemsId[stepIndex]]: {
-                    cycles: average(result).toFixed(2), //Esto es lo que finalmente se envia la media de los test con todas las instancias
+                    cycles: parseFloat(parseFloat(average(result)).toFixed(2)), //Esto es lo que finalmente se envia la media de los test con todas las instancias
                     areAllCorrect: correct.every(item => item)
                 }
             }
@@ -277,6 +272,7 @@ class RoomInfo extends React.Component {
         let saveCode = {
             user: this.props.user.uid,
             room: this.props.roomId,
+            roomName: this.props.roomName,
             problemId: this.props.problemsId[this.state.stepIndex],
             problem: this.props.problems[this.props.problemsId[this.state.stepIndex]].name,
             code: this.state.code[this.props.problemsId[this.state.stepIndex]],
@@ -393,13 +389,9 @@ class RoomInfo extends React.Component {
     render() {
         const {
             problemsId,
-            userList,
-            leader,
             problems,
-            instances,
-            members,
-            getMembers,
             roomName,
+            roomType,
         } = this.props
         const { stepIndex} = this.state
         const contentStyle = {
@@ -408,7 +400,6 @@ class RoomInfo extends React.Component {
             padding: '5%',
             margin: 'auto'
         }
-        console.log('CODE: ', this.state.code)
         if (this.props.toggleSideBarRank)
             contentStyle.marginRight = '250px'
         else
@@ -416,7 +407,7 @@ class RoomInfo extends React.Component {
         return (
             <div>
                 <RankingView 
-                    type='single'
+                    type={roomType}
                     scores={this.calculateRankingScore()}
                 />
                 <h1>{roomName}</h1>
@@ -479,8 +470,8 @@ RoomInfo.propTypes = {
     roomName: PropTypes.string.isRequired,
     roomType: PropTypes.string.isRequired,
     roomId: PropTypes.string.isRequired,
-    members: PropTypes.array.isRequired,
     problemsId: PropTypes.array.isRequired,
+    members: PropTypes.array.isRequired,
     instances: PropTypes.objectOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,

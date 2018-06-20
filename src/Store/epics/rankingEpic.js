@@ -9,103 +9,94 @@ import {
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
 import {
-    FETCHING_GROUPS,
-    FETCH_ALL_GROUPS,
-    GOT_ADD_GROUP,
-    REMOVE_ALL_GROUPS,
-    GOT_REMOVE_GROUP,
-    GOT_UPDATE_GROUP,
+    FETCHING_RANKINGS,
+    FETCH_ALL_RANKINGS,
+    GOT_ADD_RANKING,
+    REMOVE_ALL_RANKINGS,
+    GOT_REMOVE_RANKING,
+    GOT_UPDATE_RANKING,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
 
-const groupAdd$ = new Subject()
-const groupUpdate$ = new Subject()
-const groupRemove$ = new Subject()
+const rankingAdd$ = new Subject()
+const rankingUpdate$ = new Subject()
+const rankingRemove$ = new Subject()
 
-export const subscribeGroups = () => (querySnapshot) => {
+export const subscribeRanking = () => (querySnapshot) => {
     let updateType
-    let groups = {}
-    let groupsOrdered = []
-    querySnapshot.docChanges().forEach((group) => {
-        groupsOrdered.push(group.doc.id)
-        groups[group.doc.id] = group.doc.data()
-        updateType = group.type
+    let ranking = {}
+    querySnapshot.docChanges().forEach((rank) => {
+        ranking[rank.doc.id] = rank.doc.data()
+        updateType = rank.type
     })
     switch (updateType) {
         case 'added':
-            groupAdd$.next({ groups, groupsOrdered })
+            rankingAdd$.next(ranking)
             break
         case 'modified':
-            groupUpdate$.next({ groups, groupsOrdered })
+            rankingUpdate$.next(ranking)
             break
         case 'removed':
-            groupRemove$.next({ groups, groupsOrdered })
+            rankingRemove$.next(ranking)
             break
         default:
             break
     }
 }
 
-export const listenGroups = firestore.collection('groups')
-    .orderBy('createdAt', 'desc')
+export const listenRanking = firestore.collection('ranking')
 
-export const groupsEpic = action$ =>
+
+export const rankingEpic = action$ =>
     action$.pipe(
-        ofType(FETCHING_GROUPS),
+        ofType(FETCHING_RANKINGS),
         //tap(v => console.log('Antes de flat: ', v)),        
         flatMap(() => (
-            groupAdd$.pipe(
+            rankingAdd$.pipe(
                 //tap(v => console.log('add: ', v)),
-                map(({ groups, groupsOrdered }) => {
-                    if (groupsOrdered.length > 1)
+                map((ranking) => {
+                    if (Object.keys(ranking).length > 1)
                         return {
-                            type: FETCH_ALL_GROUPS,
+                            type: FETCH_ALL_RANKINGS,
                             payload: {
-                                groups,
-                                groupsOrdered,
+                                ranking,
                             }
                         }
                      
-                    const group = groups[groupsOrdered[0]]
+                    const rank = Object.keys(ranking)
                     return {
-                        type: GOT_ADD_GROUP,
+                        type: GOT_ADD_RANKING,
                         payload: {
-                            id: groupsOrdered[0],
-                            name: group.name,
-                            members: group.members,
-                            leader: group.leader,
-                            createdAt: group.createdAt,
+                            id: rank,
+                            ranking: ranking[rank],
                         },
                     }
                 }),
-                merge(groupRemove$.pipe(
+                merge(rankingRemove$.pipe(
                     //tap(v => console.log('remove: ', v)),
-                    map(({ groups, groupsOrdered }) => {
-                        if (groupsOrdered.length > 1)
+                    map((ranking) => {
+                        if (Object.keys(ranking).length > 1)
                             return {
-                                type: REMOVE_ALL_GROUPS,
+                                type: REMOVE_ALL_RANKINGS,
                             }
                         return {
-                            type: GOT_REMOVE_GROUP,
+                            type: GOT_REMOVE_RANKING,
                             payload: {
-                                id: groupsOrdered[0],
+                                id: Object.keys(ranking),
                             },
                         }
                     }),
-                    merge(groupUpdate$.pipe(
+                    merge(rankingUpdate$.pipe(
                         //tap(v => console.log('update: ', v)),
-                        map(({ groups, groupsOrdered }) => {
-                            const group = groups[groupsOrdered[0]]
+                        map((ranking) => {
+                            const rank = Object.keys(ranking)
                             return {
-                                type: GOT_UPDATE_GROUP,
+                                type: GOT_UPDATE_RANKING,
                                 payload: {
-                                    id: groupsOrdered[0],
-                                    name: group.name,
-                                    members: group.members,
-                                    leader: group.leader,
-                                    createdAt: group.createdAt,
+                                    id: rank,
+                                    ranking: ranking[rank],
                                 },
                             }
                         }),
