@@ -19,3 +19,8 @@ export {
     listenProblem,
     subscribeProblem,
 } from './problemsEpic'
+export {
+    historyEpic,
+    listenHistory,
+    subscribeHistory,
+} from './historyEpic'

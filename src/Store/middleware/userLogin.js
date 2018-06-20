@@ -17,6 +17,8 @@ import {
     listenInstances,
     subscribeProblem,
     listenProblem,
+    subscribeHistory,
+    listenHistory,
  } from '../epics'
 
 const firestore = firebase.firestore()
@@ -59,6 +61,10 @@ const userLogin = store => next => (action) => {
                 .onSnapshot(subscribeInstances(),() => {store.dispatch(unsubscribe)})
             listenProblem
                 .onSnapshot(subscribeProblem(),() => {store.dispatch(unsubscribe)})
+            listenHistory
+                .where(firebase.firestore.FieldPath.documentId(), '==', store.getState().controlPanel.user.uid)
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(subscribeHistory(),() => {store.dispatch(unsubscribe)})
             return next(action)
         default:
             return next(action)

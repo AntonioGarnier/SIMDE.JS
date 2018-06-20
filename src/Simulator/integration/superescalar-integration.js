@@ -25,7 +25,7 @@ export class SuperescalarIntegration extends MachineIntegration {
         this.stopCondition = ExecutionStatus.EXECUTABLE;
         this.finishedExecution = false;
         this.executing = false;
-        this.replications = 1;
+        this.replications = 0;
         this.cacheFailPercentage = 0;
         this.cacheFailLatency = 0;
         /*
@@ -138,20 +138,6 @@ export class SuperescalarIntegration extends MachineIntegration {
                 alert(t('execution.finished'));
             }
         };
-        /*this.playWithResults = () => {
-            if (!this.superescalar.code || !this.contentIntegration) {
-                return;
-            }
-            this.executing = true;
-            // Check if the execution has finished
-            if (this.finishedExecution) {
-                this.finishedExecution = false;
-                let code = Object.assign(new Code(), this.superescalar.code);
-                this.superExe();
-                this.superescalar.code = code;
-            }
-                this.executionLoopWithResults();
-        };*/
         this.makeBatchExecution = () => {
             if (!this.superescalar.code) {
                 return;
@@ -291,16 +277,6 @@ export class SuperescalarIntegration extends MachineIntegration {
                 this.resetMachine();
             }
         };
-        /*this.executionLoopWithResults = () => {
-            let machineStatus = this.stepForward();
-            if (!(machineStatus === SuperescalarStatus.SUPER_ENDEXE)) {
-                this.executionLoopWithResults();
-            }
-            else if (machineStatus === SuperescalarStatus.SUPER_ENDEXE) {
-                    this.finishedExecution = true;
-                    //alert(t('execution.finished'));
-                }
-        };*/
         this.saveSuperConfig = (superConfig) => {
             const superConfigKeys = Object.keys(superConfig);
             for (let i = 0; i < (superConfigKeys.length - 2); i++) {

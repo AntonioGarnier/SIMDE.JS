@@ -23,10 +23,14 @@ import {
     saveInstanceResult,
     resetInstanceResult,
     sendResultsToRank,
+    saveCodeToHistory,
 } from '../../Actions'
 import { Code } from '../../../Simulator/core/Common/Code';
 import ProblemInfo from '../ProblemView/problemInfo'
 import SuperescalarIntegration from '../../../Simulator/integration/superescalar-integration'
+//import SuperescalarConfigModalComponent from '../../../Simulator/interface/components/modal/SuperescalarConfigModalComponent'
+//import BatchModalComponent from '../../../Simulator/interface/components/modal/BatchModalComponent'
+//import { toggleSuperConfigModal, toggleBatchModal } from '../../../Simulator/interface/actions/modals'
 import RankingView from '../RankingView';
 
 
@@ -39,6 +43,9 @@ const mapDispatchToProps = (dispatch) => {
         saveInstanceResult,
         resetInstanceResult,
         sendResultsToRank,
+        saveCodeToHistory,
+        //toggleSuperConfigModal,
+        //toggleBatchModal,
     }, dispatch)
 }
 
@@ -67,6 +74,21 @@ class RoomInfo extends React.Component {
         code: {},
         results: {},
         scores: {},
+        superConfig: {
+            integerSumQuantity: 2,
+            integerSumLatency: 1,
+            integerMultQuantity: 2,
+            integerMultLatency: 2,
+            floatingSumQuantity: 2,
+            floatingSumLatency: 4,
+            floatingMultQuantity: 2,
+            floatingMultLatency: 6,
+            memoryQuantity: 2,
+            memoryLatency: 4,
+            jumpQuantity: 1,
+            jumpLatency: 2,
+            issueGrade: 4
+        }
     }
     
     handleNext = () => {
@@ -111,37 +133,39 @@ class RoomInfo extends React.Component {
     }
 
     handleClickSendResults = () => {
-        // Sala - Usuario - Problema - averageCycles SI MI UID ESTA COMO LIDER EN ALGUN GRUPO
-        
-        
         if (this.state.scores.hasOwnProperty(this.props.problemsId[this.state.stepIndex])) {
-            if (this.props.roomType === 'single') {
-                let results = {
-                    room: this.props.roomId,
-                    entity: this.props.user.uid,
-                    problem: this.props.problemsId[this.state.stepIndex],
-                    cycles: this.state.scores[this.props.problemsId[this.state.stepIndex]].cycles
-                }
-                this.props.sendResultsToRank(results)
-            } else if (this.props.roomType === 'group') {
-                let entity = ''
-                console.log('MEMBERS: ', this.props.members)
-                let isLeader = this.props.members.some(member => {
-                    if (this.props.groups[member].leader === this.props.user.uid) 
-                        entity = member
-                    return this.props.groups[member].leader === this.props.user.uid
-                })
-                if (isLeader) {
+            if (this.state.scores[this.props.problemsId[this.state.stepIndex]].areAllCorrect) {
+                if (this.props.roomType === 'single') {
                     let results = {
                         room: this.props.roomId,
-                        entity: entity,
+                        member: this.props.user.uid,
                         problem: this.props.problemsId[this.state.stepIndex],
                         cycles: this.state.scores[this.props.problemsId[this.state.stepIndex]].cycles
                     }
                     this.props.sendResultsToRank(results)
+                } else if (this.props.roomType === 'group') {
+                    let member = ''
+                    console.log('MEMBERS: ', this.props.members)
+                    let isLeader = this.props.members.some(memberId => {
+                        if (this.props.groups[memberId].leader === this.props.user.uid) 
+                            member = memberId
+                        return this.props.groups[memberId].leader === this.props.user.uid
+                    })
+                    if (isLeader) {
+                        let results = {
+                            room: this.props.roomId,
+                            member,
+                            problem: this.props.problemsId[this.state.stepIndex],
+                            cycles: this.state.scores[this.props.problemsId[this.state.stepIndex]].cycles
+                        }
+                        this.props.sendResultsToRank(results)
+                    }
+                    else
+                        this.props.openSnackBar('WARNING: Only leaders can send results', 'warning')
                 }
-                else
-                    this.props.openSnackBar('WARNING: Only leaders can send results', 'warning')
+            }
+            else {
+                this.props.openSnackBar('WARNING: All instance must be correct before send results', 'warning')
             }
         }
         else {
@@ -184,6 +208,7 @@ class RoomInfo extends React.Component {
         const { stepIndex } = this.state
         let result = []
         let correct = []
+        SuperescalarIntegration.saveSuperConfig(this.state.superConfig);
         console.log('TEST CON ESTAS INSTANCES: ', problems[problemsId[stepIndex]].instances)
         Object.keys(problems[problemsId[stepIndex]].instances).forEach((instanceId) => {
             let test = this.handleTestCodeWithSelectedInstance(instanceId, instances[instanceId].initial, instances[instanceId].final, this.state.code[problemsId[stepIndex]])
@@ -194,7 +219,7 @@ class RoomInfo extends React.Component {
             scores: {
                 ...this.state.scores,
                 [problemsId[stepIndex]]: {
-                    cycles: average(result), //Esto es lo que finalmente se envia la media de los test con todas las instancias
+                    cycles: average(result).toFixed(2), //Esto es lo que finalmente se envia la media de los test con todas las instancias
                     areAllCorrect: correct.every(item => item)
                 }
             }
@@ -202,6 +227,7 @@ class RoomInfo extends React.Component {
     }
 
     handleIndividualTest = (instance) => {
+        SuperescalarIntegration.saveSuperConfig(this.state.superConfig);
         this.handleTestCodeWithSelectedInstance(instance, this.props.instances[instance].initial, this.props.instances[instance].final, this.state.code[this.props.problemsId[this.state.stepIndex]])
         //console.log('CODE: ', this.state.code, 'ID: ', this.props.problemsId[this.state.stepIndex])
 
@@ -220,11 +246,14 @@ class RoomInfo extends React.Component {
         //console.log('instanceInputInitial: ', instanceInputInitial)
         //console.log('codeInput***: ', codeInput)
         let results = {}
+        
         SuperescalarIntegration.loadInstance(instanceInputInitial)
         SuperescalarIntegration.loadCodeFromPanel(codeInput)
+        
+        SuperescalarIntegration.setBatchMode(1, 9, 30);
         SuperescalarIntegration.makeBatchExecution()
         let isCorrectResult = SuperescalarIntegration.checkResult(instanceInputFinal)
-        //LANZAR ACCION PARA GUARDAR EN REDUX
+        //Action to store in redux
         results = {
             room: this.props.roomId,
             problem: this.props.problemsId[this.state.stepIndex],
@@ -244,8 +273,18 @@ class RoomInfo extends React.Component {
         console.log('Datas***: ', SuperescalarIntegration.superescalar.memory.data)*/
     }
 
-    handleFinish = () => {
-    
+    handleSaveCode = () => {
+        let saveCode = {
+            user: this.props.user.uid,
+            room: this.props.roomId,
+            problemId: this.props.problemsId[this.state.stepIndex],
+            problem: this.props.problems[this.props.problemsId[this.state.stepIndex]].name,
+            code: this.state.code[this.props.problemsId[this.state.stepIndex]],
+        }
+        this.props.saveCodeToHistory(saveCode)
+        //this.props.toggleBatchModal(true)
+        //this.props.toggleSuperConfigModal(true)
+        //Lanzar accion para salvar el codigo con la siguiente info: SALA - PROBLEMA(NAME) - CODE 
     }
 
     instanceResult = (instance) => {
@@ -272,34 +311,44 @@ class RoomInfo extends React.Component {
             <ProblemInfo 
                 problemId={this.props.problemsId[stepIndex]}
             />
+            
             <h2>Test your code with the instances</h2>
-            <div style={{ display: 'flex', justifyContent: 'space-around' }} >
+            <div  style={{ display: 'flex', flexDirection: 'column' }}>
                 <TextField
-                    key="code"
+                    key={`code${this.props.problemsId[stepIndex]}`}
                     rows={10}
-                    defaultValue={`11
-ADDI    R2 R0 #50
-ADDI    R3 R0 #70
-ADDI    R4 R0 #40
-LF        F0 (R4)
-ADDI    R5 R2 #5
-LOOP:
-LF         F1 (R2)
-ADDF    F1 F1 F0
-SF        F1 (R3)
-ADDI     R2 R2 #1
-ADDI    R3 R3 #1
-BNE        R2 R5 LOOP`}
+                    defaultValue={this.state.code.hasOwnProperty(this.props.problemsId[stepIndex]) ? this.state.code[this.props.problemsId[stepIndex]] : '' }
                     underlineShow={false}
                     style={{ paddingLeft: '10px', marginTop: 0, width: '500px', borderStyle: 'solid', borderWidth: '1px' }}
                     floatingLabelText="Write your code here!"
                     onChange={this.handleOnChangeCode}
                     multiLine
                 />
+                <div>
+                    <RaisedButton
+                        primary
+                        style={{ margin: '10px' }}
+                        label="Save Code"
+                        onClick={() => this.isValidCode() && this.handleSaveCode()}
+                    />
+                    {/*
+                    <RaisedButton
+                        primary
+                        style={{ margin: '10px' }}
+                        label="Superescalar Config"
+                        onClick={() ()}
+                    />
+                    <RaisedButton
+                        primary
+                        style={{ margin: '10px' }}
+                        label="Superescalar Config"
+                        onClick={() => ()}
+                    />
+                    */}
+                </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
                     {
-                        this.state.code[this.props.problemsId[this.state.stepIndex]]
-                        ? Object.keys(this.props.problems[this.props.problemsId[stepIndex]].instances).map((instance) => (
+                        Object.keys(this.props.problems[this.props.problemsId[stepIndex]].instances).map((instance) => (
                             <div key={instance}>
                                 <RaisedButton
                                     secondary
@@ -312,11 +361,9 @@ BNE        R2 R5 LOOP`}
                                 }
                             </div>
                         ))
-                        : null
                     }
                     {
-                        this.state.code[this.props.problemsId[this.state.stepIndex]]
-                        ? <div>
+                        <div>
                             <RaisedButton
                                 secondary
                                 style={{ margin: '10px' }}
@@ -337,7 +384,6 @@ BNE        R2 R5 LOOP`}
                                 : null
                             }
                         </div>
-                        : null
                     }
                 </div>
             </div>
@@ -362,7 +408,7 @@ BNE        R2 R5 LOOP`}
             padding: '5%',
             margin: 'auto'
         }
-        //console.log('this.props.toggleSideBarRank: ', this.props.toggleSideBarRank)
+        console.log('CODE: ', this.state.code)
         if (this.props.toggleSideBarRank)
             contentStyle.marginRight = '250px'
         else

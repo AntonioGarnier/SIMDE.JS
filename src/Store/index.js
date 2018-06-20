@@ -109,6 +109,8 @@ export const initialState = {
         instancesOrdered: [],
         problems: {},
         problemsOrdered: [],
+        history: {},
+        historyOrdered: [],
         ranking: {
             "1WevwO2PCwviHO3P9L9j": {
                 "QsmYNTiwPdSlo3nYQG4WqCDWzxl2": {

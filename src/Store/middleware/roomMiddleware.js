@@ -12,6 +12,7 @@ import {
     CHECK_ROOM_PASSWORD,
     REQUEST_JOIN_FAILED,
     SEND_RESULTS_TO_RANK,
+    SAVE_CODE_TO_HISTORY,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -271,10 +272,13 @@ const roomMiddleware = store => next => (action) => {
                 }) 
             return next(action)
         case SEND_RESULTS_TO_RANK: // id: roomId; entity: MemberID; problem: id; result: integer
+            console.log('Action: ', action.payload)
             firestore.collection('ranking').doc(action.payload.room)
                 .set({
-                    ['members.' + action.payload.entity + '.' + action.payload.problem]: action.payload.cycle,
-                })
+                    [action.payload.member]: {
+                        [action.payload.problem]: action.payload.cycles,
+                    },
+                }, { merge: true })
                 .then(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
@@ -286,6 +290,32 @@ const roomMiddleware = store => next => (action) => {
                     type: OPEN_SNACK_BAR,
                     payload: {
                         message: 'ERROR: Could not update ranking! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
+            return next(action)
+        case SAVE_CODE_TO_HISTORY:
+            const createdHistoryAt = firebase.firestore.FieldValue.serverTimestamp()
+            firestore.collection('history').doc(action.payload.user)
+                .set({
+                    [action.payload.problemId]: {
+                        problem: action.payload.problem,
+                        room: action.payload.room,
+                        code: action.payload.code,
+                        createdAt: createdHistoryAt,
+                    }
+                }, { merge: true })
+                .then(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'SUCCESS: Code stored!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not save history! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))

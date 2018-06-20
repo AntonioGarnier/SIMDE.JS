@@ -36,16 +36,30 @@ import {
     SAVE_INSTANCE_RESULT,
     RESET_INSTANCE_RESULT,
     SEND_RESULTS_TO_RANK,
+    SAVE_CODE_TO_HISTORY,
 } from '../Constants'
 
-export function sendResultsToRank({ room, entity, problem, cycle }) {
+export function saveCodeToHistory({ user, room, problemId, problem, code }) {
+    return {
+        type: SAVE_CODE_TO_HISTORY,
+        payload: {
+            user,
+            room,
+            problemId,
+            problem,
+            code,
+        }
+    }
+}
+
+export function sendResultsToRank({ room, member, problem, cycles }) {
     return {
         type: SEND_RESULTS_TO_RANK,
         payload: {
             room,
-            entity,
+            member,
             problem,
-            cycle,
+            cycles,
         }
     }
 }
