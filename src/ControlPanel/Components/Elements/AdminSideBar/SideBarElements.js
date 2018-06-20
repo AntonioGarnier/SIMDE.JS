@@ -7,6 +7,7 @@ import Settings from 'material-ui/svg-icons/action/settings'
 import Desktop from 'material-ui/svg-icons/hardware/desktop-windows'
 import Problem from 'material-ui/svg-icons/action/extension'
 import Code from 'material-ui/svg-icons/action/code'
+import History from 'material-ui/svg-icons/action/history'
 
 
 export const sideBarElements = [
@@ -14,6 +15,11 @@ export const sideBarElements = [
         name: 'Personal Data',
         to: '/personal-data',
         leftIcon: <PersonPin />,
+    },
+    {
+        name: 'History',
+        to: '/history-list',
+        leftIcon: <History />,
     },
     {
         name: 'Room List',
@@ -42,6 +48,11 @@ export const sideBarElementsAdmin = [
         name: 'Personal Data',
         to: '/personal-data',
         leftIcon: <PersonPin />,
+    },
+    {
+        name: 'History',
+        to: '/history-list',
+        leftIcon: <History />,
     },
     {
         name: 'Room List',

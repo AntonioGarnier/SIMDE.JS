@@ -414,7 +414,7 @@ export function SuperescalarReducers(state = initialState, action) {
                     }
                 }
             }
-            case SAVE_INSTANCE_RESULT:
+        case SAVE_INSTANCE_RESULT:
             let temp = {
                 ...state,
                 controlPanel: {
@@ -446,7 +446,7 @@ export function SuperescalarReducers(state = initialState, action) {
                     }
                 }
             }
-            case RESET_INSTANCE_RESULT:
+        case RESET_INSTANCE_RESULT:
             return {
                 ...state,
                 controlPanel: {
@@ -460,39 +460,39 @@ export function SuperescalarReducers(state = initialState, action) {
                     }
                 }
             }
-            case FETCH_ALL_HISTORY:
-                return { ...state, controlPanel: { ...state.controlPanel, history: action.payload.history, historyOrdered: action.payload.historyOrdered}}
-            case GOT_UPDATE_HISTORY:
-            case GOT_ADD_HISTORY:
-                let historyOrdered = state.controlPanel.historyOrdered.slice()
-                if (historyOrdered.indexOf(action.payload.id) === -1)
-                    historyOrdered.unshift(action.payload.id)   
-                return {
-                    ...state,
-                    controlPanel: {
-                        ...state.controlPanel,
-                        history: {
-                            ...state.controlPanel.history,
-                            [action.payload.id]: {
-                                problem: action.payload.problem,
-                                room: action.payload.room,
-                                code: action.payload.code,
-                                createdAt: action.payload.createdAt,
-                            }
-                        },
-                        historyOrdered,
-                    }
+        case FETCH_ALL_HISTORY:
+            return { ...state, controlPanel: { ...state.controlPanel, history: action.payload.history}}
+        case GOT_UPDATE_HISTORY:
+        case GOT_ADD_HISTORY:
+            let historyOrdered = state.controlPanel.historyOrdered.slice()
+            if (historyOrdered.indexOf(action.payload.id) === -1)
+                historyOrdered.unshift(action.payload.id)   
+            return {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    history: {
+                        ...state.controlPanel.history,
+                        [action.payload.id]: {
+                            problem: action.payload.problem,
+                            room: action.payload.room,
+                            code: action.payload.code,
+                            createdAt: action.payload.createdAt,
+                        }
+                    },
+                    historyOrdered,
                 }
-            case REMOVE_ALL_HISTORY:
-                return { ...state, controlPanel: { ...state.controlPanel, history: {}, historyOrdered: []}}
-            case GOT_REMOVE_HISTORY:
-                items = {}
-                Object.keys(state.controlPanel.history).forEach((element) => {
-                    if (element !== action.payload.id) {
-                        items[element] = state.controlPanel.history[element]
-                    }
-                })
-                return { ...state, controlPanel: { ...state.controlPanel, history: items, historyOrdered: state.controlPanel.historyOrdered.filter(historyId => historyId !== action.payload.id)}}
+            }
+        case REMOVE_ALL_HISTORY:
+            return { ...state, controlPanel: { ...state.controlPanel, history: {}, historyOrdered: []}}
+        case GOT_REMOVE_HISTORY:
+            items = {}
+            Object.keys(state.controlPanel.history).forEach((element) => {
+                if (element !== action.payload.id) {
+                    items[element] = state.controlPanel.history[element]
+                }
+            })
+            return { ...state, controlPanel: { ...state.controlPanel, history: items, historyOrdered: state.controlPanel.historyOrdered.filter(historyId => historyId !== action.payload.id)}}
         default:
             return state
     }

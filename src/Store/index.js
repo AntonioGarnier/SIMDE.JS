@@ -18,6 +18,7 @@ import {
     instancesEpic,
     roomEpic,
     problemsEpic,
+    historyEpic,
 } from './epics'
 
 
@@ -145,6 +146,7 @@ const rootEpic = combineEpics(
     instancesEpic,
     roomEpic,
     problemsEpic,
+    historyEpic,
 )
 
 const epicMiddleware = createEpicMiddleware(rootEpic)

@@ -7,6 +7,7 @@ import {
     USER_LOGOUT,
     USER_LOGIN,
     OPEN_SNACK_BAR,
+    CHECKED_USER,
 } from '../../ControlPanel/Constants'
 import { 
     subscribeRoom,
@@ -45,14 +46,7 @@ const userLogin = store => next => (action) => {
                     connected: false,
                 })
             return next(action)
-        case USER_LOGIN:
-            const userRef = firestore.collection('userList').doc(action.payload.uid)
-            userRef.set({
-                name: action.payload.displayName,
-                rol: action.payload.rol,
-                picture: action.payload.picture,
-                connected: true,
-            })
+        case CHECKED_USER:
             listenRoom
                 .onSnapshot(subscribeRoom(),() => {store.dispatch(unsubscribe)})
             listenGroups
@@ -62,9 +56,19 @@ const userLogin = store => next => (action) => {
             listenProblem
                 .onSnapshot(subscribeProblem(),() => {store.dispatch(unsubscribe)})
             listenHistory
+            //.orderBy('createdAt', 'desc')
                 .where(firebase.firestore.FieldPath.documentId(), '==', store.getState().controlPanel.user.uid)
-                .orderBy('createdAt', 'desc')
                 .onSnapshot(subscribeHistory(),() => {store.dispatch(unsubscribe)})
+            return next(action)
+        case USER_LOGIN:
+            const userRef = firestore.collection('userList').doc(action.payload.uid)
+            userRef.set({
+                name: action.payload.displayName,
+                rol: action.payload.rol,
+                picture: action.payload.picture,
+                connected: true,
+            })
+            
             return next(action)
         default:
             return next(action)

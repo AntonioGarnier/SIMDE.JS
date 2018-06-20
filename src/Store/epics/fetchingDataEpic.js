@@ -11,6 +11,7 @@ import {
     FETCHING_GROUPS,
     FETCHING_PROBLEMS,
     FETCHING_INSTANCES,
+    FETCHING_HISTORY,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -30,6 +31,9 @@ const fetchingDataEpic = action$ =>
                 },
                 {
                     type: FETCHING_PROBLEMS,
+                },
+                {
+                    type: FETCHING_HISTORY,
                 },
                 {
                     type: FETCHING_ROOMS,

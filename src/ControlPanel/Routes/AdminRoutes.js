@@ -8,6 +8,7 @@ import SettingsProblem from '../Components/SettingsProblem'
 import SettingsGroup from '../Components/SettingsGroup'
 import SettingsInstance from '../Components/SettingsInstance'
 import RoomList from '../Components/RoomList'
+import HistoryList from '../Components/HistoryList'
 import GroupList from '../Components/GroupList'
 import ProblemList from '../Components/ProblemList'
 import InstanceList from '../Components/InstanceList'
@@ -23,6 +24,7 @@ export default function AdminRoutes() {
                 <Route exact path="/" component={Welcome} />
                 <Route sensitive path="/login" render={() => <Redirect to="/" />} />
                 <Route sensitive path="/personal-data" component={PersonalData} />
+                <Route sensitive exact path="/history-list" component={HistoryList} />
                 <Route sensitive exact path="/room-list" component={RoomList} />
                 <Route sensitive exact path="/group-list" component={GroupList} />
                 <Route sensitive exact path="/problem-list" component={ProblemList} />

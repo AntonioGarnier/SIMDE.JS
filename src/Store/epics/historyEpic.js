@@ -4,17 +4,17 @@ import { Subject } from 'rxjs'
 import {
     map,
     flatMap,
-    // tap,
+    //tap,
     merge,
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
 import {
     FETCHING_HISTORY,
     FETCH_ALL_HISTORY,
-    GOT_ADD_HISTORY,
+    //GOT_ADD_HISTORY,
     REMOVE_ALL_HISTORY,
-    GOT_REMOVE_HISTORY,
-    GOT_UPDATE_HISTORY,
+    //GOT_REMOVE_HISTORY,
+    //GOT_UPDATE_HISTORY,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -59,53 +59,29 @@ export const historyEpic = action$ =>
             historyAdd$.pipe(
                 //tap(v => console.log('add: ', v)),
                 map(({ history, historyOrdered }) => {
-                    if (historyOrdered.length > 1)
-                        return {
-                            type: FETCH_ALL_HISTORY,
-                            payload: {
-                                history,
-                                historyOrdered,
-                            }
-                        }
-                     
                     const hist = history[historyOrdered[0]]
                     return {
-                        type: GOT_ADD_HISTORY,
+                        type: FETCH_ALL_HISTORY,
                         payload: {
-                            id: historyOrdered[0],
-                            problem: hist.problem,
-                            room: hist.room,
-                            code: hist.leader,
-                            createdAt: hist.createdAt,
+                            history: hist,
                         },
                     }
                 }),
                 merge(historyRemove$.pipe(
                     //tap(v => console.log('remove: ', v)),
                     map(({ history, historyOrdered }) => {
-                        if (historyOrdered.length > 1)
                             return {
                                 type: REMOVE_ALL_HISTORY,
                             }
-                        return {
-                            type: GOT_REMOVE_HISTORY,
-                            payload: {
-                                id: historyOrdered[0],
-                            },
-                        }
                     }),
                     merge(historyUpdate$.pipe(
                         //tap(v => console.log('update: ', v)),
                         map(({ history, historyOrdered }) => {
                             const hist = history[historyOrdered[0]]
                             return {
-                                type: GOT_UPDATE_HISTORY,
+                                type: FETCH_ALL_HISTORY,
                                 payload: {
-                                    id: historyOrdered[0],
-                                    problem: hist.problem,
-                                    room: hist.room,
-                                    code: hist.leader,
-                                    createdAt: hist.createdAt,
+                                    history: hist,
                                 },
                             }
                         }),
