@@ -296,7 +296,7 @@ export function SuperescalarReducers(state = initialState, action) {
         case GOT_UPDATE_GROUP:
         case GOT_ADD_GROUP:
             userGroupsArray = state.controlPanel.userGroups.slice()
-            if (state.controlPanel.groups[action.payload.id].members.hasOwnProperty(state.controlPanel.user.uid) || state.controlPanel.groups[action.payload.id].leader === state.controlPanel.user.uid)
+            if (action.payload.members.hasOwnProperty(state.controlPanel.user.uid) || action.payload.leader === state.controlPanel.user.uid)
                 if (userGroupsArray.indexOf(action.payload.id) !== -1)
                     userGroupsArray.unshift(action.payload.id)
             let groupsOrdered = state.controlPanel.groupsOrdered.slice()

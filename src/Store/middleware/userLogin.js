@@ -49,20 +49,10 @@ const userLogin = store => next => (action) => {
                 })
             return next(action)
         case CHECKED_USER:
-            listenGroups
-                .onSnapshot(subscribeGroups(),() => {store.dispatch(unsubscribe)})
-            listenInstances
-                .onSnapshot(subscribeInstances(),() => {store.dispatch(unsubscribe)})
-            listenProblem
-                .onSnapshot(subscribeProblem(),() => {store.dispatch(unsubscribe)})
             listenHistory
             //.orderBy('createdAt', 'desc')
                 .where(firebase.firestore.FieldPath.documentId(), '==', store.getState().controlPanel.user.uid)
                 .onSnapshot(subscribeHistory(),() => {store.dispatch(unsubscribe)})
-            listenRanking
-                .onSnapshot(subscribeRanking(),() => {store.dispatch(unsubscribe)})
-            listenRoom
-                .onSnapshot(subscribeRoom(),() => {store.dispatch(unsubscribe)})
             return next(action)
         case USER_LOGIN:
             const userRef = firestore.collection('userList').doc(action.payload.uid)
@@ -72,7 +62,17 @@ const userLogin = store => next => (action) => {
                 picture: action.payload.picture,
                 connected: true,
             })
+            listenGroups
+                .onSnapshot(subscribeGroups(),() => {store.dispatch(unsubscribe)})
+            listenInstances
+                .onSnapshot(subscribeInstances(),() => {store.dispatch(unsubscribe)})
+            listenProblem
+                .onSnapshot(subscribeProblem(),() => {store.dispatch(unsubscribe)})
             
+            listenRanking
+                .onSnapshot(subscribeRanking(),() => {store.dispatch(unsubscribe)})
+            listenRoom
+                .onSnapshot(subscribeRoom(),() => {store.dispatch(unsubscribe)})
             return next(action)
         default:
             return next(action)

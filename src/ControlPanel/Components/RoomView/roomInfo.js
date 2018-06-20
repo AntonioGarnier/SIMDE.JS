@@ -113,7 +113,6 @@ class RoomInfo extends React.Component {
     )
 
     handleClickResetInstances = () => {
-        console.log('RESET: ',  this.props.results[this.props.roomId])
         if (this.state.scores.hasOwnProperty(this.props.problemsId[this.state.stepIndex]) || (this.props.results.hasOwnProperty(this.props.roomId) &&  this.props.results[this.props.roomId].hasOwnProperty(this.props.problemsId[this.state.stepIndex]))) {
             let temp = { ...this.state.scores }
             delete temp[this.props.problemsId[this.state.stepIndex]]

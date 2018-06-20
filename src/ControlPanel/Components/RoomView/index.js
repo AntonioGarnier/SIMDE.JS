@@ -75,10 +75,8 @@ const RoomsView = (props) => {
         ))
         if (isMember /*|| props.user.rol === 'admin'*/) {
             // Para cada lider de cada grupo se tiene que cumplir que todos los lideres esten en userList
-            console.log('En user list estan los lideres: ', Object.keys(room.members).every(member => props.userList[props.groups[member].leader]))
             if (!Object.keys(room.members).every(member => props.userList[props.groups[member].leader])){
                 let leaders = Object.keys(room.members).map(member => props.groups[member].leader)
-                console.log('LEADERS: ', leaders)
                 props.getMembers(leaders)
             }
             return(

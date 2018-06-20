@@ -159,7 +159,6 @@ class CreateInstance extends React.Component {
                         Add a initil and final data.
                     </h3>
                     <p>Initial: </p>
-                    {console.log('Content: ', this.state.instanceInitialData)}
                     <TextField
                         key="init"
                         style={{marginTop: 0}}

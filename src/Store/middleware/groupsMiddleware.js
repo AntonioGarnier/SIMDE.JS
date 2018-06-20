@@ -87,9 +87,16 @@ const groupsMiddleware = store => next => (action) => {
                             type: 'error',
                         }
                     }))
-                /*firestore
+                firestore
                     .collection('rooms')
-                    .where('type', '==', 'group')*/
+                    .where('type', '==', 'group')
+                    .get()
+                    .then((querySnapshot) => {
+                        querySnapshot.forEach(function(doc, i) {
+                            console.log(`DOC${i}:`, doc.data())
+                        })
+                        
+                    })
             } 
             else 
                 store.dispatch({
