@@ -59,27 +59,29 @@ const groupsMiddleware = store => next => (action) => {
         case REMOVE_GROUP:
             if (store.getState().controlPanel.user.rol === 'admin' || store.getState().controlPanel.user.uid === action.payload.leader) {
                 firestore
-                    .collection('groups')
-                    .doc(action.payload.id)
-                    .delete()
-                    .then(() => store.dispatch({
-                        type: OPEN_SNACK_BAR,
-                        payload: {
-                            message: 'SUCCESS: Group Removed!',
-                            type: 'success',
-                        }
-                    }))
-                    .catch(() => store.dispatch({
-                        type: OPEN_SNACK_BAR,
-                        payload: {
-                            message: 'ERROR: Could not remove group! (DataBase - Problem)',
-                            type: 'error',
-                        }
-                    }))
-                firestore
                     .collection('groupsPw')
                     .doc(action.payload.id)
                     .delete()
+                    .then(() => {
+                        firestore
+                            .collection('groups')
+                            .doc(action.payload.id)
+                            .delete()
+                            .then(() => store.dispatch({
+                                type: OPEN_SNACK_BAR,
+                                payload: {
+                                    message: 'SUCCESS: Group Removed!',
+                                    type: 'success',
+                                }
+                            }))
+                            .catch(() => store.dispatch({
+                                type: OPEN_SNACK_BAR,
+                                payload: {
+                                    message: 'ERROR: Could not remove group! (DataBase - Problem)',
+                                    type: 'error',
+                                }
+                            }))
+                    })
                     .catch(() => store.dispatch({
                         type: OPEN_SNACK_BAR,
                         payload: {
@@ -87,6 +89,7 @@ const groupsMiddleware = store => next => (action) => {
                             type: 'error',
                         }
                     }))
+                
                 firestore
                     .collection('rooms')
                     .where('type', '==', 'group')

@@ -6,6 +6,7 @@ import { colorHistoryInstruction } from './color';
 import { removeInterval, addInterval } from './interval';
 import {
     USER_LOGIN,
+    USER_LOGGING_IN,
     USER_LOGOUT,
     OPEN_SIDE_BAR,
     CLOSE_SIDE_BAR,
@@ -56,6 +57,13 @@ import {
     GOT_REMOVE_RANKING,
     GOT_UPDATE_RANKING,
     GOT_UPDATE_SOME_PROBLEMS,
+    FETCH_ALL_USERS,
+    GOT_ADD_USER,
+    REMOVE_ALL_USERS,
+    GOT_REMOVE_USER,
+    GOT_UPDATE_USER,
+    USER_NOT_CONNECTED,
+    GOT_PROBLEM_FROM_ROOM,
 } from '../../../ControlPanel/Constants'
 import { initialState } from '../../../Store'
 
@@ -176,8 +184,11 @@ export function SuperescalarReducers(state = initialState, action) {
             return { ...state, controlPanel: { ...state.controlPanel, toggleSideBarRank: !state.controlPanel.toggleSideBarRank }}
         case CLOSE_SIDE_BAR_RANK:
             return { ...state, controlPanel: { ...state.controlPanel, toggleSideBarRank: false }}
+        case USER_LOGGING_IN:
         case CHECKING_USER:
             return { ...state, controlPanel: { ...state.controlPanel, isLoading: true }}
+        case USER_NOT_CONNECTED:
+            return { ...initialState, controlPanel: { ...initialState.controlPanel, isLoading: false  }}
         case CHECKED_USER:
             return { ...state, controlPanel: { ...state.controlPanel, isLoading: false }}
         case CHANGE_PATH:
@@ -546,13 +557,52 @@ export function SuperescalarReducers(state = initialState, action) {
         case REMOVE_ALL_RANKINGS:
             return { ...state, controlPanel: { ...state.controlPanel, ranking: {}}}
         case GOT_REMOVE_RANKING:
-        items = {}
+            items = {}
             Object.keys(state.controlPanel.ranking).forEach((element) => {
                 if (element !== action.payload.id) {
                     items[element] = state.controlPanel.ranking[element]
                 }
             })
             return { ...state, controlPanel: { ...state.controlPanel, ranking: items }}
+        case FETCH_ALL_USERS:
+            return { ...state, controlPanel: { ...state.controlPanel, userList: action.payload.users, userListOrdered: action.payload.usersOrdered}}
+        case GOT_UPDATE_USER:
+        case GOT_ADD_USER:
+            let userListOrdered = state.controlPanel.userListOrdered.slice()
+                if (userListOrdered.indexOf(action.payload.id) === -1)
+                    userListOrdered.unshift(action.payload.id)
+            return { 
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    userList: {
+                        ...state.controlPanel.userList,
+                        ...action.payload.users,
+                    },
+                    userListOrdered,
+                }
+            }
+        case REMOVE_ALL_USERS:
+            return { ...state, controlPanel: { ...state.controlPanel, userList: {}, userListOrdered: []}}
+        case GOT_REMOVE_USER:
+            items = {}
+            Object.keys(state.controlPanel.userList).forEach((element) => {
+                if (element !== action.payload.id) {
+                    items[element] = state.controlPanel.userList[element]
+                }
+            })
+            return { ...state, controlPanel: { ...state.controlPanel, userList: items }}
+        case GOT_PROBLEM_FROM_ROOM:
+            return {
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    problems: {
+                        ...state.controlPanel.problems,
+                        ...action.payload.problem,
+                    }
+                }
+            }
         default:
             return state
     }

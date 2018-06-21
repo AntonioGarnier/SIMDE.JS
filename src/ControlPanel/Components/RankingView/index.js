@@ -48,9 +48,10 @@ const RankingView = (props) => {
         }
     }
     const rankingOrdered = Object.keys(props.scores).sort((a , b) => props.scores[b]-props.scores[a])
+
     return (
         <Drawer
-            containerStyle={{ top: '64px'}}
+            containerStyle={{ top: '64px', backgroundColor: 'white', borderStyle: 'solid', borderWidth: '0px 0px 0px 1px', borderColor: 'rgb(229, 226, 226)'}}
             open={props.toggleSideBarRank}
             zDepth={0}
             openSecondary
@@ -65,7 +66,7 @@ const RankingView = (props) => {
             <Menu>
                 <List>
                     { 
-                        rankingOrdered.every(id => props.type === 'single' ? props.userList.hasOwnProperty(id) : props.groups.hasOwnProperty(id) && props.userList.hasOwnProperty(props.groups[id].leader))
+                        rankingOrdered.length > 0
                         ? rankingOrdered.map((id, index) => (
                             <ListItem
                                 style={{ width: '350px' }}
@@ -77,7 +78,7 @@ const RankingView = (props) => {
                                 rightIcon={getRightIcon(index)}
                             />
                         ))
-                        : null
+                        : <div><p style={{ textAlign: 'center', width: '350px' }} >No results to display yet</p><img width="350px" src="https://www.meme-arsenal.com/memes/4c1c668ed999b5525ca0cb0484b22b18.jpg" alt="AuthorSign:)" /></div>
                     }
                 </List>
             </Menu>

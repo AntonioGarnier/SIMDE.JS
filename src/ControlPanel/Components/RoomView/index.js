@@ -8,6 +8,7 @@ import {
     openSnackBar,
     openPopUp,
     getMembers,
+    getProblems,
 } from '../../Actions'
 import RoomInfo from './roomInfo'
 
@@ -17,6 +18,7 @@ const mapDispatchToProps = (dispatch) => {
         openSnackBar,
         openPopUp,
         getMembers,
+        getProblems,
     }, dispatch)
 }
 
@@ -48,17 +50,25 @@ const RoomsView = (props) => {
 
     if (room.type === 'single') {
         if (room.members.hasOwnProperty(props.user.uid)/* || props.user.rol === 'admin'*/) {
-            if (!Object.keys(room.members).every(member => props.userList[member]))
-                props.getMembers(Object.keys(room.members))
-            return(
-                <RoomInfo 
-                    roomName={room.name}
-                    roomType={room.type}
-                    roomId={props.match.params.room}
-                    problemsId={Object.keys(room.problems)}
-                    members={Object.keys(room.members)}
-                />
-            )
+            const hasAllMembers = Object.keys(room.members).every(member => props.userList[member])
+            const hasAllProblems = Object.keys(room.problems).every(problem => props.problems.hasOwnProperty(problem))
+            if (!hasAllMembers || !hasAllProblems) {
+                if (!hasAllMembers)
+                    props.getMembers(Object.keys(room.members))
+                if (!hasAllProblems)
+                    props.getProblems(Object.keys(room.problems))
+            }
+            if (hasAllMembers && hasAllProblems)
+                return(
+                    <RoomInfo 
+                        roomName={room.name}
+                        roomType={room.type}
+                        roomId={props.match.params.room}
+                        problemsId={Object.keys(room.problems)}
+                        members={Object.keys(room.members)}
+                    />
+                )
+            return <Loading />
         }
         if (!props.shouldRedirect) {
             props.openPopUp('Request join room', 'room', props.match.params.room, room.name, props.user.uid)
@@ -75,19 +85,27 @@ const RoomsView = (props) => {
         ))
         if (isMember /*|| props.user.rol === 'admin'*/) {
             // Para cada lider de cada grupo se tiene que cumplir que todos los lideres esten en userList
-            if (!Object.keys(room.members).every(member => props.userList[props.groups[member].leader])){
-                let leaders = Object.keys(room.members).map(member => props.groups[member].leader)
-                props.getMembers(leaders)
+            const hasAllMembers = Object.keys(room.members).every(member => props.userList[props.groups[member].leader])
+            const hasAllProblems = Object.keys(room.problems).every(problem => props.problems.hasOwnProperty(problem))
+            if (!hasAllMembers || !hasAllProblems) {
+                if (!hasAllMembers) {
+                    let leaders = Object.keys(room.members).map(member => props.groups[member].leader)
+                    props.getMembers(leaders)
+                }
+                if (!hasAllProblems)
+                    props.getProblems(Object.keys(room.problems))
             }
-            return(
-                <RoomInfo 
-                    roomName={room.name}
-                    roomType={room.type}
-                    roomId={props.match.params.room}
-                    problemsId={Object.keys(room.problems)}
-                    members={Object.keys(room.members)}
-                />
-            )
+            if (hasAllMembers && hasAllProblems)
+                return(
+                    <RoomInfo 
+                        roomName={room.name}
+                        roomType={room.type}
+                        roomId={props.match.params.room}
+                        problemsId={Object.keys(room.problems)}
+                        members={Object.keys(room.members)}
+                    />
+                )
+                return <Loading />
         }
         if (props.activeGroup.length < 1) {
             props.openSnackBar('WARNING: You do not have an active group', 'warning')

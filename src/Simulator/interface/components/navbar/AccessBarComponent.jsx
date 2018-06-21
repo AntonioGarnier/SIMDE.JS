@@ -23,7 +23,7 @@ class AccessBarComponent extends React.Component {
         SuperescalarIntegration.stepBack();
     }
     play() {
-        SuperescalarIntegration.testCodeWithInstance();
+        SuperescalarIntegration.play();
     }
     pause() {
         SuperescalarIntegration.pause();

@@ -1,4 +1,7 @@
-export { default as fetchingDataEpic } from './fetchingDataEpic'
+export {
+    fetchingDataEpicStudent,
+    fetchingDataEpicAdmin,
+} from './fetchingDataEpic'
 export {
     groupsEpic,
     listenGroups,
@@ -29,3 +32,8 @@ export {
     listenRanking,
     subscribeRanking,
 } from './rankingEpic'
+export {
+    usersEpic,
+    listenUsers,
+    subscribeUsers,
+} from './usersEpic'

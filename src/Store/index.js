@@ -13,13 +13,15 @@ import {
     problemsMiddleware,
 } from './middleware'
 import {
-    fetchingDataEpic,
+    fetchingDataEpicStudent,
+    fetchingDataEpicAdmin,
     groupsEpic,
     instancesEpic,
     roomEpic,
     problemsEpic,
     historyEpic,
     rankingEpic,
+    usersEpic,
 } from './epics'
 
 
@@ -76,6 +78,7 @@ export const initialState = {
     controlPanel: {
         user: null,
         userList: {},
+        userListOrdered: [],
         actualPath: '',
         activeGroup: '',
         toggleSideBar: false,
@@ -147,13 +150,15 @@ const composeEnhancers =
         }) : compose
 
 const rootEpic = combineEpics(
-    fetchingDataEpic,
+    fetchingDataEpicStudent,
+    fetchingDataEpicAdmin,
     groupsEpic,
     instancesEpic,
     roomEpic,
     problemsEpic,
     historyEpic,
     rankingEpic,
+    usersEpic,
 )
 
 const epicMiddleware = createEpicMiddleware(rootEpic)

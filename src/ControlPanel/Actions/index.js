@@ -15,6 +15,7 @@ import {
     CLOSE_SNACK_BAR,
     OPEN_SNACK_BAR,
     ADD_PROBLEM,
+    GET_PROBLEMS,
     UPDATE_INSTANCES_PROBLEM,
     UPDATE_NAME_PROBLEM,
     REMOVE_PROBLEM,
@@ -37,7 +38,30 @@ import {
     RESET_INSTANCE_RESULT,
     SEND_RESULTS_TO_RANK,
     SAVE_CODE_TO_HISTORY,
+    ADMIN_LOGIN,
+    STUDENT_LOGIN,
+    ACTIVATE_LISTENERS,
+    USER_NOT_CONNECTED,
 } from '../Constants'
+
+
+export function activateListeners() {
+    return {
+        type: ACTIVATE_LISTENERS,
+    }
+}
+
+export function adminLogin() {
+    return {
+        type: ADMIN_LOGIN,
+    }
+}
+
+export function studentLogin() {
+    return {
+        type: STUDENT_LOGIN,
+    }
+}
 
 export function saveCodeToHistory({ user, room, roomName, problemId, problem, code }) {
     return {
@@ -104,6 +128,15 @@ export function getMembers(members) {
         type: GET_MEMBERS,
         payload: {
             members,
+        }
+    }
+}
+
+export function getProblems(problems) {
+    return {
+        type: GET_PROBLEMS,
+        payload: {
+            problems,
         }
     }
 }
@@ -332,50 +365,6 @@ export function changePath(path) {
         }
     }
 }
-/*export function addGroupRoom(rooms) {
-    return {
-        type: ADD_GROUP_ROOM,
-        payload: {
-            rooms,
-        }
-    }
-}
-
-export function removeSingleRoom(rooms) {
-    return {
-        type: REMOVE_SINGLE_ROOM,
-        payload: {
-            rooms,
-        }
-    }
-}
-
-export function removeGroupRoom(rooms) {
-    return {
-        type: REMOVE_GROUP_ROOM,
-        payload: {
-            rooms,
-        }
-    }
-}
-
-export function updateSingleRoom(room) {
-    return {
-        type: UPDATE_SINGLE_ROOM,
-        payload: {
-            room,
-        }
-    }
-}
-
-export function updateGroupRoom(room) {
-    return {
-        type: UPDATE_GROUP_ROOM,
-        payload: {
-            room,
-        }
-    }
-}*/
 
 export function checkingUser() {
     return {
@@ -401,6 +390,12 @@ export function setUser(user) {
 export function login() {
     return {
         type: USER_LOGGING_IN,
+    }
+}
+
+export function userNotConnected() {
+    return {
+        type: USER_NOT_CONNECTED,
     }
 }
 

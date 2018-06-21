@@ -7,6 +7,9 @@ import {
     UPDATE_INSTANCES_PROBLEM,
     OPEN_SNACK_BAR,
     UPDATE_DEFINITION_PROBLEM,
+    GOT_PROBLEM_FROM_ROOM,
+    GET_PROBLEMS,
+    REQUEST_JOIN_FAILED,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -138,6 +141,50 @@ const problemsMiddleware = store => next => (action) => {
                         type: 'error',
                     }
                 }))
+            return next(action)
+        case GET_PROBLEMS:
+            action.payload.problems.forEach((problem) => {
+                firestore
+                    .collection('problems')
+                    .doc(problem)
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            store.dispatch({
+                                type: GOT_PROBLEM_FROM_ROOM,
+                                payload: {
+                                    problem: {
+                                        [problem]: doc.data(),
+                                    }
+                                }
+                            })
+                        } 
+                        else {
+                            store.dispatch({
+                                type: OPEN_SNACK_BAR,
+                                payload: {
+                                    message: 'WARNING: Problem does not exist',
+                                    type: 'warning',
+                                }
+                            })
+                            store.dispatch({
+                                type: REQUEST_JOIN_FAILED,
+                            })
+                        }
+                    })
+                    .catch(() => {
+                        store.dispatch({
+                            type: OPEN_SNACK_BAR,
+                            payload: {
+                                message: 'ERROR: Could not get problem! (DataBase - Problem)',
+                                type: 'error',
+                            }
+                        })
+                        store.dispatch({
+                            type: REQUEST_JOIN_FAILED,
+                        })
+                    })
+            })
             return next(action)
         default:
             return next(action)

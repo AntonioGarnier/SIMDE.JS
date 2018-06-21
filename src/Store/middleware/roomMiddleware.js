@@ -63,6 +63,17 @@ const roomMiddleware = store => next => (action) => {
             return next(action)
         case REMOVE_ROOM:
             firestore
+                .collection('roomsPw')
+                .doc(action.payload.id)
+                .delete()
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could remove password! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
+            firestore
                 .collection('rooms')
                 .doc(action.payload.id)
                 .delete()
@@ -77,17 +88,6 @@ const roomMiddleware = store => next => (action) => {
                     type: OPEN_SNACK_BAR,
                     payload: {
                         message: 'ERROR: Could not remove room! (DataBase - Problem)',
-                        type: 'error',
-                    }
-                }))
-            firestore
-                .collection('roomsPw')
-                .doc(action.payload.id)
-                .delete()
-                .catch(() => store.dispatch({
-                    type: OPEN_SNACK_BAR,
-                    payload: {
-                        message: 'ERROR: Could remove password! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))

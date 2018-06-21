@@ -7,7 +7,8 @@ import {
     USER_LOGOUT,
     USER_LOGIN,
     OPEN_SNACK_BAR,
-    CHECKED_USER,
+    ACTIVATE_LISTENERS,
+    USER_NOT_CONNECTED,
 } from '../../ControlPanel/Constants'
 import { 
     subscribeRoom,
@@ -22,18 +23,12 @@ import {
     listenHistory,
     subscribeRanking,
     listenRanking,
+    subscribeUsers,
+    listenUsers,
  } from '../epics'
 
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
-
-const unsubscribe = {
-    type: OPEN_SNACK_BAR,
-    payload: {
-        message: 'SUCCESS: Logged out. Stop listening from database',
-        type: 'success',
-    }
-}
 
 const userLogin = store => next => (action) => {
     switch (action.type) {
@@ -41,18 +36,51 @@ const userLogin = store => next => (action) => {
             signIn()
             return next(action)
         case USER_LOGOUT:
-            signOut()
-            removeState()
-            firestore.collection('userList').doc(store.getState().controlPanel.user.uid)
+            firestore
+                .collection('userList')
+                .doc(store.getState().controlPanel.user.uid)
                 .update({
                     connected: false,
                 })
+                .then(() => {
+                    signOut()
+                    store.dispatch({
+                        type: OPEN_SNACK_BAR,
+                        payload: {
+                            message: 'SUCCESS: Logged out!',
+                            type: 'success',
+                        }
+                    })
+                })
             return next(action)
-        case CHECKED_USER:
-            listenHistory
-            //.orderBy('createdAt', 'desc')
-                .where(firebase.firestore.FieldPath.documentId(), '==', store.getState().controlPanel.user.uid)
-                .onSnapshot(subscribeHistory(),() => {store.dispatch(unsubscribe)})
+        case USER_NOT_CONNECTED:
+            removeState()
+            return next(action)
+        case ACTIVATE_LISTENERS:
+            const user = store.getState().controlPanel.user
+                listenHistory
+                    .where(firebase.firestore.FieldPath.documentId(), '==', user.uid)
+                    .onSnapshot(subscribeHistory())
+                listenGroups
+                    .onSnapshot(subscribeGroups())
+                listenUsers
+                    .onSnapshot(subscribeUsers())
+                listenInstances
+                    .onSnapshot(subscribeInstances())
+                listenProblem
+                    .onSnapshot(subscribeProblem())
+                listenRanking
+                    .onSnapshot(subscribeRanking())
+                if (user.rol === 'admin') {
+                    listenRoom
+                        .orderBy('createdAt', 'desc')
+                        .onSnapshot(subscribeRoom())
+                } else {
+                    listenRoom
+                        .where('visibility', '==', true)
+                        .orderBy('createdAt', 'desc')
+                        .onSnapshot(subscribeRoom())
+                }
             return next(action)
         case USER_LOGIN:
             const userRef = firestore.collection('userList').doc(action.payload.uid)
@@ -62,17 +90,6 @@ const userLogin = store => next => (action) => {
                 picture: action.payload.picture,
                 connected: true,
             })
-            listenGroups
-                .onSnapshot(subscribeGroups(),() => {store.dispatch(unsubscribe)})
-            listenInstances
-                .onSnapshot(subscribeInstances(),() => {store.dispatch(unsubscribe)})
-            listenProblem
-                .onSnapshot(subscribeProblem(),() => {store.dispatch(unsubscribe)})
-            
-            listenRanking
-                .onSnapshot(subscribeRanking(),() => {store.dispatch(unsubscribe)})
-            listenRoom
-                .onSnapshot(subscribeRoom(),() => {store.dispatch(unsubscribe)})
             return next(action)
         default:
             return next(action)

@@ -7,6 +7,8 @@ import Divider from 'material-ui/Divider'
 import Subheader from 'material-ui/Subheader'
 import IconButton from 'material-ui/IconButton'
 import Person from 'material-ui/svg-icons/social/person'
+import PersonOut from 'material-ui/svg-icons/social/person-outline'
+import PeopleOut from 'material-ui/svg-icons/social/people-outline'
 import Group from 'material-ui/svg-icons/social/group'
 import Problem from 'material-ui/svg-icons/action/extension'
 import Code from 'material-ui/svg-icons/action/code'
@@ -41,7 +43,14 @@ const CustomList = (props) => {
         props.changeActiveGroup(id)
     }
 
-    const selectIcon = (type) => {
+    const selectIcon = (type, list, id) => {
+        if (type === 'singleRoom')
+         if (!list[id].visibility)
+            return <PersonOut />
+        if (type === 'groupRoom')
+         if (!list[id].visibility)
+            return <PeopleOut />
+
         switch (type) {
             case 'singleRoom':
                 return <Person/> 
@@ -73,7 +82,7 @@ const CustomList = (props) => {
                                             key={`${id}`}
                                         >
                                             <ListItem
-                                                leftIcon={selectIcon(props.iconType)}
+                                                leftIcon={selectIcon(props.iconType, props.itemList, id)}
                                             >
                                                 {props.itemList[id].name}
                                             </ListItem>

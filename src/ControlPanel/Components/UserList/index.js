@@ -14,12 +14,14 @@ import { List, ListItem } from 'material-ui/List'
 const mapStateToProps = (state) => {
     return {
         userList: state.controlPanel.userList,
+        userListOrdered: state.controlPanel.userListOrdered,
     }
 }
 
 
-const CustomList = ({
+const UserList = ({
     userList,
+    userListOrdered
 }) => {
 
     const selectIcon = (type) => {
@@ -34,6 +36,9 @@ const CustomList = ({
                 return <Error/> 
         }
     }
+    const connectedUsers = userListOrdered.filter((id) => userList[id].connected && userList[id].rol === 'student')
+    const disconnectedUsers = userListOrdered.filter((id) => !userList[id].connected && userList[id].rol === 'student')
+    const adminUsers = userListOrdered.filter((id) => userList[id].rol === 'admin')
 
     return (
         <div style={{ display: 'flex' }} >
@@ -42,10 +47,11 @@ const CustomList = ({
                     <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Connected Users</Subheader>
                     <Divider />
                         {
-                            Object.keys(userList)
-                                .filter(user => userList[user].connected && userList[user].rol === 'student')
+                            connectedUsers
                                 .map(user => (
                                     <ListItem
+                                        disabled
+                                        key={user}
                                         leftAvatar={<Avatar src={userList[user].picture} />}
                                         rightIcon={selectIcon('userOn')}
                                     >
@@ -60,16 +66,17 @@ const CustomList = ({
                     <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Disconnected Users</Subheader>
                     <Divider />
                         {
-                            Object.keys(userList)
-                            .filter(user => !userList[user].connected && userList[user].rol === 'student')
-                            .map(user => (
-                                <ListItem
-                                    leftAvatar={<Avatar src={userList[user].picture} />}
-                                    rightIcon={selectIcon('userOff')}
-                                >
-                                    {userList[user].name}
-                                </ListItem>
-                            ))
+                            disconnectedUsers
+                                .map(user => (
+                                    <ListItem
+                                        disabled
+                                        key={user}
+                                        leftAvatar={<Avatar src={userList[user].picture} />}
+                                        rightIcon={selectIcon('userOff')}
+                                    >
+                                        {userList[user].name}
+                                    </ListItem>
+                                ))
                         }
                 </List>
             </Paper>
@@ -78,16 +85,17 @@ const CustomList = ({
                     <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >Admins</Subheader>
                     <Divider />
                         {
-                            Object.keys(userList)
-                            .filter(user => userList[user].rol === 'admin')
-                            .map(user => (
-                                <ListItem
-                                    leftAvatar={<Avatar src={userList[user].picture} />}
-                                    rightIcon={selectIcon('admin')}
-                                >
-                                    {userList[user].name}
-                                </ListItem>
-                            ))
+                            adminUsers
+                                .map(user => (
+                                    <ListItem
+                                        disabled
+                                        key={user}
+                                        leftAvatar={<Avatar src={userList[user].picture} />}
+                                        rightIcon={selectIcon('admin')}
+                                    >
+                                        {userList[user].name}
+                                    </ListItem>
+                                ))
                         }
                 </List>
             </Paper>
@@ -95,8 +103,8 @@ const CustomList = ({
     )
 }
 
-CustomList.propTypes = {
-    UserList: PropTypes.shape(
+UserList.propTypes = {
+    userList: PropTypes.shape(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
             picture: PropTypes.string.isRequired,
@@ -104,8 +112,9 @@ CustomList.propTypes = {
             connected: PropTypes.bool.isRequired,
         }).isRequired,
     ).isRequired,
+    userListOrdered: PropTypes.array.isRequired,
 }
 
-export default connect(mapStateToProps)(CustomList)
+export default connect(mapStateToProps)(UserList)
 
 

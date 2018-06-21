@@ -30,12 +30,24 @@ export const CHANGE_ACTIVE_GROUP = 'CHANGE_ACTIVE_GROUP'
     export const FETCHING_GROUP_ROOMS = 'FETCHING_GROUP_ROOMS'
 
 // Action User
-export const USER_LOGIN = 'USER_LOGIN'
-export const USER_LOGGING_IN = 'USER_LOGGING_IN'
-export const USER_LOGOUT = 'USER_LOGOUT'
-export const CHECKING_USER = 'CHECKING_USER'
-export const CHECKED_USER = 'CHECKED_USER'
-
+    //Middleware
+    export const USER_NOT_CONNECTED = 'USER_NOT_CONNECTED'
+    export const ADMIN_LOGIN = 'ADMIN_LOGIN'
+    export const STUDENT_LOGIN = 'STUDENT_LOGIN'
+    export const USER_LOGIN = 'USER_LOGIN'
+    export const USER_LOGGING_IN = 'USER_LOGGING_IN'
+    export const USER_LOGOUT = 'USER_LOGOUT'
+    export const CHECKING_USER = 'CHECKING_USER'
+    export const CHECKED_USER = 'CHECKED_USER'
+    export const ACTIVATE_LISTENERS = 'ACTIVATE_LISTENERS'
+    // Epic
+    export const FETCHING_USERS = 'FETCHING_USERS'
+    export const FETCH_ALL_USERS = 'FETCH_ALL_USERS'
+    export const GOT_ADD_USER = 'GOT_ADD_USER'
+    export const REMOVE_ALL_USERS = 'REMOVE_ALL_USERS'
+    export const GOT_REMOVE_USER = 'GOT_REMOVE_USER'
+    export const GOT_UPDATE_USER = 'GOT_UPDATE_USER'
+    
 // Action request
 export const REQUEST_JOIN_FAILED = 'REQUEST_JOIN_FAILED'
 
@@ -82,6 +94,8 @@ export const HEADER_BAR_TITLE = 'SIMDE'
 
 // Actions for PROBLEMS
     // Middleware
+    export const GOT_PROBLEM_FROM_ROOM = 'GOT_PROBLEM_FROM_ROOM'
+    export const GET_PROBLEMS = 'GET_PROBLEMS'
     export const ADD_PROBLEM = 'ADD_PROBLEM'
     export const UPDATE_DEFINITION_PROBLEM = 'UPDATE_DEFINITION_PROBLEM'
     export const UPDATE_INSTANCES_PROBLEM = 'UPDATE_INSTANCES_PROBLEM'

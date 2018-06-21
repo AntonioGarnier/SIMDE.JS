@@ -14,6 +14,10 @@ import {
     checkingUser,
     checkedUser,
     changePath,
+    adminLogin,
+    studentLogin,
+    activateListeners,
+    userNotConnected,
 } from './Actions'
 
 const firestore = firebase.firestore()
@@ -25,6 +29,10 @@ const mapDispatchToProps = (dispatch) => {
         checkingUser,
         checkedUser,
         changePath,
+        adminLogin,
+        studentLogin,
+        activateListeners,
+        userNotConnected,
     }, dispatch)
 }
 
@@ -37,8 +45,8 @@ const mapStateToProps = (state) => {
 
 class Panel extends Component {
     componentDidMount() {
-        this.props.checkingUser()
         firebase.auth().onAuthStateChanged((user) => {
+            this.props.checkingUser()
             if (user) {
                 const  adminRef = firestore.collection('admins').doc(user.uid)
                 adminRef.get().then((doc) => {
@@ -54,12 +62,17 @@ class Panel extends Component {
                         uid: user.uid,
                         rol,
                     })
+                    if (rol === 'admin')
+                        this.props.adminLogin()
+                    else
+                        this.props.studentLogin()
+                    this.props.activateListeners()
                     this.props.checkedUser()
-                    this.props.changePath(this.props.location.pathname)
+                    //this.props.changePath(this.props.location.pathname)
                 }).catch(((error) => console.log('Error when checking user rol: ', error)))
             } else {
-                this.props.checkedUser()
-                this.props.changePath(this.props.location.pathname)
+                this.props.userNotConnected()
+                //this.props.changePath(this.props.location.pathname)
             }
             
         })

@@ -55,7 +55,6 @@ export const subscribeRoom = () => (querySnapshot) => {
 }
 
 export const listenRoom = firestore.collection('rooms')
-    .orderBy('createdAt', 'desc')
 
 export const roomEpic = action$ =>
     action$.pipe(
