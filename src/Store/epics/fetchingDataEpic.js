@@ -30,6 +30,9 @@ export const fetchingDataEpicStudent = action$ =>
                     type: FETCHING_GROUPS,
                 },
                 {
+                    type: FETCHING_USERS,
+                },
+                {
                     type: FETCHING_INSTANCES,
                 },
                 {
