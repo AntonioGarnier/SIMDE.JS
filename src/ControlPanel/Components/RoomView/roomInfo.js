@@ -4,6 +4,7 @@ import { bindActionCreators } from 'redux'
 import { debounce } from 'throttle-debounce'
 import PropTypes from 'prop-types'
 import ActionGrade from 'material-ui/svg-icons/action/grade'
+import Leave from 'material-ui/svg-icons/action/highlight-off'
 import {
     Step,
     Stepper,
@@ -11,6 +12,7 @@ import {
   } from 'material-ui/Stepper'
 import TextField from 'material-ui/TextField'
 import RaisedButton from 'material-ui/RaisedButton'
+import IconButton from 'material-ui/IconButton'
 import {
     openSnackBar,
     openPopUp,
@@ -20,13 +22,12 @@ import {
     resetInstanceResult,
     sendResultsToRank,
     saveCodeToHistory,
+    leaveRoom,
 } from '../../Actions'
-import { Code } from '../../../Simulator/core/Common/Code';
+import { clearBatchResults } from '../../../Simulator/interface/actions/modals'
+import { Code } from '../../../Simulator/core/Common/Code'
 import ProblemInfo from '../ProblemView/problemInfo'
 import SuperescalarIntegration from '../../../Simulator/integration/superescalar-integration'
-//import SuperescalarConfigModalComponent from '../../../Simulator/interface/components/modal/SuperescalarConfigModalComponent'
-//import BatchModalComponent from '../../../Simulator/interface/components/modal/BatchModalComponent'
-//import { toggleSuperConfigModal, toggleBatchModal } from '../../../Simulator/interface/actions/modals'
 import RankingView from '../RankingView';
 
 
@@ -40,8 +41,8 @@ const mapDispatchToProps = (dispatch) => {
         resetInstanceResult,
         sendResultsToRank,
         saveCodeToHistory,
-        //toggleSuperConfigModal,
-        //toggleBatchModal,
+        clearBatchResults,
+        leaveRoom,
     }, dispatch)
 }
 
@@ -140,16 +141,15 @@ class RoomInfo extends React.Component {
                     this.props.sendResultsToRank(results)
                 } else if (this.props.roomType === 'group') {
                     let member = ''
-                    console.log('MEMBERS: ', this.props.members)
                     let isLeader = this.props.members.some(memberId => {
                         if (this.props.groups[memberId].leader === this.props.user.uid) 
                             member = memberId
                         return this.props.groups[memberId].leader === this.props.user.uid
                     })
-                    if (isLeader) {
+                    if (isLeader || this.props.user.rol === 'admin') {
                         let results = {
                             room: this.props.roomId,
-                            member,
+                            member: this.props.user.rol === 'admin' ? this.props.user.uid : member,
                             problem: this.props.problemsId[this.state.stepIndex],
                             cycles: this.state.scores[this.props.problemsId[this.state.stepIndex]].cycles
                         }
@@ -221,7 +221,6 @@ class RoomInfo extends React.Component {
     }
 
     handleIndividualTest = (instance) => {
-        SuperescalarIntegration.saveSuperConfig(this.state.superConfig);
         this.handleTestCodeWithSelectedInstance(instance, this.props.instances[instance].initial, this.props.instances[instance].final, this.state.code[this.props.problemsId[this.state.stepIndex]])
         //console.log('CODE: ', this.state.code, 'ID: ', this.props.problemsId[this.state.stepIndex])
 
@@ -236,35 +235,34 @@ class RoomInfo extends React.Component {
     }
 
     handleTestCodeWithSelectedInstance = (instance, instanceInputInitial, instanceInputFinal, codeInput) => {
-        /* Testea el codigo con la instancia seleccionada*/
-        //console.log('instanceInputInitial: ', instanceInputInitial)
-        //console.log('codeInput***: ', codeInput)
         let results = {}
-        
+        // Revisar, por ahora la superconfig siempre se aplica la por defecto
+        SuperescalarIntegration.saveSuperConfig(this.state.superConfig);
+
         SuperescalarIntegration.loadInstance(instanceInputInitial)
         SuperescalarIntegration.loadCodeFromPanel(codeInput)
-        
-        SuperescalarIntegration.setBatchMode(1, 9, 30);
+        //SuperescalarIntegration.setBatchMode(1, 9, 30);
+        console.log('cacheFailLatency: ', SuperescalarIntegration.cacheFailLatency)
+        console.log('replications: ', SuperescalarIntegration.replications)
+        console.log('cacheFailPercentage: ', SuperescalarIntegration.cacheFailPercentage)
         SuperescalarIntegration.makeBatchExecution()
         let isCorrectResult = SuperescalarIntegration.checkResult(instanceInputFinal)
+        let cycles = SuperescalarIntegration.superescalar.status.cycle
+        SuperescalarIntegration.clearBatchStateEffects()
         //Action to store in redux
         results = {
             room: this.props.roomId,
             problem: this.props.problemsId[this.state.stepIndex],
             instance: instance,
             isCorrect: isCorrectResult,
-            cycles: SuperescalarIntegration.superescalar.status.cycle,
+            cycles,
         }
         this.props.saveInstanceResult(results)
+        this.props.clearBatchResults(true)
         return {
-            cycles: SuperescalarIntegration.superescalar.status.cycle,
+            cycles,
             isCorrect: isCorrectResult,
         }
-        //console.log('results***: ', results)
-        
-        /*console.log('isCorrectResult: ', isCorrectResult)
-        console.log('Cycles: ', SuperescalarIntegration.superescalar.status.cycle)
-        console.log('Datas***: ', SuperescalarIntegration.superescalar.memory.data)*/
     }
 
     handleSaveCode = () => {
@@ -385,12 +383,31 @@ class RoomInfo extends React.Component {
         </div>
     )
     
+    handleClickLeaveButton = () => {
+        const {
+            roomType,
+            roomId,
+            memberId,
+            user,
+            groups,
+        } = this.props
+        if (user.rol === 'admin')
+            this.props.openSnackBar('WARNING: Admins can not leave rooms', 'warning')
+        else if (roomType === 'single')
+            this.props.leaveRoom(roomId, memberId)
+        else if (roomType === 'groups' && groups[memberId].leader === user.uid)
+            this.props.leaveRoom(roomId, memberId)
+        else 
+            this.props.openSnackBar('WARNING: Only leaders can leave rooms', 'warning')
+    }
+
     render() {
         const {
             problemsId,
             problems,
             roomName,
             roomType,
+            memberName,
         } = this.props
         const { stepIndex} = this.state
         const contentStyle = {
@@ -408,8 +425,19 @@ class RoomInfo extends React.Component {
                 <RankingView 
                     type={roomType}
                     scores={this.calculateRankingScore()}
-                />
+                /> 
+                <IconButton
+                    style={{ position: 'absolute', top: '110px', right: '400px', width: '96px', height: '96px', padding: '24px' }}
+                    iconStyle={{ width: '48px', height: '48px' }}
+                    tooltip="Leave Room"
+                    tooltipPosition="bottom-right"
+                    touch
+                    onClick={this.handleClickLeaveButton}
+                >
+                    <Leave />
+                </IconButton>
                 <h1>{roomName}</h1>
+                <h2>{memberName}</h2>
                 <RaisedButton
                     style={{ position: 'fixed', top: '75px', right: '6px' }}
                     primary
@@ -471,6 +499,8 @@ RoomInfo.propTypes = {
     roomId: PropTypes.string.isRequired,
     problemsId: PropTypes.array.isRequired,
     members: PropTypes.array.isRequired,
+    memberName: PropTypes.string.isRequired,
+    memberId: PropTypes.string.isRequired,
     instances: PropTypes.objectOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
@@ -479,6 +509,7 @@ RoomInfo.propTypes = {
     openSnackBar: PropTypes.func.isRequired,
     sendResultsToRank: PropTypes.func.isRequired,
     openSideBarRank: PropTypes.func.isRequired,
+    leaveRoom: PropTypes.func.isRequired,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RoomInfo)

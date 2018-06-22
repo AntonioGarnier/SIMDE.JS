@@ -28,12 +28,6 @@ const mapStateToProps = (state) => {
 }
 
 const GroupView = (props) => {
-    /*console.log('PROPS: ', props)
-    console.log('groupID: ', props.match.params.group)
-    console.log('props.user.uid: ', props.user.uid)
-    console.log('props.groups: ', props.groups)
-    console.log('TRUE O FALSE: ', props.groups[props.match.params.group].leader === props.user.uid)*/
-    // console.log('PROPS: ', props)
     if (!props.groups[props.match.params.group]) {
         props.openSnackBar('WARNING: This group does not exist or has been deleted', 'warning')
         return (
@@ -46,6 +40,7 @@ const GroupView = (props) => {
                 groupName={props.groups[props.match.params.group].name}
                 leader={props.groups[props.match.params.group].leader}
                 members={Object.keys(props.groups[props.match.params.group].members)}
+                groupId={props.match.params.group}
             />
         )
     if (!props.shouldRedirect) {

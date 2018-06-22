@@ -49,7 +49,7 @@ const RoomsView = (props) => {
 
 
     if (room.type === 'single') {
-        if (room.members.hasOwnProperty(props.user.uid)/* || props.user.rol === 'admin'*/) {
+        if (room.members.hasOwnProperty(props.user.uid) || props.user.rol === 'admin') {
             const hasAllMembers = Object.keys(room.members).every(member => props.userList[member])
             const hasAllProblems = Object.keys(room.problems).every(problem => props.problems.hasOwnProperty(problem))
             if (!hasAllMembers || !hasAllProblems) {
@@ -66,6 +66,8 @@ const RoomsView = (props) => {
                         roomId={props.match.params.room}
                         problemsId={Object.keys(room.problems)}
                         members={Object.keys(room.members)}
+                        memberName={props.user.displayName}
+                        memberId={props.user.uid}
                     />
                 )
             return <Loading />
@@ -83,7 +85,7 @@ const RoomsView = (props) => {
         let isMember = props.userGroups.some((currentValue) => (
             members.includes(currentValue)
         ))
-        if (isMember /*|| props.user.rol === 'admin'*/) {
+        if (isMember || props.user.rol === 'admin') {
             // Para cada lider de cada grupo se tiene que cumplir que todos los lideres esten en userList
             const hasAllMembers = Object.keys(room.members).every(member => props.userList[props.groups[member].leader])
             const hasAllProblems = Object.keys(room.problems).every(problem => props.problems.hasOwnProperty(problem))
@@ -95,7 +97,8 @@ const RoomsView = (props) => {
                 if (!hasAllProblems)
                     props.getProblems(Object.keys(room.problems))
             }
-            if (hasAllMembers && hasAllProblems)
+            if (hasAllMembers && hasAllProblems) {
+                let memberId = Object.keys(room.members).find((member) => Object.keys(props.groups[member].members).includes(props.user.uid) || props.groups[member].leader === props.user.uid)  
                 return(
                     <RoomInfo 
                         roomName={room.name}
@@ -103,9 +106,15 @@ const RoomsView = (props) => {
                         roomId={props.match.params.room}
                         problemsId={Object.keys(room.problems)}
                         members={Object.keys(room.members)}
+                        memberName={isMember ? props.groups[memberId].name : props.user.displayName}
+                        memberId={isMember ? memberId : props.user.uid}
                     />
                 )
-                return <Loading />
+            }
+            return <Loading />
+        }
+        if (props.shouldRedirect) {
+            return <Redirect to="/room-list" />
         }
         if (props.activeGroup.length < 1) {
             props.openSnackBar('WARNING: You do not have an active group', 'warning')
@@ -114,9 +123,6 @@ const RoomsView = (props) => {
         if (!props.shouldRedirect) {
             props.openPopUp('Request join room', 'room', props.match.params.room, room.name, props.activeGroup)
             return <Loading />
-        }
-        if (props.shouldRedirect) {
-            return <Redirect to="/room-list" />
         }
     }
 }

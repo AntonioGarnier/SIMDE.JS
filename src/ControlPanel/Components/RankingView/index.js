@@ -35,6 +35,18 @@ const mapStateToProps = (state) => {
 }
 
 const RankingView = (props) => {
+    const getPicture = (id) => (
+        props.type === 'group' && props.groups.hasOwnProperty(id)
+            ? props.userList[props.groups[id].leader].picture
+            : props.userList[id].picture
+    )
+
+    const getName = (id) => (
+        props.type === 'group' && props.groups.hasOwnProperty(id)
+            ? props.groups[id].name
+            : props.userList[id].name
+    )
+
     const getRightIcon = (index) => {
         switch (index) {
         case 0: 
@@ -70,12 +82,12 @@ const RankingView = (props) => {
                         ? rankingOrdered.map((id, index) => (
                             <ListItem
                                 style={{ width: '350px' }}
-                                key={id}
+                                key={id} 
                                 disabled
-                                primaryText={ props.type === 'single' ? props.userList[id].name : props.groups[id].name }
+                                primaryText={ getName(id) }
                                 secondaryText={`Score - ${parseFloat(parseFloat(props.scores[id]).toFixed(2))}`}
-                                leftAvatar={<Avatar src={props.type === 'single' ? props.userList[id].picture : props.userList[props.groups[id].leader].picture} />}
-                                rightIcon={getRightIcon(index)}
+                                leftAvatar={<Avatar src={ getPicture(id) } />}
+                                rightIcon={ getRightIcon(index) }
                             />
                         ))
                         : <div><p style={{ textAlign: 'center', width: '350px' }} >No results to display yet</p><img width="350px" src="https://www.meme-arsenal.com/memes/4c1c668ed999b5525ca0cb0484b22b18.jpg" alt="AuthorSign:)" /></div>

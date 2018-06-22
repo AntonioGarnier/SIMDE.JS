@@ -123,3 +123,5 @@ Poner en admin routes una user list DONE
 Falta separar los epics en usuarios y admin FALTA
 Falta las reglas de firestore. FALTA
 
+BORRAR RANKING CUANDO SE BORRA UNA ROOM
+

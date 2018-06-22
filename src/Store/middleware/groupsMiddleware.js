@@ -143,6 +143,9 @@ const groupsMiddleware = store => next => (action) => {
                 }))
             return next(action)
         case LEAVE_GROUP:
+            store.dispatch({
+                type: REQUEST_JOIN_FAILED,
+            })
             if (store.getState().controlPanel.user.uid !== action.payload.leader)
                 firestore.collection('groups').doc(action.payload.id)
                     .update({
@@ -155,9 +158,6 @@ const groupsMiddleware = store => next => (action) => {
                                 message: 'SUCCESS: Group left!',
                                 type: 'success',
                             }
-                        })
-                        store.dispatch({
-                            type: REQUEST_JOIN_FAILED,
                         })
                     })
                     .catch(() => store.dispatch({

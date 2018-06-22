@@ -42,8 +42,30 @@ import {
     STUDENT_LOGIN,
     ACTIVATE_LISTENERS,
     USER_NOT_CONNECTED,
+    LEAVE_ROOM,
+    LEAVE_GROUP,
 } from '../Constants'
 
+
+export function leaveGroup(id, leader) {
+    return {
+        type: LEAVE_GROUP,
+        payload: {
+            id,
+            leader,
+        }
+    }
+}
+
+export function leaveRoom(id, member) {
+    return {
+        type: LEAVE_ROOM,
+        payload: {
+            id,
+            member,
+        }
+    }
+}
 
 export function activateListeners() {
     return {

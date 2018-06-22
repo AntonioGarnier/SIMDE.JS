@@ -17,13 +17,14 @@ import GroupView from '../Components/GroupView'
 import InstanceView from '../Components/InstanceView'
 import ProblemView from '../Components/ProblemView'
 import RoomView from '../Components/RoomView'
+import App from '../../Simulator/interface/App'
 
 export default function AdminRoutes() {
     return (
         <ControlPanel>
             <Switch>
                 <Route exact path="/" component={Welcome} />
-                <Route sensitive path="/login" render={() => <Redirect to="/" />} />
+                <Route sensitive path="/simulator" component={App} />
                 <Route sensitive path="/personal-data" component={PersonalData} />
                 <Route sensitive path="/user-list" component={UserList} />
                 <Route sensitive exact path="/history-list" component={HistoryList} />

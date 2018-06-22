@@ -1,5 +1,6 @@
 import React from 'react'
 import PersonPin from 'material-ui/svg-icons/maps/person-pin'
+import GamePad from 'material-ui/svg-icons/hardware/gamepad'
 import Info from 'material-ui/svg-icons/action/info'
 import Group from 'material-ui/svg-icons/social/group'
 import People from 'material-ui/svg-icons/social/people'
@@ -16,6 +17,11 @@ export const sideBarElements = [
         name: 'Personal Data',
         to: '/personal-data',
         leftIcon: <PersonPin />,
+    },
+    {
+        name: 'Simulator',
+        to: '/simulator',
+        leftIcon: <GamePad />,
     },
     {
         name: 'History',
@@ -49,6 +55,11 @@ export const sideBarElementsAdmin = [
         name: 'Personal Data',
         to: '/personal-data',
         leftIcon: <PersonPin />,
+    },
+    {
+        name: 'Simulator',
+        to: '/simulator',
+        leftIcon: <GamePad />,
     },
     {
         name: 'User List',

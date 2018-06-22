@@ -20,6 +20,7 @@ import {
     userNotConnected,
 } from './Actions'
 
+
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
 
@@ -68,11 +69,9 @@ class Panel extends Component {
                         this.props.studentLogin()
                     this.props.activateListeners()
                     this.props.checkedUser()
-                    //this.props.changePath(this.props.location.pathname)
                 }).catch(((error) => console.log('Error when checking user rol: ', error)))
             } else {
                 this.props.userNotConnected()
-                //this.props.changePath(this.props.location.pathname)
             }
             
         })

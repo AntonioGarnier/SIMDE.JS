@@ -69,7 +69,7 @@ const roomMiddleware = store => next => (action) => {
                 .catch(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
                     payload: {
-                        message: 'ERROR: Could remove password! (DataBase - Problem)',
+                        message: 'ERROR: Could not remove password! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))
@@ -88,6 +88,17 @@ const roomMiddleware = store => next => (action) => {
                     type: OPEN_SNACK_BAR,
                     payload: {
                         message: 'ERROR: Could not remove room! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
+            firestore
+                .collection('ranking')
+                .doc(action.payload.id)
+                .delete()
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not remove ranking! (DataBase - Problem)',
                         type: 'error',
                     }
                 }))
@@ -111,6 +122,17 @@ const roomMiddleware = store => next => (action) => {
                     type: 'error',
                 }
             }))
+            firestore
+                .collection('ranking')
+                .doc(action.payload.id)
+                .delete()
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not remove ranking! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
             return next(action)
         case UPDATE_NAME_ROOM:
             firestore.collection('rooms').doc(action.payload.id)
@@ -151,6 +173,17 @@ const roomMiddleware = store => next => (action) => {
                         type: 'error',
                     }
                 }))
+            firestore
+                .collection('ranking')
+                .doc(action.payload.id)
+                .delete()
+                .catch(() => store.dispatch({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not remove ranking! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
             return next(action)
         case JOIN_ROOM:
             firestore.collection('rooms').doc(action.payload.id)
@@ -173,6 +206,9 @@ const roomMiddleware = store => next => (action) => {
                 }))
             return next(action)
         case LEAVE_ROOM:
+            store.dispatch({
+                type: REQUEST_JOIN_FAILED,
+            })
             firestore.collection('rooms').doc(action.payload.id)
                 .update({
                     ['members.' + action.payload.member]: firebase.firestore.FieldValue.delete(),
@@ -184,10 +220,7 @@ const roomMiddleware = store => next => (action) => {
                             message: 'SUCCESS: Room left!',
                             type: 'success',
                         }
-                    })
-                    store.dispatch({
-                        type: REQUEST_JOIN_FAILED,
-                    })
+                    }) 
                 })
                 .catch(() => store.dispatch({
                     type: OPEN_SNACK_BAR,
