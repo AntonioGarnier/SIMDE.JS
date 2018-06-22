@@ -22,7 +22,7 @@ const mapStateToProps = (state) => {
 const SnackBarMessage = (props) => {
 
     this.getSnackStyle = () => {
-        const type = props.snackBarData.type ? props.snackBarData.type : ''
+        const type = props.snackBarData ? props.snackBarData.type : ''
         switch (type) {
             case 'success':
                 return { backgroundColor: '#69be8b' }
@@ -39,8 +39,8 @@ const SnackBarMessage = (props) => {
         <div>
             <Snackbar
                 bodyStyle={this.getSnackStyle()}
-                open={props.snackBarData.open}
-                message={props.snackBarData.message ? props.snackBarData.message : ''}
+                open={props.snackBarData ? props.snackBarData.open : false}
+                message={props.snackBarData ? props.snackBarData.message : ''}
                 autoHideDuration={4000}
                 onRequestClose={props.closeSnackBar}
             />
