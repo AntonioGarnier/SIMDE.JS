@@ -565,7 +565,17 @@ export function SuperescalarReducers(state = initialState, action) {
             })
             return { ...state, controlPanel: { ...state.controlPanel, ranking: items }}
         case FETCH_ALL_USERS:
-            return { ...state, controlPanel: { ...state.controlPanel, userList: action.payload.users, userListOrdered: action.payload.usersOrdered}}
+            return { 
+                ...state,
+                controlPanel: {
+                    ...state.controlPanel,
+                    userList: {
+                        ...state.controlPanel.userList,
+                        ...action.payload.users,
+                    },
+                    userListOrdered: state.controlPanel.userListOrdered.concat(action.payload.usersOrdered),
+                }
+            }
         case GOT_UPDATE_USER:
         case GOT_ADD_USER:
             let userListOrdered = state.controlPanel.userListOrdered.slice()

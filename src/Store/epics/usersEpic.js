@@ -4,7 +4,7 @@ import { Subject } from 'rxjs'
 import {
     map,
     flatMap,
-    //tap,
+    tap,
     merge,
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
@@ -57,7 +57,7 @@ export const usersEpic = action$ =>
         //tap(v => console.log('Antes de flat: ', v)),        
         flatMap(() => (
             userAdd$.pipe(
-                //tap(v => console.log('add: ', v)),
+                tap(v => console.log('add: ', v)),
                 map(({ users, usersOrdered }) => {
                     if (usersOrdered.length > 1)
                         return {
