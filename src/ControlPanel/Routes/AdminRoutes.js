@@ -24,8 +24,8 @@ export default function AdminRoutes() {
         <ControlPanel>
             <Switch>
                 <Route exact path="/" component={Welcome} />
-                <Route sensitive path="/simulator" component={App} />
                 <Route sensitive path="/personal-data" component={PersonalData} />
+                <Route sensitive path="/simulator" component={App} />
                 <Route sensitive path="/user-list" component={UserList} />
                 <Route sensitive exact path="/history-list" component={HistoryList} />
                 <Route sensitive exact path="/room-list" component={RoomList} />

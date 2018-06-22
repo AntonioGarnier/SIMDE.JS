@@ -9,7 +9,7 @@ import HistoryList from '../Components/HistoryList'
 import RoomView from '../Components/RoomView'
 import GroupView from '../Components/GroupView'
 import SettingsGroup from '../Components/SettingsGroup'
-// import App from '../../Simulator/interface/App'
+import App from '../../Simulator/interface/App'
 
 
 export default function LoggedRoutes() {
@@ -19,6 +19,7 @@ export default function LoggedRoutes() {
                 <Route exact path="/" component={Welcome} />
                 <Route sensitive path="/login" render={() => <Redirect to="/" />} />
                 <Route sensitive path="/personal-data" component={PersonalData} />
+                <Route sensitive path="/simulator" component={App} />
                 <Route sensitive exact path="/history-list" component={HistoryList} />
                 <Route sensitive exact path="/room-list" component={RoomList} />
                 <Route sensitive exact path="/group-list" component={GroupList} />

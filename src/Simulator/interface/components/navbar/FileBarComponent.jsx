@@ -2,6 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 import { t } from 'i18next';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom'
 import { toggleLoadModal, toggleAuthorModal, toggleOptionsModal, toggleSuperConfigModal, toggleBatchModal, toggleLoadContentModal } from '../../actions/modals';
 import { bindActionCreators } from 'redux';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
@@ -17,6 +18,12 @@ class FileBarComponent extends React.Component {
         return (<div className='smd-filebar'>
                     <DropdownButton title={t('fileBar.file.name')} key={'dropdown-load'} id={'dropdown-load'} noCaret>
                         <MenuItem eventKey="1" onClick={() => { this.props.actions.toggleLoadModal(true); }}>{t('fileBar.file.load')}</MenuItem>
+                        <Link
+                            to="/login"
+                            style={{ textAlign: 'center', textDecoration: 'none', width: '100%'}}
+                        >
+                            Login
+                        </Link>
                     </DropdownButton>
                     <DropdownButton title={t('fileBar.view.name')} key={'dropdown-view'} id={'dropdown-view'} noCaret>
                         <MenuItem eventKey="1" onClick={() => {
