@@ -22,7 +22,8 @@ const mapStateToProps = (state) => {
 const SnackBarMessage = (props) => {
 
     this.getSnackStyle = () => {
-        switch (props.snackBarData.type) {
+        const type = props.snackBarData.type ? props.snackBarData.type : ''
+        switch (type) {
             case 'success':
                 return { backgroundColor: '#69be8b' }
             case 'warning':

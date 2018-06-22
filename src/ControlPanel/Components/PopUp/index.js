@@ -70,7 +70,7 @@ class PopUp extends React.Component {
         ]
         return (
             <Dialog
-                title={`${this.props.popUpData.title} ${this.props.popUpData.name}`}
+                title={`${this.props.popUpData.title ? this.props.popUpData.title : ''} ${this.props.popUpData.name}`}
                 actions={actions}
                 modal
                 open={this.props.popUpData.open}
