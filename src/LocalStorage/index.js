@@ -21,7 +21,11 @@ export const removeState = () => {
 
 export const saveState = (state) => {
     try {
-        const serializedData = JSON.stringify(state)
+        let stateToSave = state
+        if (state.user)
+            if (state.user.rol === 'student')
+                stateToSave = {...state, problems: {}}
+        const serializedData = JSON.stringify(stateToSave)
         localStorage.setItem('state', serializedData)
     } catch (error) {
         console.log(`Error al guardar el State - Message: ${error}`)

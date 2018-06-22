@@ -181,7 +181,7 @@ class CreateProblem extends React.Component {
                                     {this.props.instances[id].name}
                                 </li>
                             ))
-                            : 'No se asignaron instancias'          
+                            : 'No instances yet'          
                         }
                     <h3 style={{ fontWeight: 'bold' }} >
                         Definition:

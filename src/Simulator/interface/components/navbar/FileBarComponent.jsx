@@ -18,12 +18,14 @@ class FileBarComponent extends React.Component {
         return (<div className='smd-filebar'>
                     <DropdownButton title={t('fileBar.file.name')} key={'dropdown-load'} id={'dropdown-load'} noCaret>
                         <MenuItem eventKey="1" onClick={() => { this.props.actions.toggleLoadModal(true); }}>{t('fileBar.file.load')}</MenuItem>
-                        <Link
-                            to="/login"
-                            style={{ textAlign: 'center', textDecoration: 'none', width: '100%'}}
-                        >
-                            Login
-                        </Link>
+                        <MenuItem eventKey="1" >
+                            <Link
+                                to="/login"
+                                style={{ textAlign: 'center', textDecoration: 'none', width: '100%'}}
+                            >
+                                Login
+                            </Link>
+                        </MenuItem>
                     </DropdownButton>
                     <DropdownButton title={t('fileBar.view.name')} key={'dropdown-view'} id={'dropdown-view'} noCaret>
                         <MenuItem eventKey="1" onClick={() => {

@@ -55,7 +55,7 @@ const ProblemInfo = (props) => {
                                 showFinal={props.user.rol === 'admin'}
                             />
                         ))
-                        : 'No se asignaron instancias'          
+                        : 'No instances yet'          
                     }
                 </div>
         </div>
