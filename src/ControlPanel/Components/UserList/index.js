@@ -30,8 +30,6 @@ const UserList = ({
                 return <Person/> 
             case 'userOff':
                 return <PersonOut/> 
-            case 'admin':
-                return <Build/> 
             default:
                 return <Error/> 
         }
@@ -93,7 +91,7 @@ console.log('adminUsers: ', adminUsers)
                                         disabled
                                         key={user}
                                         leftAvatar={<Avatar src={userList[user].picture} />}
-                                        rightIcon={selectIcon('admin')}
+                                        rightIcon={userList[user].connected ? selectIcon('userOn') : selectIcon('userOff')}
                                     >
                                         {userList[user].name}
                                     </ListItem>
