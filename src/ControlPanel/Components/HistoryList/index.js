@@ -35,7 +35,7 @@ const HistoryList = ({
     openSnackBar,
 }) => { 
     return (
-        <Paper className="listStyle" >
+        <Paper style={{ marginTop: '50px', width: '100%' }} >
             <List>
                 <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >History</Subheader>
                 <Divider />
@@ -69,7 +69,7 @@ const HistoryList = ({
                                                         disabled
                                                         defaultValue={history[room][problem].code}
                                                         underlineShow={false}
-                                                        style={{ paddingLeft: '10px', marginTop: 0, width: '500px', borderStyle: 'solid', borderWidth: '1px' }}
+                                                        style={{ paddingLeft: '10px', marginTop: 0, width: '-webkit-fill-available', borderStyle: 'solid', borderWidth: '1px' }}
                                                         multiLine
                                                     />
                                                 </ListItem>

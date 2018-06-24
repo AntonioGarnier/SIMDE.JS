@@ -39,7 +39,9 @@ const UserList = ({
     const connectedUsers = userListOrdered.filter((id) => userList[id].connected && userList[id].rol === 'student')
     const disconnectedUsers = userListOrdered.filter((id) => !userList[id].connected && userList[id].rol === 'student')
     const adminUsers = userListOrdered.filter((id) => userList[id].rol === 'admin')
-
+console.log('ConnectedUsers: ', connectedUsers)
+console.log('disconnectedUsers: ', disconnectedUsers)
+console.log('adminUsers: ', adminUsers)
     return (
         <div style={{ display: 'flex' }} >
             <Paper className="listStyle" >

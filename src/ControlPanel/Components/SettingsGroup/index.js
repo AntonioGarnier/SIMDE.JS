@@ -81,7 +81,7 @@ class SettingsGroup extends React.Component {
 
     render() {
         return (
-        <div>
+        <div style={{ marginTop: '20px' }} >
             <Tabs
                 inkBarStyle={{background: 'green', height: '5px' }}
                 onChange={this.handleChange}

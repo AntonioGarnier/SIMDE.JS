@@ -68,7 +68,7 @@ const CustomList = (props) => {
     }
 
     return (
-        <Paper className="listStyle" >
+        <Paper style={{ marginTop: '50px', width: '100%' }} >
             <List>
                 <Subheader style={{ color: 'white', backgroundColor: '#a57ca5' }} >{props.title}</Subheader>
                 <Divider />

@@ -43,7 +43,7 @@ const ProblemInfo = (props) => {
             <h3 style={{ fontWeight: 'bold' }} >
                 Instances: 
             </h3>
-                <div style={{ display: 'flex', justifyContent: 'space-around', flexWrap: 'wrap' }} >
+                <div style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap' }} >
                     {
                         Object.keys(props.problems[props.problemId].instances).length > 0
                         ? Object.keys(props.problems[props.problemId].instances).map(id => (

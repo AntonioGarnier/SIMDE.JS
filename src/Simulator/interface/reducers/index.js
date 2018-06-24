@@ -74,6 +74,7 @@ export function SuperescalarReducers(state = initialState, action) {
     let userGroups = {}
     let userGroupsArray = []
     let userGroupRooms = []
+    let userListOrdered = []
     switch (action.type) {
         case NEXT_PREFETCH_CYCLE:
             return (state = Object.assign({}, state, { prefetchUnit: action.value }));
@@ -565,6 +566,11 @@ export function SuperescalarReducers(state = initialState, action) {
             })
             return { ...state, controlPanel: { ...state.controlPanel, ranking: items }}
         case FETCH_ALL_USERS:
+            userListOrdered = state.controlPanel.userListOrdered.slice()
+            action.payload.usersOrdered.forEach(user => {
+                if (userListOrdered.indexOf(user) === -1)
+                    userListOrdered.push(user)
+            })
             return { 
                 ...state,
                 controlPanel: {
@@ -573,12 +579,12 @@ export function SuperescalarReducers(state = initialState, action) {
                         ...state.controlPanel.userList,
                         ...action.payload.users,
                     },
-                    userListOrdered: state.controlPanel.userListOrdered.concat(action.payload.usersOrdered),
+                    userListOrdered,
                 }
             }
         case GOT_UPDATE_USER:
         case GOT_ADD_USER:
-            let userListOrdered = state.controlPanel.userListOrdered.slice()
+            userListOrdered = state.controlPanel.userListOrdered.slice()
                 if (userListOrdered.indexOf(action.payload.id) === -1)
                     userListOrdered.unshift(action.payload.id)
             return { 

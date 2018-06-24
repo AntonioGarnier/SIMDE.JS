@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { debounce } from 'throttle-debounce'
 import PropTypes from 'prop-types'
 import ActionGrade from 'material-ui/svg-icons/action/grade'
-import Leave from 'material-ui/svg-icons/action/highlight-off'
+import Exit from 'material-ui/svg-icons/action/exit-to-app'
 import {
     Step,
     Stepper,
@@ -305,41 +305,8 @@ class RoomInfo extends React.Component {
                 problemId={this.props.problemsId[stepIndex]}
             />
             
-            <h2>Test your code with the instances</h2>
             <div  style={{ display: 'flex', flexDirection: 'column' }}>
-                <TextField
-                    key={`code${this.props.problemsId[stepIndex]}`}
-                    rows={10}
-                    defaultValue={this.state.code.hasOwnProperty(this.props.problemsId[stepIndex]) ? this.state.code[this.props.problemsId[stepIndex]] : '' }
-                    underlineShow={false}
-                    style={{ paddingLeft: '10px', marginTop: 0, width: '500px', borderStyle: 'solid', borderWidth: '1px' }}
-                    floatingLabelText="Write your code here!"
-                    onChange={this.handleOnChangeCode}
-                    multiLine
-                />
-                <div>
-                    <RaisedButton
-                        primary
-                        style={{ margin: '10px' }}
-                        label="Save Code"
-                        onClick={() => this.isValidCode() && this.handleSaveCode()}
-                    />
-                    {/*
-                    <RaisedButton
-                        primary
-                        style={{ margin: '10px' }}
-                        label="Superescalar Config"
-                        onClick={() ()}
-                    />
-                    <RaisedButton
-                        primary
-                        style={{ margin: '10px' }}
-                        label="Superescalar Config"
-                        onClick={() => ()}
-                    />
-                    */}
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'flex-start' }}>
                     {
                         Object.keys(this.props.problems[this.props.problemsId[stepIndex]].instances).map((instance) => (
                             <div key={instance}>
@@ -378,6 +345,39 @@ class RoomInfo extends React.Component {
                             }
                         </div>
                     }
+                </div>
+                <h2>Test your code with the instances</h2>
+                <TextField
+                    key={`code${this.props.problemsId[stepIndex]}`}
+                    rows={10}
+                    defaultValue={this.state.code.hasOwnProperty(this.props.problemsId[stepIndex]) ? this.state.code[this.props.problemsId[stepIndex]] : '' }
+                    underlineShow={false}
+                    style={{ paddingLeft: '10px', marginTop: 0, width: '500px', borderStyle: 'solid', borderWidth: '1px' }}
+                    floatingLabelText="Write your code here!"
+                    onChange={this.handleOnChangeCode}
+                    multiLine
+                />
+                <div>
+                    <RaisedButton
+                        primary
+                        style={{ margin: '10px' }}
+                        label="Save Code"
+                        onClick={() => this.isValidCode() && this.handleSaveCode()}
+                    />
+                    {/*
+                    <RaisedButton
+                        primary
+                        style={{ margin: '10px' }}
+                        label="Superescalar Config"
+                        onClick={() ()}
+                    />
+                    <RaisedButton
+                        primary
+                        style={{ margin: '10px' }}
+                        label="Superescalar Config"
+                        onClick={() => ()}
+                    />
+                    */}
                 </div>
             </div>
         </div>
@@ -426,23 +426,24 @@ class RoomInfo extends React.Component {
                     type={roomType}
                     scores={this.calculateRankingScore()}
                 /> 
-                <IconButton
-                    style={{ position: 'absolute', top: '110px', right: '400px', width: '96px', height: '96px', padding: '24px' }}
-                    iconStyle={{ width: '48px', height: '48px' }}
-                    tooltip="Leave Room"
-                    tooltipPosition="bottom-right"
-                    touch
-                    onClick={this.handleClickLeaveButton}
-                >
-                    <Leave />
-                </IconButton>
-                <h1>{roomName}</h1>
+                <div style={{ display: 'flex', alignItems: 'center'}} >
+                    <h1>{roomName}</h1>
+                    <IconButton
+                        style={{ width: '48px', height: '48px', padding: '12px', marginTop: '11px' }}
+                        iconStyle={{ width: '24px', height: '24px' }}
+                        tooltip="Leave Room"
+                        tooltipPosition="bottom-right"
+                        touch
+                        onClick={this.handleClickLeaveButton}
+                    >
+                        <Exit />
+                    </IconButton>
+                </div>
                 <h2>{memberName}</h2>
                 <RaisedButton
-                    style={{ position: 'fixed', top: '75px', right: '6px' }}
+                    style={{ position: 'fixed', top: '75px', right: '6px', minWidth: '0px', borderRadius: '33px' }}
+                    buttonStyle={{ borderStyle: '0px solid', borderRadius: '30px', width: '48px', height: '48px' }}
                     primary
-                    label="Ranking"
-                    labelPosition="before"
                     icon={<ActionGrade />}
                     onClick={this.props.openSideBarRank}
                 />
