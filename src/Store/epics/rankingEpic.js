@@ -4,7 +4,7 @@ import { Subject } from 'rxjs'
 import {
     map,
     flatMap,
-    // tap,
+    tap,
     merge,
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
@@ -55,7 +55,7 @@ export const rankingEpic = action$ =>
         //tap(v => console.log('Antes de flat: ', v)),        
         flatMap(() => (
             rankingAdd$.pipe(
-                //tap(v => console.log('add: ', v)),
+                tap(v => console.log('add: ', v)),
                 map((ranking) => {
                     if (Object.keys(ranking).length > 1)
                         return {
@@ -69,13 +69,13 @@ export const rankingEpic = action$ =>
                     return {
                         type: GOT_ADD_RANKING,
                         payload: {
-                            id: rank,
+                            id: rank[0],
                             ranking: ranking[rank],
                         },
                     }
                 }),
                 merge(rankingRemove$.pipe(
-                    //tap(v => console.log('remove: ', v)),
+                    tap(v => console.log('remove: ', v)),
                     map((ranking) => {
                         if (Object.keys(ranking).length > 1)
                             return {
@@ -84,18 +84,18 @@ export const rankingEpic = action$ =>
                         return {
                             type: GOT_REMOVE_RANKING,
                             payload: {
-                                id: Object.keys(ranking),
+                                id: Object.keys(ranking)[0],
                             },
                         }
                     }),
                     merge(rankingUpdate$.pipe(
-                        //tap(v => console.log('update: ', v)),
+                        tap(v => console.log('update: ', v)),
                         map((ranking) => {
                             const rank = Object.keys(ranking)
                             return {
                                 type: GOT_UPDATE_RANKING,
                                 payload: {
-                                    id: rank,
+                                    id: rank[0],
                                     ranking: ranking[rank],
                                 },
                             }
