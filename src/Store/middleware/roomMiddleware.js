@@ -11,7 +11,6 @@ import {
     UPDATE_VISIBILITY_ROOM,
     CHECK_ROOM_PASSWORD,
     REQUEST_JOIN_FAILED,
-    SEND_RESULTS_TO_RANK,
     SAVE_CODE_TO_HISTORY,
 } from '../../ControlPanel/Constants'
 
@@ -122,17 +121,6 @@ const roomMiddleware = store => next => (action) => {
                     type: 'error',
                 }
             }))
-            firestore
-                .collection('ranking')
-                .doc(action.payload.id)
-                .delete()
-                .catch(() => store.dispatch({
-                    type: OPEN_SNACK_BAR,
-                    payload: {
-                        message: 'ERROR: Could not remove ranking! (DataBase - Problem)',
-                        type: 'error',
-                    }
-                }))
             return next(action)
         case UPDATE_NAME_ROOM:
             firestore.collection('rooms').doc(action.payload.id)
@@ -280,28 +268,6 @@ const roomMiddleware = store => next => (action) => {
                     })
                 }) 
             return next(action)
-        case SEND_RESULTS_TO_RANK: // id: roomId; entity: MemberID; problem: id; result: integer
-            firestore.collection('ranking').doc(action.payload.room)
-                .set({
-                    [action.payload.member]: {
-                        [action.payload.problem]: action.payload.cycles,
-                    },
-                }, { merge: true })
-                .then(() => store.dispatch({
-                    type: OPEN_SNACK_BAR,
-                    payload: {
-                        message: 'SUCCESS: Results sent!',
-                        type: 'success',
-                    }
-                }))
-                .catch(() => store.dispatch({
-                    type: OPEN_SNACK_BAR,
-                    payload: {
-                        message: 'ERROR: Could not update ranking! (DataBase - Problem)',
-                        type: 'error',
-                    }
-                }))
-            return next(action)
         case SAVE_CODE_TO_HISTORY:
             firestore.collection('history').doc(action.payload.user)
                 .set({
@@ -334,15 +300,3 @@ const roomMiddleware = store => next => (action) => {
 }
 
 export default roomMiddleware
-/*
-{
-    type: 'JOIN_ROOM',
-    payload: {
-      id: '6HHKq3oQdPDOcaG1bv9O',
-      members: {
-        'carlos': true,
-       'pedro': true,
-      },
-    },
-    }
-    */

@@ -7,7 +7,6 @@ import Subheader from 'material-ui/Subheader'
 import Avatar from 'material-ui/Avatar'
 import Person from 'material-ui/svg-icons/social/person'
 import PersonOut from 'material-ui/svg-icons/social/person-outline'
-import Build from 'material-ui/svg-icons/action/build'
 import Error from 'material-ui/svg-icons/alert/error'
 import { List, ListItem } from 'material-ui/List'
 

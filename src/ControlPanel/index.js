@@ -14,9 +14,6 @@ import {
     checkingUser,
     checkedUser,
     changePath,
-    adminLogin,
-    studentLogin,
-    activateListeners,
     userNotConnected,
 } from './Actions'
 
@@ -30,9 +27,6 @@ const mapDispatchToProps = (dispatch) => {
         checkingUser,
         checkedUser,
         changePath,
-        adminLogin,
-        studentLogin,
-        activateListeners,
         userNotConnected,
     }, dispatch)
 }
@@ -63,11 +57,6 @@ class Panel extends Component {
                         uid: user.uid,
                         rol,
                     })
-                    if (rol === 'admin')
-                        this.props.adminLogin()
-                    else
-                        this.props.studentLogin()
-                    this.props.activateListeners()
                     this.props.checkedUser()
                 }).catch(((error) => console.log('Error when checking user rol: ', error)))
             } else {

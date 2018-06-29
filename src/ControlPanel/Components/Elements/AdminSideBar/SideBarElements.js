@@ -2,7 +2,6 @@ import React from 'react'
 import PersonPin from 'material-ui/svg-icons/maps/person-pin'
 import GamePad from 'material-ui/svg-icons/hardware/gamepad'
 import Info from 'material-ui/svg-icons/action/info'
-import Group from 'material-ui/svg-icons/social/group'
 import People from 'material-ui/svg-icons/social/people'
 import GroupWork from 'material-ui/svg-icons/action/group-work'
 import Settings from 'material-ui/svg-icons/action/settings'
@@ -31,7 +30,7 @@ export const sideBarElements = [
     {
         name: 'Room List',
         to: '/room-list',
-        leftIcon: <Group />,
+        leftIcon: <Desktop />,
     },
     {
         name: 'Group List',

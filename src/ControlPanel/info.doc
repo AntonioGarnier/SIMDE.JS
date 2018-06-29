@@ -133,3 +133,27 @@ crea sala añade problema sin instancias, añade luego instancias y no salen
 TEST INSTANCIAS (INSTANCES) SPANGLISH PLIS (falso error)
 
 LA user list la descargan todos y pal carajo (Listo)
+
+
+
+
+
+No resetear el ranking al cambiar la visibilidad. DONE
+
+Estilo Grupos, la X para salir del grupo y al esconder el sidebar se joden las tarjetas DONE
+TEXTFIELD autofocus y type password en los JoINS DONE
+Default 0 fallos de cache 1 - 0 - 0 ****Importante DONE
+EPICS para el inicio DONE 
+Implementar throttle time para el send result, evita saturación DONE
+
+
+
+
+Permitir cambiar la configuracion de la maquina FUTURE
+
+
+Cancelar listeners al hacer logout 
+Instance List, mostrar en que problemas esta
+
+Historial: Guardar el codigo asociado al numero de ciclos que conseguiste. AL enviar los resultados al ranking
+guardar tambien el codigo con los ciclos

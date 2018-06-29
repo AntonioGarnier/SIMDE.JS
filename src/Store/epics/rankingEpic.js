@@ -6,6 +6,7 @@ import {
     flatMap,
     tap,
     merge,
+    throttleTime,
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
 import {
@@ -15,6 +16,8 @@ import {
     REMOVE_ALL_RANKINGS,
     GOT_REMOVE_RANKING,
     GOT_UPDATE_RANKING,
+    SEND_RESULTS_TO_RANK,
+    OPEN_SNACK_BAR,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
@@ -48,6 +51,35 @@ export const subscribeRanking = () => (querySnapshot) => {
 
 export const listenRanking = firestore.collection('ranking')
 
+export const sendResultsToRankEpic = action$ => 
+    action$.pipe (
+        ofType(SEND_RESULTS_TO_RANK),
+        throttleTime(60000),
+        tap(v => console.log('1: ', v)),
+        flatMap((action) => (
+            firestore.collection('ranking').doc(action.payload.room)
+                .set({
+                    [action.payload.member]: {
+                        [action.payload.problem]: action.payload.cycles,
+                    },
+                }, { merge: true })
+                .then(() => ({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'SUCCESS: Results sent!',
+                        type: 'success',
+                    }
+                }))
+                .catch(() => ({
+                    type: OPEN_SNACK_BAR,
+                    payload: {
+                        message: 'ERROR: Could not update ranking! (DataBase - Problem)',
+                        type: 'error',
+                    }
+                }))
+        )),
+        tap(v => console.log('V: ', v))
+    )
 
 export const rankingEpic = action$ =>
     action$.pipe(

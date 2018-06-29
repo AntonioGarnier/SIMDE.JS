@@ -77,6 +77,8 @@ class PopUp extends React.Component {
             >
                 <p>Insert password: </p>
                 <TextField
+                    type="password"
+                    autoFocus
                     floatingLabelText="Password"
                     onChange={this.handleOnChange}
                 />

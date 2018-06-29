@@ -1,6 +1,7 @@
 export {
     fetchingDataEpicStudent,
     fetchingDataEpicAdmin,
+    checkUserRolEpic,
 } from './fetchingDataEpic'
 export {
     groupsEpic,
@@ -31,6 +32,7 @@ export {
     rankingEpic,
     listenRanking,
     subscribeRanking,
+    sendResultsToRankEpic,
 } from './rankingEpic'
 export {
     usersEpic,

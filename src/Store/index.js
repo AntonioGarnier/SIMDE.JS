@@ -15,6 +15,7 @@ import {
 import {
     fetchingDataEpicStudent,
     fetchingDataEpicAdmin,
+    checkUserRolEpic,
     groupsEpic,
     instancesEpic,
     roomEpic,
@@ -22,6 +23,7 @@ import {
     historyEpic,
     rankingEpic,
     usersEpic,
+    sendResultsToRankEpic,
 } from './epics'
 
 
@@ -152,6 +154,7 @@ const composeEnhancers =
 const rootEpic = combineEpics(
     fetchingDataEpicStudent,
     fetchingDataEpicAdmin,
+    checkUserRolEpic,
     groupsEpic,
     instancesEpic,
     roomEpic,
@@ -159,6 +162,7 @@ const rootEpic = combineEpics(
     historyEpic,
     rankingEpic,
     usersEpic,
+    sendResultsToRankEpic,
 )
 
 const epicMiddleware = createEpicMiddleware(rootEpic)

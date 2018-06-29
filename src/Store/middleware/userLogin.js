@@ -7,7 +7,8 @@ import {
     USER_LOGOUT,
     USER_LOGIN,
     OPEN_SNACK_BAR,
-    ACTIVATE_LISTENERS,
+    ACTIVATE_STUDENT_LISTENERS,
+    ACTIVATE_ADMIN_LISTENERS,
     USER_NOT_CONNECTED,
 } from '../../ControlPanel/Constants'
 import { 
@@ -56,31 +57,40 @@ const userLogin = store => next => (action) => {
         case USER_NOT_CONNECTED:
             removeState()
             return next(action)
-        case ACTIVATE_LISTENERS:
-            const user = store.getState().controlPanel.user
-                listenHistory
-                    .where(firebase.firestore.FieldPath.documentId(), '==', user.uid)
-                    .onSnapshot(subscribeHistory())
-                listenGroups
-                    .onSnapshot(subscribeGroups())
-                listenUsers
-                    .onSnapshot(subscribeUsers())
-                listenInstances
-                    .onSnapshot(subscribeInstances())
-                listenProblem
-                    .onSnapshot(subscribeProblem())
-                listenRanking
-                    .onSnapshot(subscribeRanking())
-                if (user.rol === 'admin') {
-                    listenRoom
-                        .orderBy('createdAt', 'desc')
-                        .onSnapshot(subscribeRoom())
-                } else {
-                    listenRoom
-                        .where('visibility', '==', true)
-                        .orderBy('createdAt', 'desc')
-                        .onSnapshot(subscribeRoom())
-                }
+        case ACTIVATE_STUDENT_LISTENERS:
+            listenHistory
+                .where(firebase.firestore.FieldPath.documentId(), '==', store.getState().controlPanel.user.uid)
+                .onSnapshot(subscribeHistory())
+            listenGroups
+                .onSnapshot(subscribeGroups())
+            listenUsers
+                .onSnapshot(subscribeUsers())
+            listenInstances
+                .onSnapshot(subscribeInstances())
+            listenRanking
+                .onSnapshot(subscribeRanking())
+            listenRoom
+                .where('visibility', '==', true)
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(subscribeRoom())
+            return next(action)
+        case ACTIVATE_ADMIN_LISTENERS:
+            listenHistory
+                .where(firebase.firestore.FieldPath.documentId(), '==', store.getState().controlPanel.user.uid)
+                .onSnapshot(subscribeHistory())
+            listenGroups
+                .onSnapshot(subscribeGroups())
+            listenUsers
+                .onSnapshot(subscribeUsers())
+            listenInstances
+                .onSnapshot(subscribeInstances())
+            listenProblem
+                .onSnapshot(subscribeProblem())
+            listenRanking
+                .onSnapshot(subscribeRanking())
+            listenRoom
+                .orderBy('createdAt', 'desc')
+                .onSnapshot(subscribeRoom())
             return next(action)
         case USER_LOGIN:
             const userRef = firestore.collection('userList').doc(action.payload.uid)

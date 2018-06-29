@@ -15,11 +15,30 @@ import {
     FETCHING_USERS,
     STUDENT_LOGIN,
     ADMIN_LOGIN,
+    USER_LOGIN,
+    ACTIVATE_STUDENT_LISTENERS,
+    ACTIVATE_ADMIN_LISTENERS,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
 
+
+export const checkUserRolEpic = action$ =>
+    action$.pipe(
+        ofType(USER_LOGIN),
+        flatMap((action) => (
+            action.payload.rol === 'admin'
+                ? of (
+                    { type: ADMIN_LOGIN },
+                    { type: ACTIVATE_ADMIN_LISTENERS },
+                )
+                : of (
+                    { type: STUDENT_LOGIN },
+                    { type: ACTIVATE_STUDENT_LISTENERS },
+                )
+        )),
+    ) 
 
 export const fetchingDataEpicStudent = action$ =>
     action$.pipe(
@@ -47,6 +66,7 @@ export const fetchingDataEpicStudent = action$ =>
             )
         ))
     )
+
 export const fetchingDataEpicAdmin = action$ =>
     action$.pipe(
         ofType(ADMIN_LOGIN),

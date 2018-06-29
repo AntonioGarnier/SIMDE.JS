@@ -28,7 +28,8 @@ const problemRemove$ = new Subject()
 export const subscribeProblem = () => (querySnapshot) => {
     let updateType
     let problems = {}
-    let problemsOrdered = [] 
+    let problemsOrdered = []
+    console.log('Changes Problems: ', querySnapshot.docChanges())
     querySnapshot.docChanges().forEach((problem) => {
         problemsOrdered.push(problem.doc.id)
         problems[problem.doc.id] = problem.doc.data()

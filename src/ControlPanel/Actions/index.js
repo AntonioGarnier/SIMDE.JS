@@ -38,9 +38,6 @@ import {
     RESET_INSTANCE_RESULT,
     SEND_RESULTS_TO_RANK,
     SAVE_CODE_TO_HISTORY,
-    ADMIN_LOGIN,
-    STUDENT_LOGIN,
-    ACTIVATE_LISTENERS,
     USER_NOT_CONNECTED,
     LEAVE_ROOM,
     LEAVE_GROUP,
@@ -64,24 +61,6 @@ export function leaveRoom(id, member) {
             id,
             member,
         }
-    }
-}
-
-export function activateListeners() {
-    return {
-        type: ACTIVATE_LISTENERS,
-    }
-}
-
-export function adminLogin() {
-    return {
-        type: ADMIN_LOGIN,
-    }
-}
-
-export function studentLogin() {
-    return {
-        type: STUDENT_LOGIN,
     }
 }
 

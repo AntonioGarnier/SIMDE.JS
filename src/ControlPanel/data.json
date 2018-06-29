@@ -1,4 +1,25 @@
+
+
 {
+    "type": "USER_LOGIN",
+    "user": {
+        "displayName": "Antonio Jesús López Garnier",
+        "email": "aluXXXXXXXXXX@ull.edu.es.",
+        "creationTime": "Fecha de creación",
+        "LastSignInTime": "Última vez que inició sesión",
+        "picture": "Url foto cuenta de google",
+        "rol": "student / admin",
+        "UID": "Identificador de usuario"
+    }
+}
+
+
+
+
+
+
+
+
     "users": {
         "antoniol": {
             "name": "Antonio Lopez",
@@ -17,6 +38,10 @@
             }
         }
     },
+
+
+
+
 
     "history": {
         "antoniol": "Sala - problema - instancia",
@@ -119,3 +144,5 @@
         }
     }
 }
+
+

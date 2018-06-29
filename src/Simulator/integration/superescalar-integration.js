@@ -26,8 +26,8 @@ export class SuperescalarIntegration extends MachineIntegration {
         this.finishedExecution = false;
         this.executing = false;
         this.replications = 1;
-        this.cacheFailPercentage = 30;
-        this.cacheFailLatency = 9;
+        this.cacheFailPercentage = 0;
+        this.cacheFailLatency = 0;
         /*
         * This call all the components to update the state
         * if there is a step param, the components will use

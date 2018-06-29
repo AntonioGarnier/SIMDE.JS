@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import Paper from 'material-ui/Paper'
 import { CardHeader } from 'material-ui/Card'
 import IconButton from 'material-ui/IconButton'
-import Leave from 'material-ui/svg-icons/action/highlight-off'
+import Exit from 'material-ui/svg-icons/action/exit-to-app'
 import Loading from '../Loading'
 import {
     openSnackBar,
@@ -48,21 +48,24 @@ const GroupInfo = ({
 
     return (
         <div>
-            <h1>{groupName}</h1>
-            <IconButton
-                    style={{ position: 'absolute', top: '110px', right: '400px', width: '96px', height: '96px', padding: '24px' }}
-                    iconStyle={{ width: '48px', height: '48px' }}
+            <div style={{ display: 'flex', alignItems: 'center'}} >
+                <h1>{groupName}</h1>
+                <IconButton
+                    style={{ width: '48px', height: '48px', padding: '12px', marginTop: '11px' }}
+                    iconStyle={{ width: '24px', height: '24px' }}
                     tooltip="Leave Group"
                     tooltipPosition="bottom-right"
                     touch
                     onClick={handleClickLeaveButton}
                 >
-                <Leave />
-            </IconButton>
+                    <Exit />
+                </IconButton>
+            </div>
             {
                 userList[leader]
                 ? <Paper zDepth={5} style={{ display: 'flex', width: '25%', marginBottom: '30px' }} >
                     <CardHeader
+                        style={{ width: '100%' }}
                         className="header"
                         titleColor="white"
                         subtitleColor="white"
@@ -81,6 +84,7 @@ const GroupInfo = ({
                         ? members.map(member => (
                             <CardHeader
                                 key={member}
+                                style={{ width: '100%' }}
                                 className="sub-header"
                                 titleColor="white"
                                 subtitleColor="white"
