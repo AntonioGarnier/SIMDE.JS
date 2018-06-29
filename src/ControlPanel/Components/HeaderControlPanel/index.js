@@ -28,6 +28,8 @@ const mapStateToProps = (state) => {
         user: {
             displayName: state.controlPanel.user.displayName,
             picture: state.controlPanel.user.picture,
+            rol: state.controlPanel.user.rol,
+            uid: state.controlPanel.user.uid,
         },
     }
 }
@@ -52,7 +54,7 @@ const HeaderControlPanel = (props) => {
                     </ListItem>
                     <IconButton
                         style={{ marginLeft: '20px' }}
-                        onClick={props.logout}
+                        onClick={() => props.logout(props.user.uid, props.user.rol)}
                     >
                         <ActionPowerSettingsNew color="white" />
                     </IconButton>

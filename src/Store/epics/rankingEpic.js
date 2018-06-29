@@ -55,7 +55,6 @@ export const sendResultsToRankEpic = action$ =>
     action$.pipe (
         ofType(SEND_RESULTS_TO_RANK),
         throttleTime(60000),
-        tap(v => console.log('1: ', v)),
         flatMap((action) => (
             firestore.collection('ranking').doc(action.payload.room)
                 .set({
@@ -78,7 +77,6 @@ export const sendResultsToRankEpic = action$ =>
                     }
                 }))
         )),
-        tap(v => console.log('V: ', v))
     )
 
 export const rankingEpic = action$ =>

@@ -24,6 +24,7 @@ import {
     rankingEpic,
     usersEpic,
     sendResultsToRankEpic,
+    userLoginOutEpic,
 } from './epics'
 
 
@@ -163,6 +164,7 @@ const rootEpic = combineEpics(
     rankingEpic,
     usersEpic,
     sendResultsToRankEpic,
+    userLoginOutEpic,
 )
 
 const epicMiddleware = createEpicMiddleware(rootEpic)

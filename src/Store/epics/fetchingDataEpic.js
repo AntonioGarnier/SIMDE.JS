@@ -3,6 +3,8 @@ import { ofType } from 'redux-observable'
 import { of } from 'rxjs'
 import {
     flatMap,
+    map,
+    tap,
 } from 'rxjs/operators'
 import firebase from '../../ControlPanel/Components/FirebaseProvider/firebase'
 import {
@@ -18,11 +20,28 @@ import {
     USER_LOGIN,
     ACTIVATE_STUDENT_LISTENERS,
     ACTIVATE_ADMIN_LISTENERS,
+    DEACTIVATE_ADMIN_LISTENERS,
+    DEACTIVATE_STUDENT_LISTENERS,
+    USER_LOGOUT,
 } from '../../ControlPanel/Constants'
 
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
 
+
+
+
+export const userLoginOutEpic = (action$) =>
+    action$.pipe(
+        ofType(USER_LOGOUT),
+        tap(v => console.log('***: ', v)),
+        map((action) => (
+            action.payload.rol === 'admin'
+                ? { type: DEACTIVATE_ADMIN_LISTENERS }
+                : { type: DEACTIVATE_STUDENT_LISTENERS }
+        )),
+        tap(v => console.log('---- ', v))
+    ) 
 
 export const checkUserRolEpic = action$ =>
     action$.pipe(

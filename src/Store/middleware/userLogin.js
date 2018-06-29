@@ -10,6 +10,8 @@ import {
     ACTIVATE_STUDENT_LISTENERS,
     ACTIVATE_ADMIN_LISTENERS,
     USER_NOT_CONNECTED,
+    DEACTIVATE_ADMIN_LISTENERS,
+    DEACTIVATE_STUDENT_LISTENERS,
 } from '../../ControlPanel/Constants'
 import { 
     subscribeRoom,
@@ -31,6 +33,16 @@ import {
 const firestore = firebase.firestore()
 firestore.settings({ timestampsInSnapshots: true })
 
+const unsubscribe = {
+    listenProblem,
+    listenHistory,
+    listenGroups,
+    listenUsers,
+    listenInstances,
+    listenRanking,
+    listenRoom
+}
+
 const userLogin = store => next => (action) => {
     switch (action.type) {
         case USER_LOGGING_IN:
@@ -39,7 +51,7 @@ const userLogin = store => next => (action) => {
         case USER_LOGOUT:
             firestore
                 .collection('userList')
-                .doc(store.getState().controlPanel.user.uid)
+                .doc(action.payload.uid)
                 .update({
                     connected: false,
                 })
@@ -57,38 +69,49 @@ const userLogin = store => next => (action) => {
         case USER_NOT_CONNECTED:
             removeState()
             return next(action)
+        case DEACTIVATE_ADMIN_LISTENERS:
+            unsubscribe.listenProblem()
+        // eslint-disable-next-line
+        case DEACTIVATE_STUDENT_LISTENERS:
+            unsubscribe.listenHistory()
+            unsubscribe.listenGroups()
+            unsubscribe.listenUsers()
+            unsubscribe.listenInstances()
+            unsubscribe.listenRanking()
+            unsubscribe.listenRoom()
+            return next(action)
         case ACTIVATE_STUDENT_LISTENERS:
-            listenHistory
+            unsubscribe.listenHistory = listenHistory
                 .where(firebase.firestore.FieldPath.documentId(), '==', store.getState().controlPanel.user.uid)
                 .onSnapshot(subscribeHistory())
-            listenGroups
+            unsubscribe.listenGroups = listenGroups
                 .onSnapshot(subscribeGroups())
-            listenUsers
+            unsubscribe.listenUsers = listenUsers
                 .onSnapshot(subscribeUsers())
-            listenInstances
+            unsubscribe.listenInstances = listenInstances
                 .onSnapshot(subscribeInstances())
-            listenRanking
+            unsubscribe.listenRanking = listenRanking
                 .onSnapshot(subscribeRanking())
-            listenRoom
+            unsubscribe.listenRoom = listenRoom
                 .where('visibility', '==', true)
                 .orderBy('createdAt', 'desc')
                 .onSnapshot(subscribeRoom())
             return next(action)
         case ACTIVATE_ADMIN_LISTENERS:
-            listenHistory
+            unsubscribe.listenHistory = listenHistory
                 .where(firebase.firestore.FieldPath.documentId(), '==', store.getState().controlPanel.user.uid)
                 .onSnapshot(subscribeHistory())
-            listenGroups
+            unsubscribe.listenGroups = listenGroups
                 .onSnapshot(subscribeGroups())
-            listenUsers
+            unsubscribe.listenUsers = listenUsers
                 .onSnapshot(subscribeUsers())
-            listenInstances
+            unsubscribe.listenInstances = listenInstances
                 .onSnapshot(subscribeInstances())
-            listenProblem
+            unsubscribe.listenProblem = listenProblem
                 .onSnapshot(subscribeProblem())
-            listenRanking
+            unsubscribe.listenRanking = listenRanking
                 .onSnapshot(subscribeRanking())
-            listenRoom
+            unsubscribe.listenRoom = listenRoom
                 .orderBy('createdAt', 'desc')
                 .onSnapshot(subscribeRoom())
             return next(action)

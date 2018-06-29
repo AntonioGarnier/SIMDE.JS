@@ -400,9 +400,13 @@ export function userNotConnected() {
     }
 }
 
-export function logout() {
+export function logout(uid, rol) {
     return {
         type: USER_LOGOUT,
+        payload: {
+            uid,
+            rol,
+        }
     }
 }
 

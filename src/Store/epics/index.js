@@ -2,6 +2,7 @@ export {
     fetchingDataEpicStudent,
     fetchingDataEpicAdmin,
     checkUserRolEpic,
+    userLoginOutEpic,
 } from './fetchingDataEpic'
 export {
     groupsEpic,
