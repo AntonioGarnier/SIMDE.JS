@@ -64,7 +64,7 @@ export function leaveRoom(id, member) {
     }
 }
 
-export function saveCodeToHistory({ user, room, roomName, problemId, problem, code }) {
+export function saveCodeToHistory({ user, room, roomName, problemId, problem, code }, cycles) {
     return {
         type: SAVE_CODE_TO_HISTORY,
         payload: {
@@ -74,6 +74,7 @@ export function saveCodeToHistory({ user, room, roomName, problemId, problem, co
             problemId,
             problem,
             code,
+            cycles,
         }
     }
 }

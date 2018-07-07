@@ -139,6 +139,15 @@ class RoomInfo extends React.Component {
                         cycles: this.state.scores[this.props.problemsId[this.state.stepIndex]].cycles
                     }
                     this.props.sendResultsToRank(results)
+                    let saveCode = {
+                        user: this.props.user.uid,
+                        room: this.props.roomId,
+                        roomName: this.props.roomName,
+                        problemId: this.props.problemsId[this.state.stepIndex],
+                        problem: this.props.problems[this.props.problemsId[this.state.stepIndex]].name,
+                        code: this.state.code[this.props.problemsId[this.state.stepIndex]],
+                    }
+                    this.props.saveCodeToHistory(saveCode, results.cycles)
                 } else if (this.props.roomType === 'group') {
                     let member = ''
                     let isLeader = this.props.members.some(memberId => {
@@ -154,6 +163,16 @@ class RoomInfo extends React.Component {
                             cycles: this.state.scores[this.props.problemsId[this.state.stepIndex]].cycles
                         }
                         this.props.sendResultsToRank(results)
+                        let saveCode = {
+                            user: this.props.user.uid,
+                            room: this.props.roomId,
+                            roomName: this.props.roomName,
+                            problemId: this.props.problemsId[this.state.stepIndex],
+                            problem: this.props.problems[this.props.problemsId[this.state.stepIndex]].name,
+                            code: this.state.code[this.props.problemsId[this.state.stepIndex]],
+                        }
+                        console.log('SENDING: ', results.cycles)
+                        this.props.saveCodeToHistory(saveCode, results.cycles)
                     }
                     else
                         this.props.openSnackBar('WARNING: Only leaders can send results', 'warning')
@@ -274,7 +293,7 @@ class RoomInfo extends React.Component {
             problem: this.props.problems[this.props.problemsId[this.state.stepIndex]].name,
             code: this.state.code[this.props.problemsId[this.state.stepIndex]],
         }
-        this.props.saveCodeToHistory(saveCode)
+        this.props.saveCodeToHistory(saveCode, 0)
         //this.props.toggleBatchModal(true)
         //this.props.toggleSuperConfigModal(true)
         //Lanzar accion para salvar el codigo con la siguiente info: SALA - PROBLEMA(NAME) - CODE 

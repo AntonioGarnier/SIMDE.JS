@@ -51,18 +51,18 @@ const HistoryList = ({
                                 Object.keys(history[room]).map(problem => (
                                     <ListItem
                                         key={problem}
-                                        primaryText={history[room][problem].problem}
+                                        primaryText={`${history[room][problem].problem}: ${history[room][problem].cycles === 0 ? 'Code saved without send results' : `${history[room][problem].cycles} Cycles`}`}
                                         leftIcon={<Problem />}
                                         initiallyOpen={false}
                                         primaryTogglesNestedList={true}
                                         nestedItems={[
                                             <CopyToClipboard
                                                 key={`clip${problem}`}
-                                                    style={{ display: 'flex', flexDirection: 'column' }}
-                                                    onCopy={() => openSnackBar('Code Copied!', 'success')}
-                                                    text={history[room][problem].code}
-                                                >
-                                                    <ListItem key={`nested${problem}`} >
+                                                style={{ display: 'flex', flexDirection: 'column' }}
+                                                onCopy={() => openSnackBar('Code Copied!', 'success')}
+                                                text={history[room][problem].code}
+                                            >
+                                                <ListItem key={`nested${problem}`} >
                                                     <TextField
                                                         id={problem}
                                                         rows={10}

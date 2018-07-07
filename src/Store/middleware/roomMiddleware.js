@@ -276,6 +276,7 @@ const roomMiddleware = store => next => (action) => {
                             room: action.payload.roomName,
                             problem: action.payload.problem,
                             code: action.payload.code,
+                            cycles: action.payload.cycles,
                         }
                     }
                 }, { merge: true })
